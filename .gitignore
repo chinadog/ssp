@@ -1,0 +1,14 @@
+*.o
+Makefile
+Makefile*
+moc_*.cpp
+build/
+Build/
+test
+*.pb.h
+*.pb.cc
+*.pro.user*
+*.autosave
+*~
+doc/html/
+debug/
