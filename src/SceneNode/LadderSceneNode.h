@@ -14,6 +14,9 @@ public:
     LadderSceneNode(GamePark* gamePark);
     scene::ISceneNode* node();
     void draw();
+    void setPosition(const core::vector3df& value);
+    void setRotation(const core::vector3df& value);
+    void setScale(const core::vector3df& value);
 
     Signal<> enter;
     Signal<> leave;
@@ -21,7 +24,6 @@ private:
     void initNode();
 
     scene::ISceneNode* m_node;
-    scene::ISceneNode* m_emptyNode;
     GamePark* m_gamePark;
     scene::ITriangleSelector* m_boxSelector = nullptr;
     scene::ISceneCollisionManager* cmgr;

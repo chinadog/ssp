@@ -513,13 +513,13 @@ void Player::draw()
     if(m_keyW == true && currentPlayerState() == PlayerState::Climb)
     {
         core::vector3df pos = camera()->getPosition();
-        pos.Y += m_deltaTime*5;
+        pos.Y += m_deltaTime*15;
         setPosition(pos.X, pos.Y, pos.Z);
     }
     if(m_keyS == true && currentPlayerState() == PlayerState::Climb)
     {
         core::vector3df pos = camera()->getPosition();
-        pos.Y -= m_deltaTime*5;
+        pos.Y -= m_deltaTime*15;
         setPosition(pos.X, pos.Y, pos.Z);
     }
 

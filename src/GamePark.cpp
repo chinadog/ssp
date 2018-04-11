@@ -33,6 +33,7 @@ GamePark::~GamePark()
 {
     delete receiver;
     delete m_player;
+    delete m_ladder;
 }
 
 void GamePark::exit()
@@ -703,7 +704,9 @@ int GamePark::initLadder()
 {
     m_ladder = new LadderSceneNode(this);
     m_movableNode = (scene::IAnimatedMeshSceneNode*)m_ladder->node();
-//    m_ladder->setPosition();
+    m_ladder->setScale(core::vector3df(2,13,0.5));
+    m_ladder->setPosition(core::vector3df(861, 23.65, 216));
+    m_ladder->setRotation(core::vector3df(0,41,0));
 }
 
 int GamePark::initMenu()
@@ -1079,11 +1082,10 @@ m_ladder->draw();
             str += fps;
             // Also print terrain height of current camera position
             // We can use camera position because terrain is located at coordinate origin
-            str += " Height: ";
-//            str += m_terrain->getHeight(m_player->camera()->getAbsolutePosition().X,
-//                    m_player->camera()->getAbsolutePosition().Z);
             str += " Triangle: ";
             str += count;
+            str += " | Calls:";
+            str += smgr()->getParameters()->getAttributeAsInt("calls");
 
             updateEnvironment(str);
 //            forestLOD(m_player->camera()->getPosition());
