@@ -73,6 +73,9 @@ public:
 
     std::list<irr::scene::IAnimatedMeshSceneNode*> m_nodeList;
 
+    void ladder();
+    void ladderOut();
+
 private:
     irr::scene::ICameraSceneNode* m_camera;
     GamePark* m_gamePark;
@@ -114,6 +117,8 @@ private:
 
     u32 m_startTimeFire = 0;
     u32 m_nextTimeToFire = 0;
+    u32 m_prevTime = 0;
+    f32 m_deltaTime = 0.0;
 
     std::list<Weapon*> m_weaponList;
 

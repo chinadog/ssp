@@ -172,6 +172,22 @@ core::stringc str;
                          moveNode->getScale().Y << " " <<
                          moveNode->getScale().Z << std::endl << std::flush;
             return true;
+        case irr::KEY_KEY_N:
+            moveNode->setRotation(core::vector3df(moveNode->getRotation().X ,
+                                                  moveNode->getRotation().Y + scaleCoef,
+                                                  moveNode->getRotation().Z ));
+            std::cout << moveNode->getRotation().X << " " <<
+                         moveNode->getRotation().Y << " " <<
+                         moveNode->getRotation().Z << std::endl << std::flush;
+            return true;
+        case irr::KEY_KEY_M:
+            moveNode->setRotation(core::vector3df(moveNode->getRotation().X ,
+                                                  moveNode->getRotation().Y - scaleCoef,
+                                                  moveNode->getRotation().Z ));
+            std::cout << moveNode->getRotation().X << " " <<
+                         moveNode->getRotation().Y << " " <<
+                         moveNode->getRotation().Z << std::endl << std::flush;
+            return true;
 
         default:
             break;

@@ -12,6 +12,7 @@
 #include "SceneNode/AtomicBoom.h"
 #include "UI/InOutFader.h"
 #include "UI/MessageBox.h"
+#include "SceneNode/LadderSceneNode.h"
 
 using namespace irr;
 
@@ -98,6 +99,8 @@ public:
 
     scene::IAnimatedMeshSceneNode *movableNode() const;
 
+    scene::ISceneNodeAnimatorCollisionResponse *gravityAnim() const;
+
 private:
     irrklang::ISoundEngine* m_soundEngine;
     IrrlichtDevice* m_device = nullptr;
@@ -114,6 +117,8 @@ private:
     scene::ISceneNode* m_cubeNode;
     scene::ISceneNodeAnimatorCollisionResponse* resp;
     scene::IMeshSceneNode* m_whiteBoxNode;
+    LadderSceneNode* m_ladder;
+    scene::ISceneNodeAnimatorCollisionResponse* m_gravityAnim = nullptr;
 
     gui::IGUIImage* image;
     gui::IGUIStaticText* statusText;
@@ -175,6 +180,7 @@ private:
     int initLake();
     int initDecal();
     int initWhiteBox();
+    int initLadder();
     int initMenu();
     void setCollision(scene::IAnimatedMeshSceneNode* node,
                       Player* player);

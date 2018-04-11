@@ -46,6 +46,7 @@ int GamePark::initWorld()
     initTerrain();
     loadProgressbarChanged.Emit(60);
     initWhiteBox();
+    initLadder();
     loadProgressbarChanged.Emit(70);
 
     initMenu();
@@ -209,7 +210,7 @@ int GamePark::initWater()
 
     waternode->setMaterialType(video::EMT_REFLECTION_2_LAYER);
     waternode->setMaterialFlag(video::EMF_FOG_ENABLE, m_config.fog());
-    m_movableNode = (scene::IAnimatedMeshSceneNode*)waternode;
+//    m_movableNode = (scene::IAnimatedMeshSceneNode*)waternode;
     mesh->drop();
 
 
@@ -251,12 +252,12 @@ int GamePark::initTerrain()
         m_terrain->setTriangleSelector(selector);
 
         // создаем аниматор столкновений с селектором и прикрепляем его к игроку
-        scene::ISceneNodeAnimator* anim = smgr()->createCollisionResponseAnimator(
+        m_gravityAnim = smgr()->createCollisionResponseAnimator(
             selector, m_player->camera(), m_player->ellipsoid(),
             core::vector3df(0,-1.0,0),
             m_player->ellipsoidTranslation());
-        m_player->camera()->addAnimator(anim);
-        anim->drop();
+        m_player->camera()->addAnimator(m_gravityAnim);
+//        anim->drop();
 
 
 
@@ -283,6 +284,11 @@ int GamePark::initTerrain()
     return 0;
 }
 
+scene::ISceneNodeAnimatorCollisionResponse *GamePark::gravityAnim() const
+{
+    return m_gravityAnim;
+}
+
 int GamePark::initSkybox()
 {
     /*
@@ -296,13 +302,13 @@ int GamePark::initSkybox()
     // создание skybox и skydome
     driver()->setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, false);
 
-    skybox=smgr()->addSkyBoxSceneNode(texture("irrlicht2_up.jpg"),
-                                      texture("irrlicht2_dn.jpg"),
-                                      texture("irrlicht2_lf.jpg"),
-                                      texture("irrlicht2_rt.jpg"),
-                                      texture("irrlicht2_ft.jpg"),
-                                      texture("irrlicht2_bk.jpg"));
-    skydome=smgr()->addSkyDomeSceneNode(texture("skydome.jpg"),16,8,0.95f,2.0f);
+    skybox=smgr()->addSkyBoxSceneNode(texture("skybox/irrlicht2_up.jpg"),
+                                      texture("skybox/irrlicht2_dn.jpg"),
+                                      texture("skybox/irrlicht2_lf.jpg"),
+                                      texture("skybox/irrlicht2_rt.jpg"),
+                                      texture("skybox/irrlicht2_ft.jpg"),
+                                      texture("skybox/irrlicht2_bk.jpg"));
+    skydome=smgr()->addSkyDomeSceneNode(texture("skybox/skydome.jpg"),16,8,0.95f,2.0f);
     skybox->setVisible(false);
     skydome->setVisible(true);
 
@@ -693,6 +699,13 @@ int GamePark::initWhiteBox()
     return 0;
 }
 
+int GamePark::initLadder()
+{
+    m_ladder = new LadderSceneNode(this);
+    m_movableNode = (scene::IAnimatedMeshSceneNode*)m_ladder->node();
+//    m_ladder->setPosition();
+}
+
 int GamePark::initMenu()
 {
     scene::IMesh* mesh;
@@ -1020,7 +1033,14 @@ int GamePark::run()
         // END MY BLUR DRAW
 
         env()->drawAll();
+m_ladder->draw();
+
         driver()->endScene();
+
+
+
+
+
 
 
 

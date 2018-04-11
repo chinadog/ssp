@@ -223,6 +223,8 @@ void Player::setPlayerState(const PlayerState &state)
         curWeapon->reloadSound(false);
         curWeapon->drawSound(false);
         stopWalkSound();
+        anim->setMoveSpeed(0.01);
+        if(m_gamePark->gravityAnim()!=0)m_gamePark->gravityAnim()->setGravity(core::vector3df(0,-1,0));
         break;
     case PlayerState::Duck :
         currentWeapon()->shootSound(false);
@@ -297,6 +299,10 @@ void Player::setPlayerState(const PlayerState &state)
         curWeapon->shootSound(false);
         curWeapon->reloadSound(false);
         curWeapon->drawSound(true);
+        break;
+    case PlayerState::Climb :
+        anim->setMoveSpeed(0);
+        if(m_gamePark->gravityAnim()!=0)m_gamePark->gravityAnim()->setGravity(core::vector3df(0,0,0));
         break;
     default:
         break;
@@ -469,6 +475,16 @@ void Player::draw()
 {
     u32 now = m_device->getTimer()->getTime();
 
+    // delta time
+    if(m_prevTime == 0)
+    {
+        m_prevTime = now;
+    }
+    m_deltaTime = (f32)(now - m_prevTime) / 1000.f;
+    m_prevTime = now;
+    // end delta time
+
+
     setShootIntersection(ShootIntersection());
     if(fire()->isVisible() == true && m_startTimeFire + currentWeapon()->shootDelta() < now)
     {
@@ -494,6 +510,20 @@ void Player::draw()
             setPlayerState(m_fms.currentState());
         }
     }
+    if(m_keyW == true && currentPlayerState() == PlayerState::Climb)
+    {
+        core::vector3df pos = camera()->getPosition();
+        pos.Y += m_deltaTime*5;
+        setPosition(pos.X, pos.Y, pos.Z);
+    }
+    if(m_keyS == true && currentPlayerState() == PlayerState::Climb)
+    {
+        core::vector3df pos = camera()->getPosition();
+        pos.Y -= m_deltaTime*5;
+        setPosition(pos.X, pos.Y, pos.Z);
+    }
+
+//    Log::logVector(m_camera->getPosition());
 
     updateMap();
 }
@@ -577,6 +607,18 @@ ShootIntersection Player::calcShootIntersection()
 void Player::setShootIntersection(const ShootIntersection &section)
 {
     m_shootIntersection = section;
+}
+
+void Player::ladder()
+{
+    m_fms.setState(PlayerSignal::Climb);
+    setPlayerState(m_fms.currentState());
+}
+
+void Player::ladderOut()
+{
+    m_fms.setState(PlayerSignal::GetOff);
+    setPlayerState(m_fms.currentState());
 }
 
 void Player::setKeyPressed(EKEY_CODE key, bool pressed)
