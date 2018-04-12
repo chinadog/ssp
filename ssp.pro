@@ -34,8 +34,8 @@ SOURCES += \
 #    src/grass/TKGrassSceneNode.cpp \
 #    src/churchscenenode.cpp \
 #    src/hotelscenenode.cpp \
-#    src/Monster/AI.cpp \
-#    src/Monster/MonsterNode.cpp \
+    src/Monster/AI.cpp \
+    src/Monster/MonsterNode.cpp \
 #    src/MyBlur.cpp \
 #    src/CGrassSurfaceSceneNode.cpp \
 #    src/AircraftSceneNode.cpp \
@@ -82,8 +82,8 @@ HEADERS += \
 #    src/grass/TKGrassSceneNode_ShaderCB.h \
 #    src/churchscenenode.h \
 #    src/hotelscenenode.h \
-#    src/Monster/AI.h \
-#    src/Monster/MonsterNode.h \
+    src/Monster/AI.h \
+    src/Monster/MonsterNode.h \
 #    src/MyBlur.h \
 #    src/CGrassSurfaceSceneNode.h \
 #    src/AircraftSceneNode.h \

@@ -14,6 +14,7 @@
 #include "UI/MessageBox.h"
 #include "SceneNode/LadderSceneNode.h"
 #include "SceneNode/MotionPictureCredits.h"
+#include "Monster/MonsterNode.h"
 
 using namespace irr;
 
@@ -118,6 +119,7 @@ private:
     scene::ISceneNode* m_cubeNode;
     scene::ISceneNodeAnimatorCollisionResponse* resp;
     scene::IMeshSceneNode* m_whiteBoxNode;
+    scene::ITriangleSelector* m_whiteBoxSelector;
     LadderSceneNode* m_ladder;
     scene::ISceneNodeAnimatorCollisionResponse* m_gravityAnim = nullptr;
     MotionPictureCredits* m_credits = nullptr;
@@ -142,6 +144,8 @@ private:
     u32 m_boom = 0;
     scene::IBillboardSceneNode* m_boomNode;
     AtomicBoom m_atomicBoom;
+
+    std::list<MonsterNode*> m_aiNode;
 
     Signal<int> loadProgressbarChanged;
 

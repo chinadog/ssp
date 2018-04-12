@@ -50,6 +50,7 @@ int GamePark::initWorld()
     loadProgressbarChanged.Emit(60);
     initWhiteBox();
     initLadder();
+    initAI();
     loadProgressbarChanged.Emit(70);
 
     initMenu();
@@ -674,7 +675,36 @@ int GamePark::initSounds()
     return 0;
 }
 
+int GamePark::initAI()
+{
+    for(int i=0;i<5;i++)
+    {
+        int randomValue = 33 + (std::rand() % static_cast<int>((10000 - 2000 + 1)/60.0));
+        MonsterNode* node = new MonsterNode(device(), m_player);
+        core::vector3df pos(92+randomValue, 100.0, 459+i*randomValue/2);
+        node->setPosition( pos );
+        node->setTerrain(m_terrain);
+        m_aiNode.push_back( node );
+    }
+    updateMonsterCollision();
+    return 0;
+}
 
+void GamePark::updateMonsterCollision()
+{
+    for(uint i=0;i<m_aiNode.size();i++)
+    {
+        std::list<MonsterNode*>::iterator it = std::next(m_aiNode.begin(), i);
+        MonsterNode* monster = *it;
+        for(uint j=0;j<i;j++)
+        {
+            std::list<MonsterNode*>::iterator it2 = std::next(m_aiNode.begin(), j);
+            monster->addTriangleSelector(*it2);
+        }
+        monster->addTriangleSelector( m_whiteBoxSelector );
+        monster->updateCollisionAnimator();
+    }
+}
 
 int GamePark::initWhiteBox()
 {
@@ -696,6 +726,7 @@ int GamePark::initWhiteBox()
         node->getMesh()->setHardwareMappingHint(irr::scene::EHM_STATIC);
 
     }
+    m_whiteBoxSelector = smgr()->createOctreeTriangleSelector(mesh, node);
     setCollision(node,m_player);
     m_whiteBoxNode = node;
     mesh->drop();
@@ -1040,6 +1071,29 @@ int GamePark::run()
             {
                 bill->setPosition(shootIntersection.m_intersection);
             }
+            // Monster loop
+            auto i = std::begin(m_aiNode);
+            while(i != std::end(m_aiNode))
+            {
+                MonsterNode* monster = *i;
+                monster->draw();
+                if(monster->node() == shootIntersection.m_node)
+                {
+                    monster->damage(0.2, shootIntersection.m_intersection);
+                }
+                if(monster->life() == false)
+                {
+                    i = m_aiNode.erase(i);
+                    for(auto&& tmpMonster : m_aiNode)
+                    {
+                        tmpMonster->removeTriangleSelector(monster);
+                        tmpMonster->updateCollisionAnimator();
+                    }
+                    delete monster;
+                    i--;
+                }
+                i++;
+            }
 
             if(m_checkFpsCounter > 25)
             {
@@ -1097,6 +1151,8 @@ int GamePark::load()
     statusText->setVisible(false);
 
     setSceneMode(SceneMode::MainMenu);
+
+    return 0;
 }
 
 
