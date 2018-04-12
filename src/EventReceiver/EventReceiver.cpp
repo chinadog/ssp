@@ -143,10 +143,9 @@ core::stringc str;
             moveNode->setPosition(core::vector3df(moveNode->getPosition().X,
                                                   moveNode->getPosition().Y+moveDist/3,
                                                   moveNode->getPosition().Z));
-            str = core::stringc(moveNode->getPosition().X) + " " +
-                  core::stringc(moveNode->getPosition().Y) + " " +
-                  core::stringc(moveNode->getPosition().Z) ;
-            Log::log(str.c_str());
+            std::cout << moveNode->getPosition().X << " " <<
+                         moveNode->getPosition().Y << " " <<
+                         moveNode->getPosition().Z << std::endl << std::flush;
             return true;
         case irr::KEY_KEY_U:
             moveNode->setPosition(core::vector3df(moveNode->getPosition().X,

@@ -76,6 +76,9 @@ public:
     void ladder();
     void ladderOut();
 
+    inline bool keyW() const {return m_keyW;}
+    inline bool keyS() const {return m_keyS;}
+
 private:
     irr::scene::ICameraSceneNode* m_camera;
     GamePark* m_gamePark;

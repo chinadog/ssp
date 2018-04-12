@@ -23,7 +23,6 @@ InOutFader::InOutFader(IrrlichtDevice* device, gui::IGUIEnvironment* environment
 //! draws the element and its children
 void InOutFader::draw()
 {
-
     if (!IsVisible || !Action)
         return;
 
@@ -49,7 +48,6 @@ void InOutFader::draw()
         else
         {
             d = (EndTime - now) / (f32)(EndTime - StartTime);
-//            std::cout << d << std::endl;
         }
 
         video::SColor newCol = FullColor.getInterpolated(TransColor, d);

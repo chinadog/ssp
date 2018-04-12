@@ -145,6 +145,8 @@ private:
 
     Signal<int> loadProgressbarChanged;
 
+    InOutFader* m_fader = nullptr;
+
 
     void updateMonsterCollision();
 
@@ -184,6 +186,7 @@ private:
     int initWhiteBox();
     int initLadder();
     int initMenu();
+    int initFader();
     void setCollision(scene::IAnimatedMeshSceneNode* node,
                       Player* player);
     void setCollision(scene::IMeshSceneNode* node,

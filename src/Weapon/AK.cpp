@@ -162,8 +162,6 @@ int AK::shootDelta() const
 
 void AK::drawFinished()
 {
-    std::cout << "Draw finished" << std::endl;
-
     m_player->fms().setState(PlayerSignal::StopDraw);
     m_player->setPlayerState(m_player->fms().currentState());
 
@@ -172,8 +170,6 @@ void AK::drawFinished()
 
 void AK::reloadFinished()
 {
-    std::cout << "Reload finished" << std::endl;
-
     m_player->fms().setState(PlayerSignal::StopDraw);
     m_player->setPlayerState(m_player->fms().currentState());
 

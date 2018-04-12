@@ -302,7 +302,10 @@ void Player::setPlayerState(const PlayerState &state)
         break;
     case PlayerState::Climb :
         anim->setMoveSpeed(0);
-        if(m_gamePark->gravityAnim()!=0)m_gamePark->gravityAnim()->setGravity(core::vector3df(0,0,0));
+        if(m_gamePark->gravityAnim()!=0)
+        {
+            m_gamePark->gravityAnim()->setGravity(core::vector3df(0,0,0));
+        }
         break;
     default:
         break;
@@ -500,9 +503,7 @@ void Player::draw()
             currentWeapon()->removeBullets(1);
             updatePlayerInfo();
             gunKick();
-            setShootIntersection(calcShootIntersection());
-            std::cout << Log::curTimeC() << " Shoot" << std::endl;
-            std::cout << currentWeapon()->bulletCount() << "/" << currentWeapon()->bulletCountInClip() << std::endl;
+            setShootIntersection(calcShootIntersection()); // Shoot
         }
         if(currentWeapon()->bulletCount()==0)
         {
@@ -520,6 +521,14 @@ void Player::draw()
     {
         core::vector3df pos = camera()->getPosition();
         pos.Y -= m_deltaTime*15;
+        setPosition(pos.X, pos.Y, pos.Z);
+    }
+
+    // Функция подпрыгивания лдя преодоления неровнестей террейна
+    if(m_keyW == true && (currentPlayerState() == PlayerState::Walk || currentPlayerState() == PlayerState::Run))
+    {
+        core::vector3df pos = camera()->getPosition();
+        pos.Y += m_deltaTime*2;
         setPosition(pos.X, pos.Y, pos.Z);
     }
 
@@ -667,7 +676,5 @@ void Player::setKeyPressed(EKEY_CODE key, bool pressed)
     }
 
     setPlayerState(m_fms.currentState());
-    //std::cout << "state = " << (int)m_fms.currentState() << std::endl;
-
 }
 

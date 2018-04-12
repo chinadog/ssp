@@ -40,35 +40,36 @@ void LadderSceneNode::draw()
         scene::ISceneNode* node;
         bool col = false;
 
-        col = cmgr->getCollisionPoint(playerRay,m_boxSelector, point, triangle, node);
-
-        if(col == true)
-        {
-            if(m_intersects == false)
-            {
-                m_intersects = true;
-//                std::cout << Log::curTimeC() << " IN" << std::endl;
-                enter.Emit();
-            }
-        }
-
         core::vector3d<f32>* edges = new core::vector3d<f32>[8]; //Bounding BOX edges
         m_node->getTransformedBoundingBox().getEdges( edges );
 
         int dif = m_gamePark->player()->ellipsoid().X*2;
 
+        col = cmgr->getCollisionPoint(playerRay,m_boxSelector, point, triangle, node);
+        if(col == true &&
+           ((m_gamePark->player()->keyW() == true && startPos.Y <= (edges[0].Y+dif)) ||
+            (startPos.Y >= (edges[0].Y+dif))))
+        {
+            if(m_intersects == false)
+            {
+                m_intersects = true;
+                std::cout << Log::curTimeC() << " IN" << std::endl;
+                enter.Emit();
+            }
+        }
+
         if((startPos.Y <= (edges[0].Y+dif) || startPos.Y >= (edges[1].Y+dif)) && m_climb == true)
         {
-//            std::cout << Log::curTimeC() << " OUT" << std::endl;
+            std::cout << Log::curTimeC() << " OUT" << std::endl;
             leave.Emit();
             m_climb = false;
             m_intersects = false;
         }
-        else if(m_climb == false)
+        else if(m_climb == false && m_intersects == true &&
+                (startPos.Y >= (edges[0].Y+dif) && startPos.Y <= (edges[1].Y+dif)))
         {
             m_climb = true;
         }
-//        std::cout << m_gamePark->player()->camera()->getPosition().Y << std::endl;
     }
 
     video::SMaterial m;

@@ -34,6 +34,7 @@ GamePark::~GamePark()
     delete receiver;
     delete m_player;
     delete m_ladder;
+    if(m_credits){delete m_credits;}
 }
 
 void GamePark::exit()
@@ -43,6 +44,7 @@ void GamePark::exit()
 
 int GamePark::initWorld()
 {
+    initFader();
     loadProgressbarChanged.Emit(50);
     initTerrain();
     loadProgressbarChanged.Emit(60);
@@ -707,6 +709,7 @@ int GamePark::initLadder()
     m_ladder->setScale(core::vector3df(2,13,0.5));
     m_ladder->setPosition(core::vector3df(861, 23.65, 216));
     m_ladder->setRotation(core::vector3df(0,41,0));
+    return 0;
 }
 
 int GamePark::initMenu()
@@ -757,6 +760,12 @@ int GamePark::initMenu()
     m_menuNewGameNode = node;
     mesh->drop();
 
+    return 0;
+}
+
+int GamePark::initFader()
+{
+    m_fader = addInOutFader();
     return 0;
 }
 
@@ -886,11 +895,10 @@ void GamePark::finishGame()
         return;
     }
     m_finish = true;
-    InOutFader* fader = addInOutFader();
-    fader->setColor(  video::SColor ( 255,0,0,0 ), video::SColor ( 0, 0, 0, 0 ));
-    fader->fadeOut(5000);
-
-    fader->finished.connect([this,fader](){fader->setVisible(false);setSceneMode(SceneMode::EndGame);});
+    m_fader->setColor(  video::SColor ( 255,0,0,0 ), video::SColor ( 0, 0, 0, 0 ));
+    m_fader->fadeOut(5000);
+    m_fader->setVisible(true);
+    m_fader->finished.connect([this](){m_fader->setVisible(false);setSceneMode(SceneMode::EndGame);});
 }
 
 void GamePark::setSceneMode(const SceneMode &mode)
@@ -898,16 +906,16 @@ void GamePark::setSceneMode(const SceneMode &mode)
     m_sceneMode = mode;
     if(m_sceneMode == SceneMode::MainMenu)
     {
-        if(m_credits)
-        {
-            delete m_credits;
-        }
-
         smgr()->setActiveCamera( m_mainMenuCamera );
         m_device->getCursorControl()->setVisible(true);
         m_mainMenuNode->setVisible(true);
         m_menuNewGameNode->setVisible(false);
         menuFlyCamera(m_sceneMode);
+
+        if(m_credits)
+        {
+            delete m_credits;
+        }
 
         return;
     }
@@ -934,21 +942,16 @@ void GamePark::setSceneMode(const SceneMode &mode)
         m_device->getCursorControl()->setVisible(false);
         m_mainMenuNode->setVisible(false);
         m_menuNewGameNode->setVisible(false);
-        setSceneMode(SceneMode::Game);
-//        m_atomicBoom.start();
+        m_atomicBoom.start();
+        m_atomicBoom.finished.connect([this](){setSceneMode(SceneMode::Game);});
 
-
-        InOutFader* fader = addInOutFader();
-        fader->setColor(video::SColor ( 255,255,255,255 ), video::SColor ( 0, 230, 230, 230 ));
-        fader->fadeIn(5000);
-        fader->finished.connect([this](){MessageBox::showStartMessage(device());});
-
-
+        m_fader->setColor(video::SColor ( 255,255,255,255 ), video::SColor ( 0, 230, 230, 230 ));
+        m_fader->fadeIn(5000);
+        m_fader->finished.connect([this](){m_fader->setVisible(false);MessageBox::showStartMessage(device());});
         return;
     }
     if(m_sceneMode == SceneMode::EndGame)
     {
-        std::cout << "END GAME" << std::endl;
         m_credits = new MotionPictureCredits(this);
         return;
     }
@@ -991,10 +994,6 @@ void GamePark::setSceneMode(const SceneMode &mode)
 
 int GamePark::run()
 {
-
-
-
-
     scene::IBillboardSceneNode * bill;
     // Добавляем билборд, который будет подсвечивать место
     // пересечения луча и объекта в который он уперся
@@ -1009,108 +1008,67 @@ int GamePark::run()
 //    scene::ISceneCollisionManager*  collMan;
 
 
-
     m_atomicBoom.setParent( this );
     setSceneMode(SceneMode::Undefined);
 
+    // vars
+    core::stringw str;
+    //
+
     while(m_device->run())
     {
-        if(sceneMode() == SceneMode::Undefined)
-        {
+        if(usl_exit)break;
+
+        switch (sceneMode()) {
+        case SceneMode::Undefined:
             setSceneMode(SceneMode::Loading);
+            break;
+        case SceneMode::EndGame:
+            m_credits->draw();
+            break;
+        default:
+            driver()->beginScene(true, true, 0 );
+            m_player->draw();
+            smgr()->drawAll();
+            env()->drawAll();
+            m_ladder->draw();
+            driver()->endScene();
+
+            ShootIntersection shootIntersection = m_player->shootIntersection();
+
+            if(shootIntersection.isValid())
+            {
+                bill->setPosition(shootIntersection.m_intersection);
+            }
+
+            if(m_checkFpsCounter > 25)
+            {
+                m_checkFpsCounter = 0;
+                str = L"Driver [";
+                str += driver()->getName();
+                str += "] FPS:";
+                str += driver()->getFPS();
+                str += " \nTriangle: ";
+                str += driver()->getPrimitiveCountDrawn();
+                str += " | Calls:";
+                str += smgr()->getParameters()->getAttributeAsInt("calls");
+
+                updateEnvironment(str);
+            }
+            m_checkFpsCounter++;
+            break;
         }
 
         if( m_atomicBoom.isBoom() )
         {
             m_atomicBoom.updateFrame();
         }
-        if(sceneMode() == SceneMode::EndGame)
-        {
-            m_credits->draw();
-            if(usl_exit)break;
-        }
-        else
-        {
-
-        // Work out a frame delta time.
-//        const u32 now = m_device->getTimer()->getTime();
-//        then = now;
-
-        // RENDER -------------------------------------------------------------------------
-//        const u32 timeBeforeRender = m_device->getTimer()->getRealTime();
-        driver()->beginScene(true, true, 0 );
-        m_player->draw();
-        smgr()->drawAll();
-        // MY BLUR DRAW
-//        blur->draw(driver(), rtt0,m_config.params().WindowSize.Width,m_config.params().WindowSize.Height);
-        // END MY BLUR DRAW
-
-        env()->drawAll();
-        m_ladder->draw();
-
-        driver()->endScene();
-
-
-
-
-
-
-
-
-
-//        std::cout << "Time to render: " << m_device->getTimer()->getRealTime() - timeBeforeRender << " ms" << std::endl;
-        // LOGIC -------------------------------------------------------------------------
-
-//        const u32 timeBeforeLogic = m_device->getTimer()->getRealTime();
-
-//        m_soundEngine->setListenerPosition(m_player->camera()->getPosition(),
-//                                           m_player->camera()->getTarget());
-
-
-
-
-        ShootIntersection shootIntersection = m_player->shootIntersection();
-
-        if(shootIntersection.isValid())
-        {
-            bill->setPosition(shootIntersection.m_intersection);
-        }
-
-        if(usl_exit)break;
-
-
-        // display frames per second in window title
-        int fps = driver()->getFPS();
-        int count = driver()->getPrimitiveCountDrawn();
-//        if (lastFPS != fps)
-        if(m_checkFpsCounter > 12)
-        {
-            m_checkFpsCounter = 0;
-            core::stringw str = L"Driver [";
-            str += driver()->getName();
-            str += "] FPS:";
-            str += fps;
-            // Also print terrain height of current camera position
-            // We can use camera position because terrain is located at coordinate origin
-            str += " Triangle: ";
-            str += count;
-            str += " | Calls:";
-            str += smgr()->getParameters()->getAttributeAsInt("calls");
-
-            updateEnvironment(str);
-//            forestLOD(m_player->camera()->getPosition());
-        }
-        m_checkFpsCounter++;
-//        std::cout << "Time to Logic: " << m_device->getTimer()->getRealTime() - timeBeforeLogic << " ms" << std::endl;
-}
     }
-
     bill->drop();
 
-m_device->closeDevice();
-//    m_device->drop();
-
-return 0;
+    m_device->closeDevice();
+    //    m_device->drop();
+    return 0;
 }
 
 int GamePark::load()

@@ -29,7 +29,6 @@ void AtomicBoom::start()
      m_boomNode = m_device->getSceneManager()->addBillboardSceneNode(0, core::dimension2d<f32>(150, 150));
      m_boomNode->setPosition(core::vector3df(480.5, 51, 948));
      m_boomNode->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL);
-
 }
 
 void AtomicBoom::updateFrame()
@@ -69,7 +68,7 @@ void AtomicBoom::setFrame(u32 frame)
     if(frame >= 61)
     {
         stop();
-        m_game->setSceneMode(SceneMode::Game);
+        finished.Emit();
     }
 }
 
