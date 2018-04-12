@@ -463,9 +463,9 @@ void Player::updateMap()
          core::vector2df(scaleCoef, scaleCoef)
                 );
 
-    if(std::fabs(m_camera->getPosition().X - 843) < 10 &&
-       std::fabs(m_camera->getPosition().Y - 16) < 10 &&
-       std::fabs(m_camera->getPosition().Z - 181) < 10 )
+    if(std::fabs(m_camera->getPosition().X - 866) < 10 &&
+       std::fabs(m_camera->getPosition().Y - 39) < 3 &&
+       std::fabs(m_camera->getPosition().Z - 188) < 10 )
     {
         shipPointPassed.Emit();
     }

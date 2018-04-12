@@ -887,9 +887,10 @@ void GamePark::finishGame()
     }
     m_finish = true;
     InOutFader* fader = addInOutFader();
-    fader->setColor( video::SColor ( 0, 0, 0, 0 ), video::SColor ( 255,0,0,0 ));
-    fader->fadeIn(5000);
-    fader->finished.connect([this](){setSceneMode(SceneMode::EndGame);});
+    fader->setColor(  video::SColor ( 255,0,0,0 ), video::SColor ( 0, 0, 0, 0 ));
+    fader->fadeOut(5000);
+
+    fader->finished.connect([this,fader](){fader->setVisible(false);setSceneMode(SceneMode::EndGame);});
 }
 
 void GamePark::setSceneMode(const SceneMode &mode)
@@ -897,11 +898,17 @@ void GamePark::setSceneMode(const SceneMode &mode)
     m_sceneMode = mode;
     if(m_sceneMode == SceneMode::MainMenu)
     {
+        if(m_credits)
+        {
+            delete m_credits;
+        }
+
         smgr()->setActiveCamera( m_mainMenuCamera );
         m_device->getCursorControl()->setVisible(true);
         m_mainMenuNode->setVisible(true);
         m_menuNewGameNode->setVisible(false);
         menuFlyCamera(m_sceneMode);
+
         return;
     }
     if(m_sceneMode == SceneMode::Game)
@@ -927,7 +934,7 @@ void GamePark::setSceneMode(const SceneMode &mode)
         m_device->getCursorControl()->setVisible(false);
         m_mainMenuNode->setVisible(false);
         m_menuNewGameNode->setVisible(false);
-//        setSceneMode(SceneMode::Game);
+        setSceneMode(SceneMode::Game);
 //        m_atomicBoom.start();
 
 
@@ -942,8 +949,7 @@ void GamePark::setSceneMode(const SceneMode &mode)
     if(m_sceneMode == SceneMode::EndGame)
     {
         std::cout << "END GAME" << std::endl;
-//        MotionPictureCredits* credits = addMotionPictureCredits();
-//        credits.setText();
+        m_credits = new MotionPictureCredits(this);
         return;
     }
     if(m_sceneMode == SceneMode::Loading)
@@ -1018,9 +1024,13 @@ int GamePark::run()
         {
             m_atomicBoom.updateFrame();
         }
-
-
-
+        if(sceneMode() == SceneMode::EndGame)
+        {
+            m_credits->draw();
+            if(usl_exit)break;
+        }
+        else
+        {
 
         // Work out a frame delta time.
 //        const u32 now = m_device->getTimer()->getTime();
@@ -1036,7 +1046,7 @@ int GamePark::run()
         // END MY BLUR DRAW
 
         env()->drawAll();
-m_ladder->draw();
+        m_ladder->draw();
 
         driver()->endScene();
 
@@ -1092,7 +1102,7 @@ m_ladder->draw();
         }
         m_checkFpsCounter++;
 //        std::cout << "Time to Logic: " << m_device->getTimer()->getRealTime() - timeBeforeLogic << " ms" << std::endl;
-
+}
     }
 
     bill->drop();
@@ -1128,7 +1138,7 @@ int GamePark::load()
     m_fpsText->setVisible(true);
     statusText->setVisible(false);
 
-    setSceneMode(SceneMode::History);
+    setSceneMode(SceneMode::MainMenu);
 }
 
 

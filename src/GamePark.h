@@ -13,6 +13,7 @@
 #include "UI/InOutFader.h"
 #include "UI/MessageBox.h"
 #include "SceneNode/LadderSceneNode.h"
+#include "SceneNode/MotionPictureCredits.h"
 
 using namespace irr;
 
@@ -119,6 +120,7 @@ private:
     scene::IMeshSceneNode* m_whiteBoxNode;
     LadderSceneNode* m_ladder;
     scene::ISceneNodeAnimatorCollisionResponse* m_gravityAnim = nullptr;
+    MotionPictureCredits* m_credits = nullptr;
 
     gui::IGUIImage* image;
     gui::IGUIStaticText* statusText;
