@@ -204,7 +204,8 @@ void AK::initNode()
         node->setMaterialFlag(video::EMF_NORMALIZE_NORMALS, true);
         node->setPosition(core::vector3df(0.1,-0.6133333,0.4533333));
         node->setRotation(core::vector3df(0,180,0));
-        node->setMaterialTexture( 0, m_device->getVideoDriver()->getTexture("../../media/textures/plitka.tga") );
+        node->setMaterialTexture( 0, m_device->getVideoDriver()->getTexture("../../media/textures/weapon/ak/ak12.png") );
+//        node->setMaterialTexture( 0, m_device->getVideoDriver()->getTexture("../../media/textures/plitka.tga") );
     }
     m_node = node;
 }

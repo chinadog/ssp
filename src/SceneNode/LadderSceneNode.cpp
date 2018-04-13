@@ -70,6 +70,7 @@ void LadderSceneNode::draw()
         {
             m_climb = true;
         }
+        delete edges;
     }
 
     video::SMaterial m;

@@ -954,7 +954,10 @@ void GamePark::finishGame()
     m_fader->setColor(  video::SColor ( 255,0,0,0 ), video::SColor ( 0, 0, 0, 0 ));
     m_fader->fadeOut(5000);
     m_fader->setVisible(true);
-    m_fader->finished.connect([this](){m_fader->setVisible(false);setSceneMode(SceneMode::EndGame);});
+    m_fader->finished.connect([this](){
+        m_fader->setVisible(false);
+        setSceneMode(SceneMode::EndGame);
+    });
 }
 
 void GamePark::setSceneMode(const SceneMode &mode)
@@ -1003,7 +1006,11 @@ void GamePark::setSceneMode(const SceneMode &mode)
 
         m_fader->setColor(video::SColor ( 255,255,255,255 ), video::SColor ( 0, 230, 230, 230 ));
         m_fader->fadeIn(5000);
-        m_fader->finished.connect([this](){m_fader->setVisible(false);MessageBox::showStartMessage(device());});
+        m_fader->setVisible(true);
+        m_fader->finished.connect([this](){
+            m_fader->setVisible(false);
+            MessageBox::showStartMessage(device());
+        });
         return;
     }
     if(m_sceneMode == SceneMode::EndGame)

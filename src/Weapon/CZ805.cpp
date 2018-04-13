@@ -212,28 +212,33 @@ void CZ805::initNode()
         node->setRotation(core::vector3df(0,180,0));
         node->setScale(core::vector3df(0.1,0.1,0.1));
 
-//        node->getMaterial(0).setTexture( 0, m_device->getVideoDriver()->getTexture("../../media/blend/cz805/cz805/ANPEQ-2.tga") );
-//        node->getMaterial(1).setTexture( 0, m_device->getVideoDriver()->getTexture("../../media/blend/cz805/cz805/CZ805.tga") );
-//        node->getMaterial(2).setTexture( 0, m_device->getVideoDriver()->getTexture("../../media/blend/cz805/cz805/CZ805.tga") );
-//        node->getMaterial(3).setTexture( 0, m_device->getVideoDriver()->getTexture("../../media/blend/cz805/cz805/CZ805.tga") );
-//        node->getMaterial(4).setTexture( 0, m_device->getVideoDriver()->getTexture("../../media/blend/cz805/cz805/f7.tga") );
-//        node->getMaterial(5).setTexture( 0, m_device->getVideoDriver()->getTexture("../../media/blend/cz805/cz805/f7.tga") );
-//        node->getMaterial(6).setTexture( 0, m_device->getVideoDriver()->getTexture("../../media/blend/cz805/cz805/CZ805.tga") );
-//        node->getMaterial(7).setTexture( 0, m_device->getVideoDriver()->getTexture("../../media/blend/cz805/hands/v_hands.tga") );
-//        node->getMaterial(8).setTexture( 0, m_device->getVideoDriver()->getTexture("../../media/blend/cz805/hands/sleeve_diffuse_ts.tga") );
-//        node->getMaterial(9).setTexture( 0, m_device->getVideoDriver()->getTexture("../../media/blend/cz805/cz805/CZ805.tga") );
-//        node->getMaterial(10).setTexture( 0,m_device->getVideoDriver()->getTexture("../../media/blend/cz805/cz805/lense.tga") );
-//        node->getMaterial(11).setTexture( 0,m_device->getVideoDriver()->getTexture("../../media/blend/cz805/cz805/CZ805.tga") );
-//        node->getMaterial(12).setTexture( 0,m_device->getVideoDriver()->getTexture("../../media/blend/cz805/cz805/Magint.tga") );
-//        node->getMaterial(13).setTexture( 0,m_device->getVideoDriver()->getTexture("../../media/blend/cz805/cz805/map.tga") );
-//        node->getMaterial(14).setTexture( 0,m_device->getVideoDriver()->getTexture("../../media/blend/cz805/cz805/f7.tga") );
-//        node->getMaterial(15).setTexture( 0,m_device->getVideoDriver()->getTexture("../../media/blend/cz805/cz805/CZ805.tga") );
-//        node->getMaterial(16).setTexture( 0,m_device->getVideoDriver()->getTexture("../../media/blend/cz805/cz805/CZ805.tga") );
-//        node->getMaterial(17).setTexture( 0,m_device->getVideoDriver()->getTexture("../../media/blend/cz805/cz805/CZ805.tga") );
-//        node->getMaterial(18).setTexture( 0,m_device->getVideoDriver()->getTexture("../../media/blend/cz805/cz805/CZ805.tga") );
-//        node->getMaterial(19).setTexture( 0,m_device->getVideoDriver()->getTexture("../../media/blend/cz805/cz805/CZ805.tga") );
-//        node->getMaterial(20).setTexture( 0,m_device->getVideoDriver()->getTexture("../../media/blend/cz805/cz805/CZ805.tga") );
-        node->setMaterialTexture(0,m_device->getVideoDriver()->getTexture("../../media/textures/plitka.tga"));
+        node->getMaterial(0).setTexture( 0, m_device->getVideoDriver()->getTexture("../../media/textures/weapon/cz805_old/ANPEQ-2.tga") );
+        node->getMaterial(1).setTexture( 0, m_device->getVideoDriver()->getTexture("../../media/textures/weapon/cz805_old/CZ805.tga") );
+        node->getMaterial(2).setTexture( 0, m_device->getVideoDriver()->getTexture("../../media/textures/weapon/cz805_old/CZ805.tga") );
+        node->getMaterial(3).setTexture( 0, m_device->getVideoDriver()->getTexture("../../media/textures/weapon/cz805_old/CZ805.tga") );
+        node->getMaterial(4).setTexture( 0, m_device->getVideoDriver()->getTexture("../../media/textures/weapon/cz805_old/f7.tga") );
+        node->getMaterial(5).setTexture( 0, m_device->getVideoDriver()->getTexture("../../media/textures/weapon/cz805_old/f7.tga") );
+        node->getMaterial(6).setTexture( 0, m_device->getVideoDriver()->getTexture("../../media/textures/weapon/cz805_old/CZ805.tga") );
+        node->getMaterial(7).setTexture( 0, m_device->getVideoDriver()->getTexture("../../media/textures/weapon/hands/v_hands_dark.tga") );
+        node->getMaterial(8).setTexture( 0, m_device->getVideoDriver()->getTexture("../../media/textures/weapon/hands/sleeve_diffuse_ts.tga") );
+        node->getMaterial(9).setTexture( 0, m_device->getVideoDriver()->getTexture("../../media/textures/weapon/cz805_old/CZ805.tga") );
+        node->getMaterial(10).setTexture( 0,m_device->getVideoDriver()->getTexture("../../media/textures/weapon/cz805_old/lense.tga") );
+        node->getMaterial(11).setTexture( 0,m_device->getVideoDriver()->getTexture("../../media/textures/weapon/cz805_old/CZ805.tga") );
+        node->getMaterial(12).setTexture( 0,m_device->getVideoDriver()->getTexture("../../media/textures/weapon/cz805_old/Magint.tga") );
+        node->getMaterial(13).setTexture( 0,m_device->getVideoDriver()->getTexture("../../media/textures/weapon/cz805_old/mag.tga") );
+        node->getMaterial(14).setTexture( 0,m_device->getVideoDriver()->getTexture("../../media/textures/weapon/cz805_old/CZ805.tga") );
+        node->getMaterial(15).setTexture( 0,m_device->getVideoDriver()->getTexture("../../media/textures/weapon/cz805_old/CZ805.tga") );
+        node->getMaterial(16).setTexture( 0,m_device->getVideoDriver()->getTexture("../../media/textures/weapon/cz805_old/CZ805.tga") );
+        node->getMaterial(17).setTexture( 0,m_device->getVideoDriver()->getTexture("../../media/textures/weapon/cz805_old/CZ805.tga") );
+        node->getMaterial(18).setTexture( 0,m_device->getVideoDriver()->getTexture("../../media/textures/weapon/cz805_old/CZ805.tga") );
+        node->getMaterial(19).setTexture( 0,m_device->getVideoDriver()->getTexture("../../media/textures/weapon/cz805_old/CZ805.tga") );
+        node->getMaterial(20).setTexture( 0,m_device->getVideoDriver()->getTexture("../../media/textures/weapon/cz805_old/CZ805.tga") );
+
+        for(uint i=0;i<node->getMaterialCount();i++)
+        {
+            node->getMaterial(i).TextureLayer[0].AnisotropicFilter = 16;
+        }
+//        node->setMaterialTexture(0,m_device->getVideoDriver()->getTexture("../../media/textures/plitka.tga"));
 
     }
     m_node = node;

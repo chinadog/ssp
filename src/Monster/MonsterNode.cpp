@@ -43,6 +43,7 @@ int MonsterNode::init()
         selector->drop();
     }
     m_node->setFrameLoop(0,240);
+    m_node->setAnimationSpeed(25+m_device->getRandomizer()->rand() % 10);
     return 0;
 }
 
@@ -60,6 +61,7 @@ void MonsterNode::kill()
 {
     m_node->setLoopMode(false);
     m_node->setFrameLoop(570, 648);
+    m_node->setAnimationSpeed(25);
     m_node->setAnimationEndCallback(new DieEndCallBack(this));
     m_movable = false;
     dustEffect( m_node->getAbsolutePosition() );

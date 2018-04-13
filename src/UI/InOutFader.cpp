@@ -31,6 +31,7 @@ void InOutFader::draw()
     {
         Action = EFA_NOTHING;
         finished.Emit();
+        finished.disconnect_all();
         return;
     }
 
@@ -44,6 +45,7 @@ void InOutFader::draw()
         {
             d = 0.0f;
             finished.Emit();
+            finished.disconnect_all();
         }
         else
         {
