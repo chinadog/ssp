@@ -499,7 +499,10 @@ void Player::draw()
         {
             m_startTimeFire = now;
             m_nextTimeToFire = now + currentWeapon()->shootBreakDelta();
-            fire()->setVisible(true);
+            if(currentWeapon()->type() != Weapon::Type::Knife)
+            {
+                fire()->setVisible(true);
+            }
             currentWeapon()->removeBullets(1);
             updatePlayerInfo();
             gunKick();
@@ -592,7 +595,7 @@ ShootIntersection Player::calcShootIntersection()
 
     core::line3d<f32> ray;
     ray.start = camera()->getPosition();
-    ray.end = ray.start + (camera()->getTarget() - ray.start).normalize() * 100000.0f;
+    ray.end = ray.start + (camera()->getTarget() - ray.start).normalize() * currentWeapon()->fireRate();
 
     // переменная под хранение точки пересещения
     core::vector3df intersection;

@@ -22,7 +22,8 @@ public:
     {
         Undefined,
         AK,
-        CZ805
+        CZ805,
+        Knife
     };
 
     Weapon(GamePark* gamePark = 0);
@@ -40,6 +41,7 @@ public:
     virtual int bulletCount() const {return m_bulletCount;}
     virtual int bulletCountInClip() const {return m_bulletCountInClip;}
     virtual int bulletMaxCountInClip() const {return 0;}
+    f32 fireRate() const {return m_fireRate;}
 
     virtual void shootSound(bool /*play*/);
     virtual void reloadSound(bool /*play*/);
@@ -56,6 +58,7 @@ protected:
     Player* m_player = nullptr;
     int m_bulletCount = 0;
     int m_bulletCountInClip = 0;
+    f32 m_fireRate = 100000.0; // Дальность стрельбы
 
     ISound* m_shootSound = nullptr;
     ISound* m_reloadSound = nullptr;

@@ -58,7 +58,8 @@ SOURCES += \
     src/main.cpp \
     src/GamePark.cpp \
     src/SceneNode/LadderSceneNode.cpp \
-    src/SceneNode/MotionPictureCredits.cpp
+    src/SceneNode/MotionPictureCredits.cpp \
+    src/Weapon/Knife.cpp
 
 HEADERS += \
     src/EventReceiver/EventReceiver.h \
@@ -105,7 +106,8 @@ HEADERS += \
     src/SoundEngine/SoundEngine.h \
     src/GamePark.h \
     src/SceneNode/LadderSceneNode.h \
-    src/SceneNode/MotionPictureCredits.h
+    src/SceneNode/MotionPictureCredits.h \
+    src/Weapon/Knife.h
 
 LIBS += -L../../irrlicht-1.8.4/lib/Linux/ -lIrrlicht -lGL -lGLU -lXxf86vm -lXext -lX11
 LIBS += -L../../irrKlang-64bit-1.5.0/bin/linux-gcc-64/ -lIrrKlang

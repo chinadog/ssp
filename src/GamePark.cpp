@@ -10,6 +10,7 @@
 #include <iostream>
 #include <unistd.h>
 #include "SoundEngine/SoundEngine.h"
+#include "Weapon/Knife.h"
 
 #ifdef _MSC_VER
 #pragma comment(lib, "Irrlicht.lib")
@@ -51,6 +52,7 @@ int GamePark::initWorld()
     initWhiteBox();
     initLadder();
     initAI();
+    initTestObj();
     loadProgressbarChanged.Emit(70);
 
     initMenu();
@@ -130,6 +132,7 @@ void GamePark::initPlayer()
     m_player->addWeapon(new AK(this));
     loadProgressbarChanged.Emit(30);
     m_player->addWeapon(new CZ805(this));
+    m_player->addWeapon(new Knife(this));
     loadProgressbarChanged.Emit(40);
     m_player->setWeapon(0);
     m_player->weapon(1)->addBullets(50);
@@ -357,6 +360,28 @@ int GamePark::initReceiver()
     receiver = new MyEventReceiver(this);
     m_device->setEventReceiver(receiver);
     return 0;
+}
+
+int GamePark::initTestObj()
+{
+//    scene::IAnimatedMeshSceneNode* node;
+//    scene::IAnimatedMesh* mesh;
+//    mesh = m_device->getSceneManager()->getMesh("../../media/models/knife.b3d");
+//    if (!mesh)
+//    {
+//        m_device->drop();
+//    }
+//    node = m_device->getSceneManager()->addAnimatedMeshSceneNode(mesh,m_player->camera() );
+//    if (node)
+//    {
+//        node->setMaterialFlag(irr::video::EMF_LIGHTING, true);
+//        node->setMaterialFlag(video::EMF_NORMALIZE_NORMALS, true);
+//        node->setPosition(core::vector3df(0.1, -0.083, -0.1));
+//        node->setRotation(core::vector3df(0,180,0));
+//        node->setScale(core::vector3df(0.1,0.1,0.1));
+//        node->setMaterialTexture(0,m_device->getVideoDriver()->getTexture("../../media/textures/plitka.tga"));
+//    }
+//    m_node = node;
 }
 
 int GamePark::initForest()
@@ -1009,8 +1034,6 @@ void GamePark::setSceneMode(const SceneMode &mode)
         statusText->setOverrideColor(video::SColor(255,205,200,200));
         statusText->setTextAlignment(gui::EGUIA_CENTER, gui::EGUIA_CENTER);
 
-
-
         loadProgressbarChanged.connect([this](int value){ wchar_t tmp[255]; swprintf(tmp,255, L"Loading... %3d", value); statusText->setText(tmp); driver()->beginScene(true, true, 0 );
             env()->drawAll();
             driver()->endScene();});
@@ -1150,7 +1173,7 @@ int GamePark::load()
     m_fpsText->setVisible(true);
     statusText->setVisible(false);
 
-    setSceneMode(SceneMode::MainMenu);
+    setSceneMode(SceneMode::History);
 
     return 0;
 }

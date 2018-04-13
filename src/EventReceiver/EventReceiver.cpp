@@ -40,7 +40,7 @@ bool MyEventReceiver::OnEvent(const SEvent &event)
             m_gamePark->player()->setKeyPressed(event.KeyInput.Key, event.KeyInput.PressedDown);
         }
 
-        if(event.KeyInput.Key==KEY_KEY_1 || event.KeyInput.Key==KEY_KEY_2)
+        if(event.KeyInput.Key==KEY_KEY_1 || event.KeyInput.Key==KEY_KEY_2 || event.KeyInput.Key==KEY_KEY_3)
         {
             m_gamePark->player()->setWeapon(event.KeyInput.Key - 49);
         }
