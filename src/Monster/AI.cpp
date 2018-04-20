@@ -89,20 +89,13 @@ void AI::moveNode(const core::vector3df &pos, f32 timeInSeconds)
     f32 z = m_node->getPosition().Z;
     //считаем дистанцию (длину от точки А до точки Б). формула длины вектора
     m_distanceToPlayer = std::sqrt((pos.X - x)*(pos.X - x) + (pos.Z - z)*(pos.Z - z));
-//    std::cout << "Height = " << m_terrain->getHeight(x,z) << "|" << y << std::endl;
-//    if(m_terrain->getHeight(x,z) > y-2.0)
-//    {
-//        m_gravityAnim->setGravity(core::vector3df(0,0,0));
-//        y+=0.5;
-//    }
-
 
     if(m_isDraw == true)
     {
         if(m_terrain->getHeight(x,z) > y-2.0)
         {
             m_gravityAnim->setGravity(core::vector3df(0,0,0));
-            y+=0.5;
+            y+=25*timeInSeconds;
         }
         else
         {
