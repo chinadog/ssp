@@ -3,6 +3,10 @@
 #include "cmath"
 #include "Common/Collision.h"
 
+#ifdef _WIN32
+    const double M_PI = 3.1415926535897932384626433832795
+#endif
+
 AI::AI(irr::IrrlichtDevice* device, Player* player) :
     m_smgr(device->getSceneManager()),
     m_driver(device->getVideoDriver()),

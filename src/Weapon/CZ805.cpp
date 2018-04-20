@@ -234,7 +234,7 @@ void CZ805::initNode()
         node->getMaterial(19).setTexture( 0,m_device->getVideoDriver()->getTexture("../../media/textures/weapon/cz805_old/CZ805.tga") );
         node->getMaterial(20).setTexture( 0,m_device->getVideoDriver()->getTexture("../../media/textures/weapon/cz805_old/CZ805.tga") );
 
-        for(uint i=0;i<node->getMaterialCount();i++)
+        for(u32 i=0;i<node->getMaterialCount();i++)
         {
             node->getMaterial(i).TextureLayer[0].AnisotropicFilter = 16;
         }

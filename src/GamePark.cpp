@@ -588,7 +588,7 @@ int GamePark::initCurb()
         node->getMesh()->setHardwareMappingHint(irr::scene::EHM_STATIC);
         node->setMaterialFlag(video::EMF_FOG_ENABLE, m_config.fog());
 
-        for(uint i=0;i<node->getMaterialCount();i++)
+        for(u32 i=0;i<node->getMaterialCount();i++)
         {
             node->getMaterial(i).TextureLayer[0].AnisotropicFilter = 16;
         }
@@ -726,11 +726,11 @@ int GamePark::initRespawnPoints()
 
 void GamePark::updateMonsterCollision()
 {
-    for(uint i=0;i<m_aiNode.size();i++)
+    for(u32 i=0;i<m_aiNode.size();i++)
     {
         std::list<MonsterNode*>::iterator it = std::next(m_aiNode.begin(), i);
         MonsterNode* monster = *it;
-        for(uint j=0;j<i;j++)
+        for(u32 j=0;j<i;j++)
         {
             std::list<MonsterNode*>::iterator it2 = std::next(m_aiNode.begin(), j);
             monster->addTriangleSelector(*it2);
