@@ -15,6 +15,7 @@
 #include "SceneNode/LadderSceneNode.h"
 #include "SceneNode/MotionPictureCredits.h"
 #include "Monster/MonsterNode.h"
+#include "Monster/RespawnPoint.h"
 
 using namespace irr;
 
@@ -94,7 +95,8 @@ public:
     bool key_s = false;
     bool key_d = false;
 
-
+std::list<MonsterNode*> m_aiNode;
+void updateMonsterCollision();
 
 
     Player *player() const;
@@ -145,16 +147,18 @@ private:
     scene::IBillboardSceneNode* m_boomNode;
     AtomicBoom m_atomicBoom;
 
-    std::list<MonsterNode*> m_aiNode;
+
+    std::list<RespawnPoint*> m_respPoints;
 
     Signal<int> loadProgressbarChanged;
 
     InOutFader* m_fader = nullptr;
 
 
-    void updateMonsterCollision();
+
 
     void finishGame();
+    void gameOver();
     bool m_finish = false;
 
     void forestLOD(core::vector3df pos);
@@ -184,6 +188,7 @@ private:
     int initGarbage();
     int initSounds();
     int initAI();
+    int initRespawnPoints();
     int initAircraft();
     int initLake();
     int initDecal();

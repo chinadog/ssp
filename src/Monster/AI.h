@@ -36,10 +36,12 @@ public:
     u32 m_prevTime = 0;
 
 
+scene::ISceneNodeAnimatorCollisionResponse* m_gravityAnim = nullptr;
 
 
-
-
+    virtual void atack(){}
+    virtual void walk(){}
+    virtual void stopDraw(){}
     virtual void setPosition(const core::vector3df& pos);
     void setTerrain(scene::ITerrainSceneNode* terrain);
     virtual irr::core::vector3df ellipsoid() const = 0;
@@ -63,6 +65,11 @@ protected:
     scene::ITerrainSceneNode* m_terrain = nullptr;
     bool m_movable = true;
     f32 m_health = 1.0;
+    f32 m_speed = 7.5;
+    bool m_isRotated = true;
+    bool m_intersects = false;
+    f32 m_distanceToPlayer = 0.0;
+    bool m_isDraw = true;
 };
 
 #endif // AI_H

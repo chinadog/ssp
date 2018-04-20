@@ -42,8 +42,12 @@ int MonsterNode::init()
         m_node->setTriangleSelector(selector);
         selector->drop();
     }
-    m_node->setFrameLoop(0,240);
-    m_node->setAnimationSpeed(25+m_device->getRandomizer()->rand() % 10);
+
+
+    setMonsterState(m_currentState,true);
+
+//    m_node->setFrameLoop(0,240);
+//    m_node->setAnimationSpeed(25+m_device->getRandomizer()->rand() % 10);
     return 0;
 }
 
@@ -59,11 +63,14 @@ core::vector3df MonsterNode::ellipsoidTranslation() const
 
 void MonsterNode::kill()
 {
-    m_node->setLoopMode(false);
-    m_node->setFrameLoop(570, 648);
-    m_node->setAnimationSpeed(25);
-    m_node->setAnimationEndCallback(new DieEndCallBack(this));
-    m_movable = false;
+    m_fms.setState(MonsterSignal::Die);
+    setMonsterState(m_fms.currentState());
+
+//    m_node->setLoopMode(false);
+//    m_node->setFrameLoop(570, 648);
+//    m_node->setAnimationSpeed(25);
+//    m_node->setAnimationEndCallback(new DieEndCallBack(this));
+//    m_movable = false;
     dustEffect( m_node->getAbsolutePosition() );
 }
 
@@ -73,6 +80,13 @@ void MonsterNode::damage(f32 value, const core::vector3df& intersection)
     {
         setHealth(health() - value);
         bloodEffect( intersection );
+        s32 rand = m_device->getRandomizer()->rand() % 4;
+        std::cout << Log::curTimeC() << "Rand = " << rand << std::endl;
+        if(rand > 2)
+        {
+            m_fms.setState(MonsterSignal::Wound);
+            setMonsterState(m_fms.currentState());
+        }
     }
     else if(m_movable==true)
     {
@@ -197,6 +211,120 @@ void MonsterNode::updateCollisionAnimator()
         m_node,ellipsoid(),
         irr::core::vector3df(0,0,0),ellipsoidTranslation());
     m_node->addAnimator(m_collisionAnimator);
+}
+
+void MonsterNode::setMonsterState(const MonsterState &state, bool force)
+{
+    if(state == m_currentState && force == false)
+    {
+        return;
+    }
+    m_currentState = state;
+
+    AnimationFrameLoop afl;
+    s32 rand = 0;
+    switch (state) {
+    case MonsterState::Walk :
+        afl.setStart(0);
+        afl.setEnd(240);
+        afl.setSpeed(25);
+        afl.setLoop(true);
+        m_speed = 7.5;
+        break;
+    case MonsterState::Run :
+        break;
+    case MonsterState::Atack :
+        afl.setStart(472);
+        afl.setEnd(500);
+        afl.setSpeed(25);
+        afl.setLoop(false);
+        afl.setEndCallback(&m_endCallback);
+        m_endCallback.setFunc(this, &MonsterNode::atackPlayer);
+        m_speed = 1.5;
+        break;
+    case MonsterState::Wound :
+        afl.setStart(472);
+        afl.setEnd(500);
+        rand = m_device->getRandomizer()->rand() % 4;
+        if(rand > 2)
+        {
+            afl.setStart(325);
+            afl.setEnd(400);
+        }
+        afl.setSpeed(25);
+        afl.setLoop(false);
+        afl.setEndCallback(&m_endCallback);
+        m_endCallback.setFunc(this, &MonsterNode::woundFinished);
+        m_speed = 1.5;
+        break;
+    case MonsterState::Die :
+        afl.setStart(570);
+        afl.setEnd(648);
+        rand = m_device->getRandomizer()->rand() % 4;
+        if(rand > 1)
+        {
+            afl.setStart(500);
+            afl.setEnd(563);
+        }
+        afl.setSpeed(25);
+        afl.setLoop(false);
+        afl.setEndCallback(new DieEndCallBack(this));
+        m_speed = 0;
+        m_isRotated = false;
+        break;
+    case MonsterState::Draw :
+        afl.setStart(0);
+        afl.setEnd(240);
+        afl.setSpeed(25);
+        afl.setLoop(true);
+        m_speed = 0.5;
+        m_isRotated = true;
+        break;
+    default:
+        break;
+    }
+
+    m_node->setFrameLoop(afl.start(), afl.end());
+    m_node->setAnimationSpeed(afl.speed());
+    m_node->setLoopMode(afl.loop());
+    m_node->setAnimationEndCallback(afl.endCallback());
+}
+
+void MonsterNode::woundFinished()
+{
+    m_fms.setState(MonsterSignal::Stop);
+    setMonsterState(m_fms.currentState());
+}
+
+void MonsterNode::atack()
+{
+    m_fms.setState(MonsterSignal::Atack);
+    setMonsterState(m_fms.currentState());
+    if(m_distanceToPlayer <= 10)
+    {
+        std::cout << Log::curTimeC() << "Atack" << std::endl;
+        m_player->setHealth(m_player->health()-0.1);
+    }
+}
+
+void MonsterNode::walk()
+{
+    m_fms.setState(MonsterSignal::Go);
+    setMonsterState(m_fms.currentState());
+}
+
+void MonsterNode::stopDraw()
+{
+    m_fms.setState(MonsterSignal::Stop);
+    setMonsterState(m_fms.currentState());
+}
+
+void MonsterNode::atackPlayer()
+{
+
+    m_intersects = false;
+    m_fms.setState(MonsterSignal::Stop);
+    setMonsterState(m_fms.currentState());
 }
 
 DieEndCallBack::DieEndCallBack(MonsterNode *parent) :

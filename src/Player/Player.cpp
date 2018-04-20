@@ -578,8 +578,14 @@ void Player::updatePlayerInfo()
     m_playerInfoNode->getMaterial(8).getTextureMatrix(0).buildTextureTransform(
          0,
          core::vector2df(0,0),
-         core::vector2df(0.5+100/60.0, 0),
+         core::vector2df(0.5+100.0/60.0, 0),
          core::vector2df(1, 1));
+    m_playerInfoNode->getMaterial(1).getTextureMatrix(0).buildTextureTransform(
+         0,
+         core::vector2df(0,0),
+         core::vector2df((m_health-1.0)/2.0, 0),
+         core::vector2df(1, 1));
+
 
     m_playerInfoNode->getMaterial(9).getTextureMatrix(0).buildTextureTransform(
          0,

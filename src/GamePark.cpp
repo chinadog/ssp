@@ -27,7 +27,6 @@ GamePark::GamePark() :
     m_config.load("../../config/config.ini");
 
     initDriver();
-
 }
 
 GamePark::~GamePark()
@@ -53,6 +52,7 @@ int GamePark::initWorld()
     initLadder();
     initAI();
     initTestObj();
+    initRespawnPoints();
     loadProgressbarChanged.Emit(70);
 
     initMenu();
@@ -137,6 +137,8 @@ void GamePark::initPlayer()
     m_player->setWeapon(0);
     m_player->weapon(1)->addBullets(50);
     m_player->weapon(0)->addBullets(100);
+
+    m_player->die.connect_member(this, &GamePark::gameOver);
 }
 
 int GamePark::initWater()
@@ -702,17 +704,24 @@ int GamePark::initSounds()
 
 int GamePark::initAI()
 {
-    for(int i=0;i<5;i++)
+    for(int i=0;i<0;i++)
     {
         int randomValue = 33 + (std::rand() % static_cast<int>((10000 - 2000 + 1)/60.0));
         MonsterNode* node = new MonsterNode(device(), m_player);
-        core::vector3df pos(92+randomValue, 100.0, 459+i*randomValue/2);
+        core::vector3df pos(92+randomValue, -100.0, 459+i*randomValue/2);
         node->setPosition( pos );
         node->setTerrain(m_terrain);
         m_aiNode.push_back( node );
     }
     updateMonsterCollision();
     return 0;
+}
+
+int GamePark::initRespawnPoints()
+{
+    RespawnPoint* p = new RespawnPoint(this,core::vector3df(200,7,700));
+    m_respPoints.push_back(p);
+    p->createMonster();
 }
 
 void GamePark::updateMonsterCollision()
@@ -928,6 +937,7 @@ void GamePark::menuFlyCamera(const SceneMode& mode)
     sa->drop();
 }
 
+
 void GamePark::forestLOD(core::vector3df pos)
 {
     float dist;
@@ -945,6 +955,22 @@ void GamePark::forestLOD(core::vector3df pos)
 
 
 void GamePark::finishGame()
+{
+    if(m_finish == true)
+    {
+        return;
+    }
+    m_finish = true;
+    m_fader->setColor(  video::SColor ( 255,0,0,0 ), video::SColor ( 0, 0, 0, 0 ));
+    m_fader->fadeOut(5000);
+    m_fader->setVisible(true);
+    m_fader->finished.connect([this](){
+        m_fader->setVisible(false);
+        setSceneMode(SceneMode::EndGame);
+    });
+}
+
+void GamePark::gameOver()
 {
     if(m_finish == true)
     {
@@ -1123,6 +1149,11 @@ int GamePark::run()
                     i--;
                 }
                 i++;
+            }
+            if(m_aiNode.size() == 0)
+            {
+                RespawnPoint* p = *m_respPoints.begin();
+                p->createMonster();
             }
 
             if(m_checkFpsCounter > 25)

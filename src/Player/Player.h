@@ -51,6 +51,9 @@ public:
     inline PlayerState prevPlayerState() const {return m_prevPlayerState;}
     inline FMS& fms() {return m_fms;}
 
+    inline void setHealth(f32 value){m_health = value;updatePlayerInfo();if(m_health <= 0){die.Emit();}}
+    inline f32 health() const {return m_health;}
+
     void gunKick();
 
     void playWalkSound();
@@ -70,6 +73,7 @@ public:
 
     Signal<int> say;
     Signal<> shipPointPassed;
+    Signal<> die;
 
     std::list<irr::scene::IAnimatedMeshSceneNode*> m_nodeList;
 
@@ -122,6 +126,7 @@ private:
     u32 m_nextTimeToFire = 0;
     u32 m_prevTime = 0;
     f32 m_deltaTime = 0.0;
+    f32 m_health = 1.0;
 
     std::list<Weapon*> m_weaponList;
 
