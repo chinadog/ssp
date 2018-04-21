@@ -80,7 +80,7 @@ core::stringc str;
         case irr::KEY_KEY_Z: // toggle skies
             if(event.KeyInput.PressedDown == false)
             {
-                m_gamePark->switchSkybox();
+//                m_gamePark->switchSkybox();
             }
             return true;
         case irr::KEY_ESCAPE:

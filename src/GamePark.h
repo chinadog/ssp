@@ -9,12 +9,12 @@
 #include "EventReceiver/EventReceiver.h"
 #include <list>
 #include "UI/SceneMode.h"
-#include "SceneNode/AtomicBoom.h"
 #include "UI/InOutFader.h"
 #include "UI/MessageBox.h"
 #include "SceneNode/LadderSceneNode.h"
 #include "SceneNode/MotionPictureCredits.h"
 #include "Monster/MonsterNode.h"
+#include "SceneNode/NuclearBoomSceneNode.h"
 
 using namespace irr;
 
@@ -50,7 +50,7 @@ public:
 
     void switchTerrainMaterial(video::E_MATERIAL_FLAG material);
     void switchTerrainDetailMap();
-    void switchSkybox();
+    void switchSkybox(bool blue);
     void updateEnvironment(const core::stringw& str);
 
     template<typename T>
@@ -107,8 +107,8 @@ private:
     irrklang::ISoundEngine* m_soundEngine;
     IrrlichtDevice* m_device = nullptr;
     Player* m_player = nullptr;
-    scene::ISceneNode* skybox = nullptr;
-    scene::ISceneNode* skydome = nullptr;
+    scene::ISceneNode* skyboxBlue = nullptr;
+    scene::ISceneNode* skyboxRed = nullptr;
     MyEventReceiver* receiver = nullptr;
     gui::IGUIStaticText* m_controlText = nullptr;
     gui::IGUIStaticText* m_fpsText = nullptr;
@@ -143,7 +143,8 @@ private:
     void setBoomFrame(u32 frame);
     u32 m_boom = 0;
     scene::IBillboardSceneNode* m_boomNode;
-    AtomicBoom m_atomicBoom;
+    NuclearBoomSceneNode* m_nuclearBoom = nullptr;
+    std::list<NuclearBoomSceneNode*> m_testNucl;
 
     std::list<MonsterNode*> m_aiNode;
 

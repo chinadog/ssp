@@ -36,6 +36,8 @@ GamePark::~GamePark()
     delete m_player;
     delete m_ladder;
     if(m_credits){delete m_credits;}
+
+    delete m_nuclearBoom;
 }
 
 void GamePark::exit()
@@ -309,15 +311,21 @@ int GamePark::initSkybox()
     // создание skybox и skydome
     driver()->setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, false);
 
-    skybox=smgr()->addSkyBoxSceneNode(texture("skybox/irrlicht2_up.jpg"),
-                                      texture("skybox/irrlicht2_dn.jpg"),
-                                      texture("skybox/irrlicht2_lf.jpg"),
-                                      texture("skybox/irrlicht2_rt.jpg"),
-                                      texture("skybox/irrlicht2_ft.jpg"),
-                                      texture("skybox/irrlicht2_bk.jpg"));
-    skydome=smgr()->addSkyDomeSceneNode(texture("skybox/skydome.jpg"),16,8,0.95f,2.0f);
-    skybox->setVisible(false);
-    skydome->setVisible(true);
+    skyboxBlue = smgr()->addSkyBoxSceneNode(texture("skybox/blue/up.png"),
+                                            texture("skybox/blue/down.png"),
+                                            texture("skybox/blue/left.png"),
+                                            texture("skybox/blue/right.png"),
+                                            texture("skybox/blue/front.png"),
+                                            texture("skybox/blue/back.png"));
+
+    skyboxRed = smgr()->addSkyBoxSceneNode(texture("skybox/storm/up.png"),
+                                           texture("skybox/storm/down.png"),
+                                           texture("skybox/storm/left.png"),
+                                           texture("skybox/storm/right.png"),
+                                           texture("skybox/storm/front.png"),
+                                           texture("skybox/storm/back.png"));
+    skyboxBlue->setVisible(true);
+    skyboxRed->setVisible(false);
 
     driver()->setTextureCreationFlag(video::ETCF_CREATE_MIP_MAPS, true);
 
@@ -866,10 +874,10 @@ void GamePark::switchTerrainDetailMap()
     m_terrain->getMaterial(0).MaterialType = materialType;
 }
 
-void GamePark::switchSkybox()
+void GamePark::switchSkybox(bool blue)
 {
-    skybox->setVisible(!skybox->isVisible());
-    skydome->setVisible(!skydome->isVisible());
+    skyboxBlue->setVisible(blue);
+    skyboxRed->setVisible(!blue);
 }
 
 void GamePark::updateEnvironment(const core::stringw& str)
@@ -970,6 +978,7 @@ void GamePark::setSceneMode(const SceneMode &mode)
         m_mainMenuNode->setVisible(true);
         m_menuNewGameNode->setVisible(false);
         menuFlyCamera(m_sceneMode);
+        switchSkybox(true);
 
         if(m_credits)
         {
@@ -984,6 +993,8 @@ void GamePark::setSceneMode(const SceneMode &mode)
         m_device->getCursorControl()->setVisible(false);
         m_mainMenuNode->setVisible(false);
         m_menuNewGameNode->setVisible(false);
+        m_nuclearBoom->finished.disconnect_all();
+        switchSkybox(false);
 
         return;
     }
@@ -1001,8 +1012,8 @@ void GamePark::setSceneMode(const SceneMode &mode)
         m_device->getCursorControl()->setVisible(false);
         m_mainMenuNode->setVisible(false);
         m_menuNewGameNode->setVisible(false);
-        m_atomicBoom.start();
-        m_atomicBoom.finished.connect([this](){setSceneMode(SceneMode::Game);});
+        m_nuclearBoom->start();
+        m_nuclearBoom->finished.connect([this](){setSceneMode(SceneMode::Game);});
 
         m_fader->setColor(video::SColor ( 255,255,255,255 ), video::SColor ( 0, 230, 230, 230 ));
         m_fader->fadeIn(5000);
@@ -1069,7 +1080,11 @@ int GamePark::run()
 //    scene::ISceneCollisionManager*  collMan;
 
 
-    m_atomicBoom.setParent( this );
+    //---
+    m_nuclearBoom = new NuclearBoomSceneNode(smgr()->getRootSceneNode(),smgr(),this,-1,
+                                             core::vector3df(480.5, 51, 948),
+                                             core::dimension2d<f32>(150, 150));
+    //---
     setSceneMode(SceneMode::Undefined);
 
     // vars
@@ -1142,11 +1157,6 @@ int GamePark::run()
             m_checkFpsCounter++;
             break;
         }
-
-        if( m_atomicBoom.isBoom() )
-        {
-            m_atomicBoom.updateFrame();
-        }
     }
     bill->drop();
 
@@ -1180,7 +1190,7 @@ int GamePark::load()
     m_fpsText->setVisible(true);
     statusText->setVisible(false);
 
-    setSceneMode(SceneMode::History);
+    setSceneMode(SceneMode::MainMenu);
 
     return 0;
 }
