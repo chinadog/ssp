@@ -59,7 +59,9 @@ SOURCES += \
     src/SceneNode/LadderSceneNode.cpp \
     src/SceneNode/MotionPictureCredits.cpp \
     src/Weapon/Knife.cpp \
-    src/SceneNode/NuclearBoomSceneNode.cpp
+    src/SceneNode/NuclearBoomSceneNode.cpp \
+    src/Monster/MonsterFMS.cpp \
+    src/Monster/RespawnPoint.cpp
 
 HEADERS += \
     src/EventReceiver/EventReceiver.h \
@@ -107,7 +109,9 @@ HEADERS += \
     src/SceneNode/LadderSceneNode.h \
     src/SceneNode/MotionPictureCredits.h \
     src/Weapon/Knife.h \
-    src/SceneNode/NuclearBoomSceneNode.h
+    src/SceneNode/NuclearBoomSceneNode.h \
+    src/Monster/MonsterFMS.h \
+    src/Monster/RespawnPoint.h
 
 LIBS += -L../../irrlicht-1.8.4/lib/Linux/ -lIrrlicht -lGL -lGLU -lXxf86vm -lXext -lX11
 LIBS += -L../../irrKlang-64bit-1.5.0/bin/linux-gcc-64/ -lIrrKlang

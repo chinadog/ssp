@@ -4,6 +4,7 @@
 #include <irrlicht.h>
 #include "AI.h"
 #include <list>
+#include "Monster/MonsterFMS.h"
 
 using namespace irr;
 
@@ -38,8 +39,18 @@ public:
 
     scene::ITriangleSelector* m_boxSelector = nullptr;
     scene::ITriangleSelector* m_octreeSelector = nullptr;
+
+    void setMonsterState(const MonsterState& state, bool force = false);
+    void woundFinished();
+    void atack();
+    void walk();
+    void stopDraw();
+    void atackPlayer();
 private:
     bool m_life = true;
+    MonsterFMS m_fms;
+    MonsterState m_currentState = MonsterState::Draw;
+    AnimationEndCallback m_endCallback;
     std::list<scene::IAnimationEndCallBack*> m_callbackList;
     scene::IMetaTriangleSelector *m_metaTriangleSelector = nullptr;
 

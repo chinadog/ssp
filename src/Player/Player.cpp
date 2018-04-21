@@ -8,6 +8,10 @@
 
 #include "SoundEngine/SoundEngine.h"
 
+#ifdef _WIN32
+    const double M_PI = 3.1415926535897932384626433832795
+#endif
+
 using namespace irr;
 using namespace irrklang;
 
@@ -97,7 +101,7 @@ Player::Player(GamePark* gamePark) :
         node->setPosition(core::vector3df(0,0,0));
         node->setRotation(core::vector3df(0,0,0));
 
-        for(uint i=0;i<node->getMaterialCount();i++)
+        for(u32 i=0;i<node->getMaterialCount();i++)
         {
             node->getMaterial(i).setTexture(0, m_device->getVideoDriver()->getTexture("../../media/textures/player_info.tga"));
             node->getMaterial(i).MaterialType = video::EMT_TRANSPARENT_ALPHA_CHANNEL;
@@ -327,7 +331,7 @@ void Player::setWeapon(int index)
     }
 
     m_currentWeaponIndex = index;
-    for(uint i=0;i<m_weaponList.size();i++)
+    for(u32 i=0;i<m_weaponList.size();i++)
     {
         auto it = std::next(m_weaponList.begin(),i);
         Weapon* w = *it;
@@ -578,8 +582,14 @@ void Player::updatePlayerInfo()
     m_playerInfoNode->getMaterial(8).getTextureMatrix(0).buildTextureTransform(
          0,
          core::vector2df(0,0),
-         core::vector2df(0.5+100/60.0, 0),
+         core::vector2df(0.5+100.0/60.0, 0),
          core::vector2df(1, 1));
+    m_playerInfoNode->getMaterial(1).getTextureMatrix(0).buildTextureTransform(
+         0,
+         core::vector2df(0,0),
+         core::vector2df((m_health-1.0)/2.0, 0),
+         core::vector2df(1, 1));
+
 
     m_playerInfoNode->getMaterial(9).getTextureMatrix(0).buildTextureTransform(
          0,
