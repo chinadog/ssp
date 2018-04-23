@@ -155,35 +155,88 @@ void MonsterNode::dustEffect(const core::vector3df& pos)
 
 void MonsterNode::bloodEffect(const core::vector3df &pos)
 {
-    scene::IParticleSystemSceneNode* ps =
-    m_smgr->addParticleSystemSceneNode(false);
+//    scene::IParticleSystemSceneNode* ps =
+//    m_smgr->addParticleSystemSceneNode(false);
 
-    scene::IParticleEmitter* em = ps->createBoxEmitter(
-        core::aabbox3d<f32>(-0.5,0,-0.5,0.5,1,0.5), // emitter size
-        core::vector3df(0.0f,0.005f,0.0f),   // initial direction
-        15,40,                             // emit rate
-        video::SColor(0,0,0,0),       // darkest color
-        video::SColor(0,81,19,19),       // brightest color
-        800,1000,180,                         // min and max age, angle
-        core::dimension2df(0.1f,0.1f),         // min size
-        core::dimension2df(0.4f,0.4f));        // max size
+//    scene::IParticleEmitter* em = ps->createBoxEmitter(
+//        core::aabbox3d<f32>(-0.5,0,-0.5,0.5,1,0.5), // emitter size
+//        core::vector3df(0.0f,0.005f,0.0f),   // initial direction
+//        15,40,                             // emit rate
+//        video::SColor(0,0,0,0),       // darkest color
+//        video::SColor(0,81,19,19),       // brightest color
+//        800,1000,180,                         // min and max age, angle
+//        core::dimension2df(0.1f,0.1f),         // min size
+//        core::dimension2df(0.4f,0.4f));        // max size
+
+//    ps->setEmitter(em); // this grabs the emitter
+//    em->drop(); // so we can drop it here without deleting it
+
+//    scene::IParticleAffector* paf = ps->createGravityAffector(core::vector3df(0,-0.01,0),200);
+//    ps->addAffector(paf); // same goes for the affector
+//    paf->drop();
+
+//    ps->setPosition(pos);
+//    //core::vector3df(8800*2,200*2,29800*2)
+//    ps->setScale(core::vector3df(2,2,2));
+//    ps->setMaterialFlag(video::EMF_LIGHTING, false);
+//    //ps->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
+//    //ps->setMaterialTexture(0, driver->getTexture("../media/grass_dirty.jpg"));
+//    //ps->setMaterialType(video::EMT_TRANSPARENT_VERTEX_ALPHA);
+
+//    scene::ISceneNodeAnimator* sna = m_smgr->createDeleteAnimator(500);
+//    ps->addAnimator(sna);
+//    sna->drop();
+
+
+    scene::IParticleSystemSceneNode* ps =
+        m_smgr->addParticleSystemSceneNode(false);
+
+//    scene::IParticleEmitter* em = ps->createBoxEmitter(
+//        core::aabbox3d<f32>(-70/60.0,0,-70/60.0,70/60.0,10/60.0,70/60.0), // emitter size
+//        core::vector3df(0.0f,0.001f,0.0f),   // initial direction
+//        8,10,                             // emit rate
+//        video::SColor(0,255,255,255),       // darkest color
+//        video::SColor(0,255,255,255),       // brightest color
+//        800,2000,0,                         // min and max age, angle
+//        core::dimension2df(100.f/60.0,100.f/60.0),         // min size
+//        core::dimension2df(200.f/60.0,200.f/60.0));        // max size
+
+    scene::IParticleEmitter* em = ps->createSphereEmitter(
+                core::vector3df(0,0,0),0.2);        // max size
+    em->setMaxLifeTime(700);
+    em->setMinLifeTime(400);
+    em->setMaxParticlesPerSecond(10);
+    em->setMinStartSize(core::dimension2df(0.2,0.2));
+    em->setMaxStartSize(core::dimension2df(0.4,0.4));
+    em->setDirection(core::vector3df(0,0.0020,0));
+    em->setMinStartColor(video::SColor(0,109,30,30));
+    em->setMaxStartColor(video::SColor(0,109,90,30));
+    em->setMaxStartColor(video::SColor(0,109,30,30));
+
 
     ps->setEmitter(em); // this grabs the emitter
     em->drop(); // so we can drop it here without deleting it
 
-    scene::IParticleAffector* paf = ps->createGravityAffector(core::vector3df(0,-0.01,0),200);
-    ps->addAffector(paf); // same goes for the affector
-    paf->drop();
+    scene::IParticleAffector* paf2 = ps->createFadeOutParticleAffector(video::SColor(0,100,70,30),600);
+    scene::IParticleAffector* paf3 = ps->createGravityAffector(core::vector3df(0,-0.009,0));
+    scene::IParticleAffector* paf = ps->createScaleParticleAffector(core::dimension2df(6,2));
 
-    ps->setPosition(pos);
-    //core::vector3df(8800*2,200*2,29800*2)
+    ps->addAffector(paf); // same goes for the affector
+    ps->addAffector(paf2);
+    ps->addAffector(paf3);
+    paf->drop();
+    paf2->drop();
+    paf3->drop();
+
+    ps->setPosition(core::vector3df(200,15,900));
     ps->setScale(core::vector3df(2,2,2));
     ps->setMaterialFlag(video::EMF_LIGHTING, false);
-    //ps->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
-    //ps->setMaterialTexture(0, driver->getTexture("../media/grass_dirty.jpg"));
-    //ps->setMaterialType(video::EMT_TRANSPARENT_VERTEX_ALPHA);
+//    ps->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
+    ps->setMaterialTexture(0, texture("blood_bw.tga"));
+    ps->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL);
+    ps->setPosition(pos);
 
-    scene::ISceneNodeAnimator* sna = m_smgr->createDeleteAnimator(500);
+    scene::ISceneNodeAnimator* sna = m_smgr->createDeleteAnimator(700);
     ps->addAnimator(sna);
     sna->drop();
 }

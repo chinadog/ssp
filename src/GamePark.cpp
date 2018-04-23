@@ -1111,6 +1111,58 @@ int GamePark::run()
                                              core::vector3df(480.5, 51, 948),
                                              core::dimension2d<f32>(150, 150));
     //---
+    scene::IParticleSystemSceneNode* ps =
+        smgr()->addParticleSystemSceneNode(false);
+
+//    scene::IParticleEmitter* em = ps->createBoxEmitter(
+//        core::aabbox3d<f32>(-70/60.0,0,-70/60.0,70/60.0,10/60.0,70/60.0), // emitter size
+//        core::vector3df(0.0f,0.001f,0.0f),   // initial direction
+//        8,10,                             // emit rate
+//        video::SColor(0,255,255,255),       // darkest color
+//        video::SColor(0,255,255,255),       // brightest color
+//        800,2000,0,                         // min and max age, angle
+//        core::dimension2df(100.f/60.0,100.f/60.0),         // min size
+//        core::dimension2df(200.f/60.0,200.f/60.0));        // max size
+
+    scene::IParticleEmitter* em = ps->createSphereEmitter(
+                core::vector3df(0,0,0),0.2);        // max size
+    em->setMaxLifeTime(900);
+    em->setMinLifeTime(400);
+    em->setMaxParticlesPerSecond(10);
+    em->setMinStartSize(core::dimension2df(0.1,0.1));
+    em->setMaxStartSize(core::dimension2df(0.2,0.2));
+    em->setDirection(core::vector3df(0,0.0020,0));
+    em->setMinStartColor(video::SColor(0,109,30,30));
+    em->setMaxStartColor(video::SColor(0,109,90,30));
+    em->setMaxStartColor(video::SColor(0,109,30,30));
+
+
+    ps->setEmitter(em); // this grabs the emitter
+    em->drop(); // so we can drop it here without deleting it
+
+    scene::IParticleAffector* paf2 = ps->createFadeOutParticleAffector(video::SColor(0,100,70,30),600);
+    scene::IParticleAffector* paf3 = ps->createGravityAffector(core::vector3df(0,-0.009,0));
+    scene::IParticleAffector* paf = ps->createScaleParticleAffector(core::dimension2df(6,2));
+
+    ps->addAffector(paf); // same goes for the affector
+    ps->addAffector(paf2);
+    ps->addAffector(paf3);
+    paf->drop();
+    paf2->drop();
+    paf3->drop();
+
+    ps->setPosition(core::vector3df(200,15,900));
+    ps->setScale(core::vector3df(2,2,2));
+    ps->setMaterialFlag(video::EMF_LIGHTING, false);
+//    ps->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
+    ps->setMaterialTexture(0, texture("blood_bw.tga"));
+    ps->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL);
+
+//    scene::ISceneNodeAnimator* sna = smgr()->createDeleteAnimator(1800);
+//    ps->addAnimator(sna);
+//    sna->drop();
+    //---
+
     setSceneMode(SceneMode::Undefined);
 
     // vars
@@ -1221,7 +1273,7 @@ int GamePark::load()
     m_fpsText->setVisible(true);
     statusText->setVisible(false);
 
-    setSceneMode(SceneMode::MainMenu);
+    setSceneMode(SceneMode::History);
 
     return 0;
 }
