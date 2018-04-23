@@ -1017,6 +1017,14 @@ void GamePark::setSceneMode(const SceneMode &mode)
             delete m_credits;
         }
 
+        auto i = std::begin(m_aiNode);
+        while(i != std::end(m_aiNode))
+        {
+            MonsterNode* monster = *i;
+            monster->node()->setVisible(false);
+            i++;
+        }
+
         return;
     }
     if(m_sceneMode == SceneMode::Game)
@@ -1041,6 +1049,16 @@ void GamePark::setSceneMode(const SceneMode &mode)
     }
     if(m_sceneMode == SceneMode::History)
     {
+        m_player->setPosition(174,85,994);
+
+        auto i = std::begin(m_aiNode);
+        while(i != std::end(m_aiNode))
+        {
+            MonsterNode* monster = *i;
+            monster->node()->setVisible(true);
+            i++;
+        }
+
         m_device->getCursorControl()->setVisible(false);
         m_mainMenuNode->setVisible(false);
         m_menuNewGameNode->setVisible(false);
