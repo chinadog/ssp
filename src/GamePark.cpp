@@ -137,8 +137,8 @@ void GamePark::initPlayer()
     m_player->addWeapon(new Knife(this));
     loadProgressbarChanged.Emit(40);
     m_player->setWeapon(0);
-    m_player->weapon(1)->addBullets(50);
-    m_player->weapon(0)->addBullets(100);
+    m_player->weapon(1)->addBullets(250);
+    m_player->weapon(0)->addBullets(1000);
 
     m_player->die.connect_member(this, &GamePark::gameOver);
 }
@@ -738,6 +738,12 @@ void GamePark::updateMonsterCollision()
     {
         std::list<MonsterNode*>::iterator it = std::next(m_aiNode.begin(), i);
         MonsterNode* monster = *it;
+        monster->removeAllTriangleSelector();
+    }
+    for(u32 i=0;i<m_aiNode.size();i++)
+    {
+        std::list<MonsterNode*>::iterator it = std::next(m_aiNode.begin(), i);
+        MonsterNode* monster = *it;
         for(u32 j=0;j<i;j++)
         {
             std::list<MonsterNode*>::iterator it2 = std::next(m_aiNode.begin(), j);
@@ -1114,48 +1120,63 @@ int GamePark::run()
     scene::IParticleSystemSceneNode* ps =
         smgr()->addParticleSystemSceneNode(false);
 
-//    scene::IParticleEmitter* em = ps->createBoxEmitter(
-//        core::aabbox3d<f32>(-70/60.0,0,-70/60.0,70/60.0,10/60.0,70/60.0), // emitter size
-//        core::vector3df(0.0f,0.001f,0.0f),   // initial direction
-//        8,10,                             // emit rate
-//        video::SColor(0,255,255,255),       // darkest color
-//        video::SColor(0,255,255,255),       // brightest color
-//        800,2000,0,                         // min and max age, angle
-//        core::dimension2df(100.f/60.0,100.f/60.0),         // min size
-//        core::dimension2df(200.f/60.0,200.f/60.0));        // max size
+//    scene::IParticleEmitter* em = ps->createSphereEmitter(
+//                core::vector3df(0,0,0),0.3);        // max size
+//    em->setMaxLifeTime(1500);
+//    em->setMinLifeTime(1200);
+//    em->setMinParticlesPerSecond(10);
+//    em->setMaxParticlesPerSecond(10);
+//    em->setMinStartSize(core::dimension2df(4,5));
+//    em->setMaxStartSize(core::dimension2df(5,6));
+//    em->setDirection(core::vector3df(0,0.0000,0));
+//    em->setMinStartColor(video::SColor(0,109,30,30));
+//    em->setMaxStartColor(video::SColor(0,109,90,30));
+//    em->setMaxStartColor(video::SColor(0,109,30,30));
 
-    scene::IParticleEmitter* em = ps->createSphereEmitter(
-                core::vector3df(0,0,0),0.2);        // max size
-    em->setMaxLifeTime(900);
-    em->setMinLifeTime(400);
-    em->setMaxParticlesPerSecond(10);
-    em->setMinStartSize(core::dimension2df(0.1,0.1));
-    em->setMaxStartSize(core::dimension2df(0.2,0.2));
-    em->setDirection(core::vector3df(0,0.0020,0));
-    em->setMinStartColor(video::SColor(0,109,30,30));
-    em->setMaxStartColor(video::SColor(0,109,90,30));
-    em->setMaxStartColor(video::SColor(0,109,30,30));
 
+//    ps->setEmitter(em); // this grabs the emitter
+//    em->drop(); // so we can drop it here without deleting it
+
+//    scene::IParticleAffector* paf = ps->createScaleParticleAffector(core::dimension2df(14,-7));
+//    scene::IParticleAffector* paf2 = ps->createFadeOutParticleAffector(video::SColor(0,100,70,30),1500);
+//    scene::IParticleAffector* paf3 = ps->createGravityAffector(core::vector3df(0,-0.019,0));
+//    scene::IParticleAffector* paf4 = ps->createRotationAffector(core::vector3df(0.2,0.2,0.2));
+
+
+//    ps->addAffector(paf); // same goes for the affector
+//    ps->addAffector(paf2);
+////    ps->addAffector(paf3);
+////    ps->addAffector(paf4);
+
+//    paf->drop();
+//    paf2->drop();
+//    paf3->drop();
+//    paf4->drop();
+
+    scene::IParticleEmitter* em = ps->createBoxEmitter(
+        core::aabbox3d<f32>(-70/60.0,0,-70/60.0,70/60.0,10/60.0,70/60.0), // emitter size
+        core::vector3df(0.0f,0.0005f,0.0f),   // initial direction
+        8,10,                             // emit rate
+        video::SColor(0,255,255,255),       // darkest color
+        video::SColor(0,255,255,255),       // brightest color
+        800,2000,0,                         // min and max age, angle
+        core::dimension2df(100.f/60.0,100.f/60.0),         // min size
+        core::dimension2df(200.f/60.0,200.f/60.0));        // max size
 
     ps->setEmitter(em); // this grabs the emitter
     em->drop(); // so we can drop it here without deleting it
 
-    scene::IParticleAffector* paf2 = ps->createFadeOutParticleAffector(video::SColor(0,100,70,30),600);
-    scene::IParticleAffector* paf3 = ps->createGravityAffector(core::vector3df(0,-0.009,0));
-    scene::IParticleAffector* paf = ps->createScaleParticleAffector(core::dimension2df(6,2));
+    scene::IParticleAffector* paf = ps->createFadeOutParticleAffector(video::SColor(0,180,40,0), 300);
 
-    ps->addAffector(paf); // same goes for the affector
-    ps->addAffector(paf2);
-    ps->addAffector(paf3);
+//    ps->addAffector(paf); // same goes for the affector
     paf->drop();
-    paf2->drop();
-    paf3->drop();
 
-    ps->setPosition(core::vector3df(200,15,900));
-    ps->setScale(core::vector3df(2,2,2));
+
+    ps->setPosition(core::vector3df(200,10,900));
+//    ps->setScale(core::vector3df(2,2,2));
     ps->setMaterialFlag(video::EMF_LIGHTING, false);
 //    ps->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
-    ps->setMaterialTexture(0, texture("blood_bw.tga"));
+    ps->setMaterialTexture(0, texture("dust2.png"));
     ps->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL);
 
 //    scene::ISceneNodeAnimator* sna = smgr()->createDeleteAnimator(1800);
@@ -1192,7 +1213,7 @@ int GamePark::run()
 
             if(shootIntersection.isValid())
             {
-                bill->setPosition(shootIntersection.m_intersection);
+//                bill->setPosition(shootIntersection.m_intersection);
             }
             // Monster loop
             auto i = std::begin(m_aiNode);
@@ -1217,7 +1238,7 @@ int GamePark::run()
                 }
                 i++;
             }
-            if(m_aiNode.size() == 0)
+            if(m_aiNode.size() < m_config.count())
             {
                 RespawnPoint* p = *m_respPoints.begin();
                 p->createMonster();

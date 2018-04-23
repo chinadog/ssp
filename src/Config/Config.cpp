@@ -23,6 +23,7 @@ bool Config::load(const std::string &filename)
     setFreeFly( reader.getBoolean("general","freeFly",false) );
     setFog( reader.getBoolean("general","fog",false) );
     setNormals( reader.getBoolean("general","normals",false) );
+    setCount( reader.getInteger("general","count",0) );
     return true;
 }
 

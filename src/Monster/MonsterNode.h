@@ -32,6 +32,7 @@ public:
 
     void addTriangleSelector(MonsterNode* node);
     void addTriangleSelector(scene::ITriangleSelector *selector);
+    void removeAllTriangleSelector();
     void removeTriangleSelector(MonsterNode* node);
     void updateCollisionAnimator();
     inline scene::IMetaTriangleSelector* metaTriangleSelector() const {return m_metaTriangleSelector;}
