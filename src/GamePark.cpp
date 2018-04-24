@@ -715,7 +715,7 @@ int GamePark::initAI()
     for(int i=0;i<0;i++)
     {
         int randomValue = 33 + (std::rand() % static_cast<int>((10000 - 2000 + 1)/60.0));
-        MonsterNode* node = new MonsterNode(device(), m_player);
+        MonsterNode* node = new MonsterNode(this);
         core::vector3df pos(92+randomValue, -100.0, 459+i*randomValue/2);
         node->setPosition( pos );
         node->setTerrain(m_terrain);
@@ -730,6 +730,7 @@ int GamePark::initRespawnPoints()
     RespawnPoint* p = new RespawnPoint(this,core::vector3df(200,7,700));
     m_respPoints.push_back(p);
     p->createMonster();
+    return 0;
 }
 
 void GamePark::updateMonsterCollision()
@@ -752,6 +753,25 @@ void GamePark::updateMonsterCollision()
         monster->addTriangleSelector( m_whiteBoxSelector );
         monster->updateCollisionAnimator();
     }
+}
+
+void GamePark::setSpeedOfTime(f32 speed)
+{
+    m_speedOfTime = speed;
+    speedOfTimeChanged.Emit(m_speedOfTime);
+    // Monster loop
+//    auto i = std::begin(m_aiNode);
+//    while(i != std::end(m_aiNode))
+//    {
+//        MonsterNode* monster = *i;
+//        monster->setSpeedOfTime(m_speedOfTime);
+//        i++;
+//    }
+}
+
+f32 GamePark::speedOfTime() const
+{
+    return m_speedOfTime;
 }
 
 int GamePark::initWhiteBox()
@@ -1241,7 +1261,15 @@ int GamePark::run()
                 monster->draw();
                 if(monster->node() == shootIntersection.m_node)
                 {
-                    monster->damage(0.2, shootIntersection.m_intersection);
+                    if(monster->isHeadshot(shootIntersection.m_intersection))
+                    {
+//                        monster->damage(1.0, shootIntersection.m_intersection);
+                        m_player->showSlowMoShoot(monster);
+                    }
+                    else
+                    {
+                        monster->damage(0.2, shootIntersection.m_intersection);
+                    }
                 }
                 if(monster->life() == false)
                 {
@@ -1256,6 +1284,7 @@ int GamePark::run()
                 }
                 i++;
             }
+
             if(m_aiNode.size() < m_config.count())
             {
                 RespawnPoint* p = *m_respPoints.begin();

@@ -1,13 +1,16 @@
 #include "MonsterNode.h"
 #include "Common/Common.h"
+#include "GamePark.h"
 
-MonsterNode::MonsterNode(irr::IrrlichtDevice* device, Player* player) :
-    AI(device, player)
+MonsterNode::MonsterNode(GamePark* gamePark) :
+    AI(gamePark)
 {
     init();
+    m_speedOfTime = m_gamePark->speedOfTime();
     m_metaTriangleSelector = m_smgr->createMetaTriangleSelector();
     m_boxSelector = m_smgr->createTriangleSelectorFromBoundingBox(m_node);
     m_octreeSelector = m_smgr->createOctreeTriangleSelector(m_node->getMesh(), m_node, 32);
+    m_speedOfTimeChangedSignalId = m_gamePark->speedOfTimeChanged.connect_member(this,&MonsterNode::setSpeedOfTime);
 }
 
 MonsterNode::~MonsterNode()
@@ -17,6 +20,7 @@ MonsterNode::~MonsterNode()
     m_boxSelector->drop();
     m_octreeSelector->drop();
     m_metaTriangleSelector->drop();
+    m_gamePark->speedOfTimeChanged.disconnect(m_speedOfTimeChangedSignalId);
     remove();
 }
 
@@ -32,7 +36,8 @@ int MonsterNode::init()
     m_node = m_smgr->addAnimatedMeshSceneNode( mesh );
     if (m_node)
     {
-        m_node->setMaterialTexture(0, texture("monster/green.tga"));
+//        m_node->setMaterialTexture(0, texture("monster/green.tga"));
+        m_node->setMaterialTexture(0, texture("plitka.tga"));
         m_node->setScale(core::vector3df(7.0f/60.0,7.0f/60.0,7.0f/60.0));
         m_node->setMaterialFlag(video::EMF_LIGHTING, true);
         m_node->setMaterialFlag(video::EMF_NORMALIZE_NORMALS, true);
@@ -81,13 +86,13 @@ void MonsterNode::damage(f32 value, const core::vector3df& intersection)
     {
         setHealth(health() - value);
         bloodEffect( intersection );
-        s32 rand = m_device->getRandomizer()->rand() % 4;
-        std::cout << Log::curTimeC() << "Rand = " << rand << std::endl;
-        if(rand > 2)
-        {
-            m_fms.setState(MonsterSignal::Wound);
-            setMonsterState(m_fms.currentState());
-        }
+//        s32 rand = m_device->getRandomizer()->rand() % 4;
+//        std::cout << Log::curTimeC() << "Rand = " << rand << std::endl;
+//        if(rand > 2)
+//        {
+//            m_fms.setState(MonsterSignal::Wound);
+//            setMonsterState(m_fms.currentState());
+//        }
     }
     else if(m_movable==true)
     {
@@ -206,10 +211,10 @@ void MonsterNode::bloodEffect(const core::vector3df &pos)
     else
     {
         scene::IParticleEmitter* em = ps->createSphereEmitter(core::vector3df(0,0,0),0.2);
-        em->setMaxLifeTime(300);
-        em->setMinLifeTime(200);
-        em->setMinParticlesPerSecond(55);
-        em->setMaxParticlesPerSecond(55);
+        em->setMaxLifeTime(300 / m_speedOfTime);
+        em->setMinLifeTime(200 / m_speedOfTime);
+        em->setMinParticlesPerSecond(55 * m_speedOfTime);
+        em->setMaxParticlesPerSecond(55 * m_speedOfTime);
         em->setMinStartSize(core::dimension2df(0.5,1));
         em->setMaxStartSize(core::dimension2df(1,1.5));
         em->setDirection(core::vector3df(0,0.0000,0));
@@ -221,7 +226,7 @@ void MonsterNode::bloodEffect(const core::vector3df &pos)
         em->drop();
 
         scene::IParticleAffector* paf = ps->createScaleParticleAffector(core::dimension2df(3,3));
-        scene::IParticleAffector* paf2 = ps->createFadeOutParticleAffector(video::SColor(0,100,70,30),300);
+        scene::IParticleAffector* paf2 = ps->createFadeOutParticleAffector(video::SColor(0,100,70,30),300 / m_speedOfTime);
         scene::IParticleAffector* paf3 = ps->createGravityAffector(core::vector3df(0,-0.019,0));
 
         ps->addAffector(paf);
@@ -238,7 +243,7 @@ void MonsterNode::bloodEffect(const core::vector3df &pos)
         ps->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL);
         ps->setPosition(pos);
 
-        scene::ISceneNodeAnimator* sna = m_smgr->createDeleteAnimator(300);
+        scene::ISceneNodeAnimator* sna = m_smgr->createDeleteAnimator(300 / m_speedOfTime);
         ps->addAnimator(sna);
         sna->drop();
     }
@@ -274,6 +279,26 @@ void MonsterNode::updateCollisionAnimator()
     m_node->addAnimator(m_collisionAnimator);
 }
 
+bool MonsterNode::isHeadshot(core::vector3df point) const
+{
+    scene::IBoneSceneNode* headBone = m_node->getJointNode((u32)13);
+    core::line3d<f32> ray;
+    ray.start = headBone->getAbsolutePosition();
+    ray.end = point;
+    if(ray.getLength() < 0.7)
+    {
+        std::cout << "HEADSHOT!!!" << std::endl;
+        return true;
+    }
+    return false;
+}
+
+void MonsterNode::setSpeedOfTime(f32 speed)
+{
+    m_speedOfTime = speed;
+    m_node->setAnimationSpeed(m_afl.speed()*m_speedOfTime);
+}
+
 void MonsterNode::setMonsterState(const MonsterState &state, bool force)
 {
     if(state == m_currentState && force == false)
@@ -282,73 +307,72 @@ void MonsterNode::setMonsterState(const MonsterState &state, bool force)
     }
     m_currentState = state;
 
-    AnimationFrameLoop afl;
     s32 rand = 0;
     switch (state) {
     case MonsterState::Walk :
-        afl.setStart(0);
-        afl.setEnd(240);
-        afl.setSpeed(25);
-        afl.setLoop(true);
-        m_speed = 7.5;
+        m_afl.setStart(0);
+        m_afl.setEnd(240);
+        m_afl.setSpeed(25);
+        m_afl.setLoop(true);
+        m_speed = m_walkSpeed*m_speedOfTime;
         break;
     case MonsterState::Run :
         break;
     case MonsterState::Atack :
-        afl.setStart(472);
-        afl.setEnd(500);
-        afl.setSpeed(25);
-        afl.setLoop(false);
-        afl.setEndCallback(&m_endCallback);
+        m_afl.setStart(472);
+        m_afl.setEnd(500);
+        m_afl.setSpeed(25);
+        m_afl.setLoop(false);
+        m_afl.setEndCallback(&m_endCallback);
         m_endCallback.setFunc(this, &MonsterNode::atackPlayer);
-        m_speed = 1.5;
+        m_speed = m_atackSpeed*m_speedOfTime;
         break;
     case MonsterState::Wound :
-        afl.setStart(472);
-        afl.setEnd(500);
+        m_afl.setStart(472);
+        m_afl.setEnd(500);
         rand = m_device->getRandomizer()->rand() % 4;
         if(rand > 2)
         {
-            afl.setStart(325);
-            afl.setEnd(400);
+            m_afl.setStart(325);
+            m_afl.setEnd(400);
         }
-        afl.setSpeed(25);
-        afl.setLoop(false);
-        afl.setEndCallback(&m_endCallback);
+        m_afl.setSpeed(25);
+        m_afl.setLoop(false);
+        m_afl.setEndCallback(&m_endCallback);
         m_endCallback.setFunc(this, &MonsterNode::woundFinished);
-        m_speed = 1.5;
+        m_speed = m_woundSpeed*m_speedOfTime;
         break;
     case MonsterState::Die :
-        afl.setStart(570);
-        afl.setEnd(648);
+        m_afl.setStart(570);
+        m_afl.setEnd(648);
         rand = m_device->getRandomizer()->rand() % 4;
         if(rand > 1)
         {
-            afl.setStart(500);
-            afl.setEnd(563);
+            m_afl.setStart(500);
+            m_afl.setEnd(563);
         }
-        afl.setSpeed(25);
-        afl.setLoop(false);
-        afl.setEndCallback(new DieEndCallBack(this));
+        m_afl.setSpeed(25);
+        m_afl.setLoop(false);
+        m_afl.setEndCallback(new DieEndCallBack(this));
         m_speed = 0;
         m_isRotated = false;
         break;
     case MonsterState::Draw :
-        afl.setStart(0);
-        afl.setEnd(240);
-        afl.setSpeed(25);
-        afl.setLoop(true);
-        m_speed = 0.5;
+        m_afl.setStart(0);
+        m_afl.setEnd(240);
+        m_afl.setSpeed(25);
+        m_afl.setLoop(true);
+        m_speed = m_drawSpeed*m_speedOfTime;
         m_isRotated = true;
         break;
     default:
         break;
     }
 
-    m_node->setFrameLoop(afl.start(), afl.end());
-    m_node->setAnimationSpeed(afl.speed());
-    m_node->setLoopMode(afl.loop());
-    m_node->setAnimationEndCallback(afl.endCallback());
+    m_node->setFrameLoop(m_afl.start(), m_afl.end());
+    m_node->setAnimationSpeed(m_afl.speed()*m_speedOfTime);
+    m_node->setLoopMode(m_afl.loop());
+    m_node->setAnimationEndCallback(m_afl.endCallback());
 }
 
 void MonsterNode::woundFinished()

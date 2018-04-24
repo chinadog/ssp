@@ -4,8 +4,11 @@
 #include <irrlicht.h>
 #include "Player/Player.h"
 #include <iostream>
+#include "Weapon/AnimationFrameLoop.h"
 
 using namespace irr;
+
+class GamePark;
 
 class AI
 {
@@ -26,7 +29,7 @@ public:
         IDFlag_IsHighlightable = 1 << 1
     };
 
-    AI(irr::IrrlichtDevice* device, Player* player);
+    AI(GamePark* gamePark);
     virtual ~AI();
 
     virtual void draw();
@@ -70,6 +73,10 @@ protected:
     bool m_intersects = false;
     f32 m_distanceToPlayer = 0.0;
     bool m_isDraw = true;
+    scene::ITriangleSelector* m_octreeSelector = nullptr;
+    f32 m_speedOfTime = 1.0;
+    AnimationFrameLoop m_afl;
+    GamePark* m_gamePark;
 };
 
 #endif // AI_H

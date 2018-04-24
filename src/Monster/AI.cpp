@@ -2,18 +2,19 @@
 #include "Common/Common.h"
 #include "cmath"
 #include "Common/Collision.h"
+#include "GamePark.h"
 
 #ifdef _WIN32
     const double M_PI = 3.1415926535897932384626433832795
 #endif
 
-AI::AI(irr::IrrlichtDevice* device, Player* player) :
-    m_smgr(device->getSceneManager()),
-    m_driver(device->getVideoDriver()),
-    m_device(device),
-    m_player(player)
+AI::AI(GamePark* gamePark) :
+    m_gamePark(gamePark)
 {
-
+    m_smgr = m_gamePark->device()->getSceneManager();
+    m_driver = m_gamePark->device()->getVideoDriver();
+    m_device = m_gamePark->device();
+    m_player = m_gamePark->player();
 }
 
 AI::~AI()
@@ -99,7 +100,7 @@ void AI::moveNode(const core::vector3df &pos, f32 timeInSeconds)
         if(m_terrain->getHeight(x,z) > y-2.0)
         {
             m_gravityAnim->setGravity(core::vector3df(0,0,0));
-            y+=25*timeInSeconds;
+            y+=25*timeInSeconds*m_speedOfTime;
         }
         else
         {
@@ -112,8 +113,8 @@ void AI::moveNode(const core::vector3df &pos, f32 timeInSeconds)
 
     if(m_distanceToPlayer > 10)
     {
-        x += timeInSeconds*m_speed*(pos.X - x) / m_distanceToPlayer;//идем по иксу с помощью вектора нормали
-        z += timeInSeconds*m_speed*(pos.Z - z) / m_distanceToPlayer;//идем по игреку так же
+        x += timeInSeconds*m_speed*m_speedOfTime*(pos.X - x) / m_distanceToPlayer;//идем по иксу с помощью вектора нормали
+        z += timeInSeconds*m_speed*m_speedOfTime*(pos.Z - z) / m_distanceToPlayer;//идем по игреку так же
         m_node->setPosition(core::vector3df(x,y,z));
         if(m_intersects == true)
         {

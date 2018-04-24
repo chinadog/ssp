@@ -13,8 +13,10 @@
 #include "Weapon/WeaponAction.h"
 #include "FMS.h"
 #include "ShootIntersection.h"
+#include "SlowMo.h"
 
 class GamePark;
+class AI;
 
 class Player
 {
@@ -75,6 +77,10 @@ public:
     Signal<> shipPointPassed;
     Signal<> die;
 
+    void setSpeedOfTime(f32 speed);
+    void showSlowMoShoot(AI* aiNode);
+    inline SlowMo* slowmo() {return m_slowmo;}
+
     std::list<irr::scene::IAnimatedMeshSceneNode*> m_nodeList;
 
     void ladder();
@@ -85,6 +91,7 @@ public:
 
 private:
     irr::scene::ICameraSceneNode* m_camera;
+    irr::scene::ICameraSceneNode* m_cameraSlowMo;
     GamePark* m_gamePark;
     irr::IrrlichtDevice* m_device;
     irr::scene::ISceneNode *m_fire;
@@ -94,9 +101,13 @@ private:
     irr::scene::ISceneNode *m_borderOnMap;
     irr::scene::ISceneNode *m_info;
     irr::scene::IAnimatedMeshSceneNode* m_node;
+    irr::scene::IAnimatedMeshSceneNode* m_bulletNode;
+    AI* m_slowMoTargetNode;
     FMS m_fms;
     PlayerState m_currentPlayerState = PlayerState::Stand;
     PlayerState m_prevPlayerState = PlayerState::Stand;
+    AnimationFrameLoop m_afl;
+    SlowMo* m_slowmo;
 
     irrklang::ISoundEngine* m_soundEngine = nullptr;
     irrklang::ISound* m_walkSound = nullptr;
@@ -113,6 +124,8 @@ private:
     bool m_animationFire;
     bool m_animationMove;
 
+    f32 m_speedOfTime = 1.0;
+
     bool m_keyA = false;
     bool m_keyD = false;
     bool m_keyS = false;
@@ -127,6 +140,9 @@ private:
     u32 m_prevTime = 0;
     f32 m_deltaTime = 0.0;
     f32 m_health = 1.0;
+
+    f32 m_walkSpeed = 0.01;
+    f32 m_runSpeed = 0.15;
 
     std::list<Weapon*> m_weaponList;
 

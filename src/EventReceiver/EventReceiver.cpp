@@ -25,6 +25,10 @@ bool MyEventReceiver::OnEvent(const SEvent &event)
         scaleCoef *= 4;
     }
 
+    if(m_gamePark->player()->slowmo()->isActive())
+    {
+        return true;
+    }
 
     if (event.EventType == irr::EET_KEY_INPUT_EVENT )
     {
@@ -88,8 +92,19 @@ core::stringc str;
             return true;
         case irr::KEY_KEY_K:
             //exit_usl = true;
-            animnode->setFrameLoop(0,60);
-            animnode->setLoopMode(false);
+//            animnode->setFrameLoop(0,60);
+//            animnode->setLoopMode(false);
+            if(event.KeyInput.PressedDown == false)
+            {
+                if(m_gamePark->speedOfTime() < 1.0)
+                {
+                    m_gamePark->setSpeedOfTime(1.0);
+                }
+                else
+                {
+                    m_gamePark->setSpeedOfTime(0.3);
+                }
+            }
             return true;
         case irr::KEY_KEY_O: // switch wire frame mode
             //usl_exit = true;

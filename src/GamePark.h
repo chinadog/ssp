@@ -99,6 +99,10 @@ std::list<MonsterNode*> m_aiNode;
 void updateMonsterCollision();
 
 
+    void setSpeedOfTime(f32 speed);
+    f32 speedOfTime() const;
+    Signal<f32> speedOfTimeChanged;
+
     Player *player() const;
 
     scene::IAnimatedMeshSceneNode *movableNode() const;
@@ -135,6 +139,8 @@ private:
     scene::IAnimatedMeshSceneNode* m_movableNode = nullptr;
     unsigned short m_checkLodCounter = 0;
     unsigned short m_checkFpsCounter= 0;
+
+    f32 m_speedOfTime = 1.0;
 
     SceneMode m_sceneMode = SceneMode::MainMenu;
 

@@ -13,7 +13,7 @@ class DieEndCallBack;
 class MonsterNode : public AI
 {
 public:
-    MonsterNode(irr::IrrlichtDevice* device, Player* player);
+    MonsterNode(GamePark* gamePark);
     ~MonsterNode();
 
     int init();
@@ -39,7 +39,12 @@ public:
     scene::ISceneNodeAnimatorCollisionResponse* m_collisionAnimator = nullptr;
 
     scene::ITriangleSelector* m_boxSelector = nullptr;
-    scene::ITriangleSelector* m_octreeSelector = nullptr;
+
+    bool isHeadshot(core::vector3df point) const;
+
+    void setSpeedOfTime(f32 speed);
+
+
 
     void setMonsterState(const MonsterState& state, bool force = false);
     void woundFinished();
@@ -54,6 +59,12 @@ private:
     AnimationEndCallback m_endCallback;
     std::list<scene::IAnimationEndCallBack*> m_callbackList;
     scene::IMetaTriangleSelector *m_metaTriangleSelector = nullptr;
+    int m_speedOfTimeChangedSignalId = -1;
+
+    f32 m_walkSpeed = 7.5;
+    f32 m_woundSpeed = 1.5;
+    f32 m_atackSpeed = 1.5;
+    f32 m_drawSpeed = 0.5;
 
 };
 

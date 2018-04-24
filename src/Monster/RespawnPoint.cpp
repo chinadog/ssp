@@ -10,7 +10,7 @@ RespawnPoint::RespawnPoint(GamePark* gamePark, const core::vector3df& pos) :
 
 void RespawnPoint::createMonster()
 {
-    MonsterNode* node = new MonsterNode(m_gamePark->device(), m_gamePark->player());
+    MonsterNode* node = new MonsterNode(m_gamePark);
     core::vector3df monsterPos = m_pos;
     monsterPos.Y -= 100;
     node->setPosition( monsterPos );
