@@ -6,10 +6,10 @@
 
 using namespace irr;
 
-class MessageBox
+class MyMessageBox
 {
 public:
-    MessageBox();
+    MyMessageBox();
 
     static void showStartMessage(IrrlichtDevice* device);
 };

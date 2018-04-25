@@ -55,7 +55,7 @@ namespace Log {
 
     template<typename T>
     void logVector(T vector)
-        {std::cout << '(' << vector.X << ',' << vector.Y << ',' << vector.Z << ')' << std::flush << std::endl;}
+        {std::cout << curTimeC() << '(' << vector.X << ',' << vector.Y << ',' << vector.Z << ')' << std::flush << std::endl;}
 
 }
 

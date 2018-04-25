@@ -1,11 +1,11 @@
 #include "MessageBox.h"
 
-MessageBox::MessageBox()
+MyMessageBox::MyMessageBox()
 {
 
 }
 
-void MessageBox::showStartMessage(IrrlichtDevice* device)
+void MyMessageBox::showStartMessage(IrrlichtDevice* device)
 {
     core::dimension2di topLeft;
     core::dimension2di bottomRight;

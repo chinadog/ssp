@@ -108,14 +108,14 @@ void updateMonsterCollision();
     scene::IAnimatedMeshSceneNode *movableNode() const;
 
     scene::ISceneNodeAnimatorCollisionResponse *gravityAnim() const;
-
+    MyEventReceiver* receiver = nullptr;
 private:
     irrklang::ISoundEngine* m_soundEngine;
     IrrlichtDevice* m_device = nullptr;
     Player* m_player = nullptr;
     scene::ISceneNode* skyboxBlue = nullptr;
     scene::ISceneNode* skyboxRed = nullptr;
-    MyEventReceiver* receiver = nullptr;
+
     gui::IGUIStaticText* m_controlText = nullptr;
     gui::IGUIStaticText* m_fpsText = nullptr;
     const int m_forestSize = 5;

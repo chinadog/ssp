@@ -727,9 +727,18 @@ int GamePark::initAI()
 
 int GamePark::initRespawnPoints()
 {
-    RespawnPoint* p = new RespawnPoint(this,core::vector3df(200,7,700));
+    RespawnPoint* p = new RespawnPoint(this,core::vector3df(200,7,920));
     m_respPoints.push_back(p);
-    p->createMonster();
+
+    p = new RespawnPoint(this,core::vector3df(200,7,850));
+    m_respPoints.push_back(p);
+
+    p = new RespawnPoint(this,core::vector3df(400,7,900));
+    m_respPoints.push_back(p);
+
+    p = new RespawnPoint(this,core::vector3df(400,7,1000));
+    m_respPoints.push_back(p);
+
     return 0;
 }
 
@@ -1246,7 +1255,6 @@ int GamePark::run()
             env()->drawAll();
             m_ladder->draw();
             driver()->endScene();
-
             ShootIntersection shootIntersection = m_player->shootIntersection();
 
             if(shootIntersection.isValid())
@@ -1261,7 +1269,8 @@ int GamePark::run()
                 monster->draw();
                 if(monster->node() == shootIntersection.m_node)
                 {
-                    if(monster->isHeadshot(shootIntersection.m_intersection))
+                    if(monster->isHeadshot(shootIntersection.m_intersection) &&
+                       shootIntersection.m_intersection.getDistanceFrom(m_player->camera()->getAbsolutePosition()) > 15.0)
                     {
 //                        monster->damage(1.0, shootIntersection.m_intersection);
                         m_player->showSlowMoShoot(monster);
@@ -1287,7 +1296,11 @@ int GamePark::run()
 
             if(m_aiNode.size() < m_config.count())
             {
-                RespawnPoint* p = *m_respPoints.begin();
+                int rand = m_device->getRandomizer()->rand() % m_respPoints.size();
+                auto it = m_respPoints.begin();
+                // Advance the iterator by 2 positions,
+                std::advance(it, rand);
+                RespawnPoint* p = *it;
                 p->createMonster();
             }
 

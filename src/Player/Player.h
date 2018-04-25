@@ -18,6 +18,11 @@
 class GamePark;
 class AI;
 
+enum class PlayerEventType
+{
+    Disable = irr::EET_USER_EVENT +1
+};
+
 class Player
 {
 public:
@@ -77,6 +82,7 @@ public:
     Signal<> shipPointPassed;
     Signal<> die;
 
+    void setPlayerSpeed(f32 speed);
     void setSpeedOfTime(f32 speed);
     void showSlowMoShoot(AI* aiNode);
     inline SlowMo* slowmo() {return m_slowmo;}
@@ -87,8 +93,14 @@ public:
     void ladderOut();
 
     inline bool keyW() const {return m_keyW;}
+    inline bool keyA() const {return m_keyA;}
     inline bool keyS() const {return m_keyS;}
+    inline bool keyD() const {return m_keyD;}
+    inline bool keyShift() const {return m_keyShift;}
 
+    f32 m_walkSpeed = 0.01;
+    f32 m_runSpeed = 0.15;
+    irr::scene::IAnimatedMeshSceneNode* m_bulletNode;
 private:
     irr::scene::ICameraSceneNode* m_camera;
     irr::scene::ICameraSceneNode* m_cameraSlowMo;
@@ -101,7 +113,7 @@ private:
     irr::scene::ISceneNode *m_borderOnMap;
     irr::scene::ISceneNode *m_info;
     irr::scene::IAnimatedMeshSceneNode* m_node;
-    irr::scene::IAnimatedMeshSceneNode* m_bulletNode;
+
     AI* m_slowMoTargetNode;
     FMS m_fms;
     PlayerState m_currentPlayerState = PlayerState::Stand;
@@ -141,8 +153,7 @@ private:
     f32 m_deltaTime = 0.0;
     f32 m_health = 1.0;
 
-    f32 m_walkSpeed = 0.01;
-    f32 m_runSpeed = 0.15;
+
 
     std::list<Weapon*> m_weaponList;
 

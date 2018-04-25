@@ -96,6 +96,7 @@ void MonsterNode::damage(f32 value, const core::vector3df& intersection)
     }
     else if(m_movable==true)
     {
+        bloodEffect( intersection );
         kill();
     }
 }
@@ -285,7 +286,7 @@ bool MonsterNode::isHeadshot(core::vector3df point) const
     core::line3d<f32> ray;
     ray.start = headBone->getAbsolutePosition();
     ray.end = point;
-    if(ray.getLength() < 0.7)
+    if(ray.getLength() < 0.4)
     {
         std::cout << "HEADSHOT!!!" << std::endl;
         return true;
@@ -388,7 +389,7 @@ void MonsterNode::atack()
     if(m_distanceToPlayer <= 10)
     {
         std::cout << Log::curTimeC() << "Atack" << std::endl;
-//        m_player->setHealth(m_player->health()-0.1);
+        m_player->setHealth(m_player->health()-0.1);
     }
 }
 

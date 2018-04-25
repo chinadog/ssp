@@ -25,10 +25,35 @@ bool MyEventReceiver::OnEvent(const SEvent &event)
         scaleCoef *= 4;
     }
 
+    switch (event.KeyInput.Key) {
+    case KEY_KEY_A :
+        m_keyA = event.KeyInput.PressedDown;
+        break;
+    case KEY_KEY_D :
+        m_keyD = event.KeyInput.PressedDown;
+        break;
+    case KEY_KEY_S :
+        m_keyS = event.KeyInput.PressedDown;
+        break;
+    case KEY_KEY_W :
+        m_keyW = event.KeyInput.PressedDown;
+        break;
+    case KEY_KEY_R :
+//            m_keyR = event.KeyInput.PressedDown;
+        break;
+    case 160 : // Shift
+        m_keyShift = event.KeyInput.PressedDown;
+        break;
+    default:
+        break;
+    }
+
     if(m_gamePark->player()->slowmo()->isActive())
     {
+
         return true;
     }
+
 
     if (event.EventType == irr::EET_KEY_INPUT_EVENT )
     {
@@ -36,7 +61,6 @@ bool MyEventReceiver::OnEvent(const SEvent &event)
            event.KeyInput.Key==KEY_KEY_S || event.KeyInput.Key==KEY_KEY_D )
         {
             m_gamePark->player()->setKeyPressed(event.KeyInput.Key, event.KeyInput.PressedDown);
-
         }
         if(event.KeyInput.Key==160) // Shift
         {
@@ -96,14 +120,14 @@ core::stringc str;
 //            animnode->setLoopMode(false);
             if(event.KeyInput.PressedDown == false)
             {
-                if(m_gamePark->speedOfTime() < 1.0)
-                {
-                    m_gamePark->setSpeedOfTime(1.0);
-                }
-                else
-                {
-                    m_gamePark->setSpeedOfTime(0.3);
-                }
+//                if(m_gamePark->speedOfTime() < 1.0)
+//                {
+//                    m_gamePark->setSpeedOfTime(1.0);
+//                }
+//                else
+//                {
+//                    m_gamePark->setSpeedOfTime(0.3);
+//                }
             }
             return true;
         case irr::KEY_KEY_O: // switch wire frame mode

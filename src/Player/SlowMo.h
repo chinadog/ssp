@@ -2,6 +2,7 @@
 #define SLOWMO_H
 
 #include <irrlicht.h>
+#include <list>
 
 using namespace irr;
 
@@ -21,6 +22,7 @@ public:
     inline f32 reverseSpeed() const {return m_reverseSpeed;}
     inline core::vector3df cameraTarget() const {return m_cameraTarget;}
     inline bool isActive() const {return m_isActive;}
+    inline core::vector3df startCameraPos() const {return m_startCameraPos;}
 private:
     GamePark* m_gamePark;
     scene::ICameraSceneNode* m_camera = nullptr;
@@ -31,6 +33,12 @@ private:
     bool m_toTarget = true;
     bool m_isActive = false;
     core::vector3df m_cameraTarget;
+    std::list <SEvent> m_slowmoEvents;
+
+    core::vector3df m_startCameraPos;
+    core::vector3df m_startCameraTarget;
+
+    void disablePlayer();
 };
 
 #endif // SLOWMO_H

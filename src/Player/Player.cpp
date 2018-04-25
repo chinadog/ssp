@@ -115,7 +115,7 @@ Player::Player(GamePark* gamePark) :
     m_playerInfoNode = node;
 
 
-    scene::IAnimatedMesh* mesh2 = m_device->getSceneManager()->getMesh("../../media/models/bullet.b3d");
+    scene::IAnimatedMesh* mesh2 = m_device->getSceneManager()->getMesh("../../media/models/bullet.x");
     if (!mesh2)
     {
         m_device->drop();
@@ -125,17 +125,17 @@ Player::Player(GamePark* gamePark) :
     {
         m_bulletNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
         m_bulletNode->setMaterialFlag(video::EMF_NORMALIZE_NORMALS, true);
-        m_bulletNode->setPosition(core::vector3df(0,0,1));
-        m_bulletNode->setRotation(core::vector3df(0,0,0));
-        m_bulletNode->setScale(core::vector3df(0.2,0.2,0.2));
+        m_bulletNode->setPosition(core::vector3df(0.2,-0.2,3));
+        m_bulletNode->setRotation(core::vector3df(0,180,0));
+        m_bulletNode->setScale(core::vector3df(0.1,0.1,0.1));
 
-        for(u32 i=0;i<m_bulletNode->getMaterialCount();i++)
-        {
-//            m_bulletNode->getMaterial(i).setTexture(0, m_device->getVideoDriver()->getTexture("../../media/textures/player_info.tga"));
-        }
-//        m_bulletNode->getMaterial(0).setTexture(0, m_device->getVideoDriver()->getTexture("../../media/textures/park-sceme-blue-2.tga"));
+
+        m_bulletNode->getMaterial(0).setTexture(0, m_device->getVideoDriver()->getTexture("../../media/textures/bullet.tga"));
         m_bulletNode->setVisible(false);
     }
+    m_bulletNode->setFrameLoop(0,360);
+    m_bulletNode->setAnimationSpeed(360);
+    m_bulletNode->setLoopMode(true);
 
     initSoundEngine();
 
@@ -206,6 +206,7 @@ void Player::setMouseButtonPressed(EMOUSE_INPUT_EVENT event)
         break;
     case EMIE_LMOUSE_LEFT_UP:
         m_leftButton = false;
+        std::cout << "FALSE!" << std::endl;
         m_lastFireTime = 0;
         break;
     default:
@@ -256,6 +257,7 @@ void Player::setPlayerState(const PlayerState &state)
         curWeapon->drawSound(false);
         stopWalkSound();
         anim->setMoveSpeed(m_walkSpeed*m_speedOfTime);
+        std::cout << "SEt PLAYER SPEED" << m_walkSpeed << std::endl;
         if(m_gamePark->gravityAnim()!=0)m_gamePark->gravityAnim()->setGravity(core::vector3df(0,-1,0));
         break;
     case PlayerState::Duck :
@@ -519,47 +521,53 @@ void Player::draw()
     m_prevTime = now;
     // end delta time
 
-
     m_slowmo->draw();
-
-    if(m_gamePark->smgr()->getActiveCamera() == m_cameraSlowMo)
+    if(m_bulletNode->isVisible() == true)
     {
         if(m_bulletNode->getAbsolutePosition().getDistanceFrom(m_slowMoTargetNode->node()->getAbsolutePosition()) < 5.0 )
         {
-            if(m_bulletNode->isVisible() == true)
-            {
-                MonsterNode* m = (MonsterNode*)m_slowMoTargetNode;
-                m->damage(0.1, m_bulletNode->getAbsolutePosition());
-                m_bulletNode->setVisible(false);
-
-                core::array<core::vector3df> camPoints;
-                camPoints.push_back(m_cameraSlowMo->getPosition());
-                camPoints.push_back(m_camera->getPosition());
-                scene::ISceneNodeAnimator* saCam = 0;
-                saCam = m_gamePark->smgr()->createFollowSplineAnimator(m_device->getTimer()->getTime(), camPoints, 1.0, 0.5, false);
-                m_cameraSlowMo->removeAnimators();
-                m_cameraSlowMo->addAnimator(saCam);
-                saCam->drop();
-            }
-
-        }
-
-        if(m_cameraSlowMo->getAbsolutePosition().getDistanceFrom(m_cameraSlowMo->getTarget()) < 1)
-        {
-            m_gamePark->smgr()->setActiveCamera(m_camera);
-            m_gamePark->setSpeedOfTime(1.0);
+            MonsterNode* m = (MonsterNode*)m_slowMoTargetNode;
+            m->damage(1.0, m_bulletNode->getAbsolutePosition());
             m_bulletNode->setVisible(false);
         }
     }
 
+//    if(m_gamePark->smgr()->getActiveCamera() == m_cameraSlowMo)
+//    {
+//        if(m_bulletNode->getAbsolutePosition().getDistanceFrom(m_slowMoTargetNode->node()->getAbsolutePosition()) < 5.0 )
+//        {
+//            if(m_bulletNode->isVisible() == true)
+//            {
+//                MonsterNode* m = (MonsterNode*)m_slowMoTargetNode;
+//                m->damage(0.1, m_bulletNode->getAbsolutePosition());
+//                m_bulletNode->setVisible(false);
 
+//                core::array<core::vector3df> camPoints;
+//                camPoints.push_back(m_cameraSlowMo->getPosition());
+//                camPoints.push_back(m_camera->getPosition());
+//                scene::ISceneNodeAnimator* saCam = 0;
+//                saCam = m_gamePark->smgr()->createFollowSplineAnimator(m_device->getTimer()->getTime(), camPoints, 1.0, 0.5, false);
+//                m_cameraSlowMo->removeAnimators();
+//                m_cameraSlowMo->addAnimator(saCam);
+//                saCam->drop();
+//            }
+
+//        }
+
+//        if(m_cameraSlowMo->getAbsolutePosition().getDistanceFrom(m_cameraSlowMo->getTarget()) < 1)
+//        {
+//            m_gamePark->smgr()->setActiveCamera(m_camera);
+//            m_gamePark->setSpeedOfTime(1.0);
+//            m_bulletNode->setVisible(false);
+//        }
+//    }
 
     setShootIntersection(ShootIntersection());
-    if(fire()->isVisible() == true && m_startTimeFire + currentWeapon()->shootDelta()/m_speedOfTime < now)
+    if(fire()->isVisible() == true && m_startTimeFire + currentWeapon()->shootDelta()/m_speedOfTime < now && m_slowmo->isActive() == false)
     {
         fire()->setVisible(false);
     }
-    if(m_currentPlayerState >= PlayerState::StandShoot && m_currentPlayerState <= PlayerState::DuckWalkShoot)
+    if(m_currentPlayerState >= PlayerState::StandShoot && m_currentPlayerState <= PlayerState::DuckWalkShoot && m_slowmo->isActive() == false)
     {
         if(now >= m_nextTimeToFire && currentWeapon()->bulletCount()>0)
         {
@@ -693,8 +701,17 @@ void Player::setShootIntersection(const ShootIntersection &section)
     m_shootIntersection = section;
 }
 
+void Player::setPlayerSpeed(f32 speed)
+{
+    std::cout << "SEt player speed" << speed << std::endl;
+    core::list<scene::ISceneNodeAnimator*>::ConstIterator anims = camera()->getAnimators().begin();
+    scene::ISceneNodeAnimatorCameraFPS *anim=(scene::ISceneNodeAnimatorCameraFPS*)*anims;
+    anim->setMoveSpeed(speed);
+}
+
 void Player::setSpeedOfTime(f32 speed)
 {
+    std::cout << "SEt speed of time" << speed << std::endl;
     m_speedOfTime = speed;
     m_node->setAnimationSpeed(m_afl.speed()*m_speedOfTime);
     core::list<scene::ISceneNodeAnimator*>::ConstIterator anims = camera()->getAnimators().begin();
@@ -717,16 +734,16 @@ void Player::setSpeedOfTime(f32 speed)
 
 void Player::showSlowMoShoot(AI* aiNode)
 {
-//    m_slowMoTargetNode = aiNode;
+    m_slowMoTargetNode = aiNode;
 
 //    m_cameraSlowMo->setTarget( m_shootIntersection.m_intersection );
 //    m_cameraSlowMo->setPosition( m_camera->getPosition() );
 ////    m_gamePark->smgr()->setActiveCamera( m_cameraSlowMo );
 
-//    core::array<core::vector3df> bulletPoints;
-//    bulletPoints.push_back(m_bulletNode->getPosition());
-//    bulletPoints.push_back(bulletPoints[0]);
-//    bulletPoints[1].Z += m_cameraSlowMo->getPosition().getDistanceFrom(m_shootIntersection.m_intersection);
+    core::array<core::vector3df> bulletPoints;
+    bulletPoints.push_back(m_bulletNode->getPosition());
+    bulletPoints.push_back(bulletPoints[0]);
+    bulletPoints[1].Z += m_camera->getPosition().getDistanceFrom(m_shootIntersection.m_intersection);
 
 
 
@@ -741,24 +758,27 @@ void Player::showSlowMoShoot(AI* aiNode)
 
 //    m_gamePark->setSpeedOfTime(0.05);
 
-//    f32 t = 1000.0;
-//    f32 bulletSpeed = bulletPoints[0].getDistanceFrom(bulletPoints[1]) / t;
+    std::cout << "Distance bullet = " << bulletPoints[0].getDistanceFrom(bulletPoints[1]) << std::endl;
+
+
+    f32 t = 20.0;
+    f32 bulletSpeed = 1/bulletPoints[0].getDistanceFrom(bulletPoints[1])* t ;
 //    f32 camSpeed = camPoints[0].getDistanceFrom(camPoints[1]) / t ;
 
-//    scene::ISceneNodeAnimator* saBullet = 0;
-//    saBullet = m_gamePark->smgr()->createFollowSplineAnimator(m_device->getTimer()->getTime(), bulletPoints, bulletSpeed, 0.5, false);
-//    m_bulletNode->addAnimator(saBullet);
-//    saBullet->drop();
+    scene::ISceneNodeAnimator* saBullet = 0;
+    saBullet = m_gamePark->smgr()->createFollowSplineAnimator(m_device->getTimer()->getTime(), bulletPoints, bulletSpeed, 0.5, false);
+    m_bulletNode->addAnimator(saBullet);
+    saBullet->drop();
 
 //    scene::ISceneNodeAnimator* saCam = 0;
 //    saCam = m_gamePark->smgr()->createFollowSplineAnimator(m_device->getTimer()->getTime(), camPoints, camSpeed, 0.5, false);
 //    m_cameraSlowMo->addAnimator(saCam);
 //    saCam->drop();
 
-//    m_bulletNode->setVisible(true);
+    m_bulletNode->setVisible(true);
 
     core::vector3df endPos = m_shootIntersection.m_intersection;
-    endPos.X += 15;
+    endPos.X += 5;
     m_slowmo->setCameraTarget(m_shootIntersection.m_intersection);
     m_slowmo->start(m_camera->getPosition(), endPos);
 
