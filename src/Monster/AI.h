@@ -5,6 +5,7 @@
 #include "Player/Player.h"
 #include <iostream>
 #include "Weapon/AnimationFrameLoop.h"
+#include "Common/SignalSlot.h"
 
 using namespace irr;
 
@@ -56,6 +57,7 @@ scene::ISceneNodeAnimatorCollisionResponse* m_gravityAnim = nullptr;
     inline scene::IAnimatedMeshSceneNode* node() {return m_node;}
     inline f32 health() const {return m_health;}
     inline void setHealth(f32 value) {m_health = value;}
+    Signal<> layOut;
 private:
     void createGravitation();
     void moveNode(const core::vector3df& pos, f32 timeInSeconds);
@@ -73,6 +75,7 @@ protected:
     bool m_intersects = false;
     f32 m_distanceToPlayer = 0.0;
     bool m_isDraw = true;
+    bool m_layOut = false;
     scene::ITriangleSelector* m_octreeSelector = nullptr;
     f32 m_speedOfTime = 1.0;
     AnimationFrameLoop m_afl;

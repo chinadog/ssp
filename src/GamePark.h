@@ -16,6 +16,7 @@
 #include "Monster/MonsterNode.h"
 #include "SceneNode/NuclearBoomSceneNode.h"
 #include "Monster/RespawnPoint.h"
+#include "SceneNode/GameOverCredits.h"
 
 using namespace irr;
 
@@ -129,6 +130,7 @@ private:
     LadderSceneNode* m_ladder;
     scene::ISceneNodeAnimatorCollisionResponse* m_gravityAnim = nullptr;
     MotionPictureCredits* m_credits = nullptr;
+    GameOverCredits* m_gameOverCredits = nullptr;
 
     gui::IGUIImage* image;
     gui::IGUIStaticText* statusText;

@@ -36,8 +36,8 @@ int MonsterNode::init()
     m_node = m_smgr->addAnimatedMeshSceneNode( mesh );
     if (m_node)
     {
-//        m_node->setMaterialTexture(0, texture("monster/green.tga"));
-        m_node->setMaterialTexture(0, texture("plitka.tga"));
+        m_node->setMaterialTexture(0, texture("monster/green.tga"));
+//        m_node->setMaterialTexture(0, texture("plitka.tga"));
         m_node->setScale(core::vector3df(7.0f/60.0,7.0f/60.0,7.0f/60.0));
         m_node->setMaterialFlag(video::EMF_LIGHTING, true);
         m_node->setMaterialFlag(video::EMF_NORMALIZE_NORMALS, true);
@@ -96,6 +96,7 @@ void MonsterNode::damage(f32 value, const core::vector3df& intersection)
     }
     else if(m_movable==true)
     {
+        setHealth(health() - value);
         bloodEffect( intersection );
         kill();
     }

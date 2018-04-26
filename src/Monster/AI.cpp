@@ -5,7 +5,7 @@
 #include "GamePark.h"
 
 #ifdef _WIN32
-    const double M_PI = 3.1415926535897932384626433832795
+    const double M_PI = 3.1415926535897932384626433832795;
 #endif
 
 AI::AI(GamePark* gamePark) :
@@ -51,7 +51,7 @@ void AI::setTerrain(scene::ITerrainSceneNode *terrain)
 
 void AI::gotoPlayer(f32 timeInSeconds)
 {
-    if(m_node == nullptr || m_movable == false || m_player->health() <= 0.0)
+    if(m_node == nullptr || m_movable == false || m_player->health() <= 0.0 || m_health <= 0.0)
     {
         return;
     }
@@ -101,6 +101,12 @@ void AI::moveNode(const core::vector3df &pos, f32 timeInSeconds)
         {
             m_gravityAnim->setGravity(core::vector3df(0,0,0));
             y+=25*timeInSeconds*m_speedOfTime;
+            if(std::fabs(m_terrain->getHeight(x,z)- y) < 3.5 && m_layOut == false)
+            {
+                m_layOut = true;
+                layOut.Emit();
+                layOut.disconnect_all();
+            }
         }
         else
         {
@@ -124,7 +130,7 @@ void AI::moveNode(const core::vector3df &pos, f32 timeInSeconds)
     }
     else
     {
-        if(m_intersects == false)
+        if(m_intersects == false )
         {
             m_intersects = true;
             atack();

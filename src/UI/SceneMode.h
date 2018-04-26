@@ -12,7 +12,8 @@ enum class SceneMode
     Survive,
     Boom,
     EndGame,
-    Loading
+    Loading,
+    GameOver
 };
 
 #endif // SCENEMODE_H

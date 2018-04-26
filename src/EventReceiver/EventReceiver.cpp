@@ -120,14 +120,14 @@ core::stringc str;
 //            animnode->setLoopMode(false);
             if(event.KeyInput.PressedDown == false)
             {
-//                if(m_gamePark->speedOfTime() < 1.0)
-//                {
-//                    m_gamePark->setSpeedOfTime(1.0);
-//                }
-//                else
-//                {
-//                    m_gamePark->setSpeedOfTime(0.3);
-//                }
+                if(m_gamePark->speedOfTime() < 1.0)
+                {
+                    m_gamePark->setSpeedOfTime(1.0);
+                }
+                else
+                {
+                    m_gamePark->setSpeedOfTime(0.1);
+                }
             }
             return true;
         case irr::KEY_KEY_O: // switch wire frame mode

@@ -9,7 +9,7 @@
 #include "SoundEngine/SoundEngine.h"
 
 #ifdef _WIN32
-    const double M_PI = 3.1415926535897932384626433832795
+    const double M_PI = 3.1415926535897932384626433832795;
 #endif
 
 using namespace irr;
@@ -439,6 +439,37 @@ Weapon* Player::currentWeapon() const
     return weapon(m_currentWeaponIndex);
 }
 
+void Player::setHealth(f32 value)
+{
+    m_health = value;
+    updatePlayerInfo();
+    if(m_health <= 0)
+    {
+        core::array<core::vector3df> camPoints;
+        camPoints.push_back(camera()->getPosition());
+        camPoints.push_back(camera()->getPosition());
+        camPoints[1].Y -= 1.0;
+
+        m_dieAnimator = 0;
+        m_dieAnimator = m_gamePark->smgr()->createFollowSplineAnimator(m_device->getTimer()->getTime(), camPoints,
+                                                                  1.5, 0.5, false);
+        camera()->setUpVector(core::vector3df(1,0,0));
+        camera()->setInputReceiverEnabled(false);
+        node()->setVisible(false);
+
+//        scene::ISceneNodeAnimator* rotAnim = 0;
+//        rotAnim = m_gamePark->smgr()->createRotationAnimator(core::vector3df(0.03,0.25,0));
+
+
+        camera()->addAnimator(m_dieAnimator);
+//        camera()->addAnimator(rotAnim);
+//        m_dieAnimator->drop();
+//        rotAnim->drop();
+
+        die.Emit();
+    }
+}
+
 void Player::gunKick()
 {
     s32 rX = m_device->getRandomizer()->rand() % 20 - 10;
@@ -778,11 +809,18 @@ void Player::showSlowMoShoot(AI* aiNode)
     m_bulletNode->setVisible(true);
 
     core::vector3df endPos = m_shootIntersection.m_intersection;
-    endPos.X += 5;
+
+    f32 x1 = m_shootIntersection.m_intersection.X;
+    f32 y1 = m_shootIntersection.m_intersection.Z;
+    f32 phi = 10*M_PI/180.0;
+    f32 x0 = m_camera->getPosition().X;
+    f32 y0 = m_camera->getPosition().Z;
+
+    endPos.X = (x1-x0)*cos(phi) - (y1-y0)*sin(phi) + x0;
+    endPos.Z = (x1-x0)*sin(phi) + (y1-y0)*cos(phi) + y0;
+
     m_slowmo->setCameraTarget(m_shootIntersection.m_intersection);
     m_slowmo->start(m_camera->getPosition(), endPos);
-
-
 
 }
 

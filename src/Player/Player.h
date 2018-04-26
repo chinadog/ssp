@@ -58,7 +58,7 @@ public:
     inline PlayerState prevPlayerState() const {return m_prevPlayerState;}
     inline FMS& fms() {return m_fms;}
 
-    inline void setHealth(f32 value){m_health = value;updatePlayerInfo();if(m_health <= 0){die.Emit();}}
+    void setHealth(f32 value);
     inline f32 health() const {return m_health;}
 
     void gunKick();
@@ -101,6 +101,7 @@ public:
     f32 m_walkSpeed = 0.01;
     f32 m_runSpeed = 0.15;
     irr::scene::IAnimatedMeshSceneNode* m_bulletNode;
+    scene::ISceneNodeAnimator* m_dieAnimator = nullptr;
 private:
     irr::scene::ICameraSceneNode* m_camera;
     irr::scene::ICameraSceneNode* m_cameraSlowMo;

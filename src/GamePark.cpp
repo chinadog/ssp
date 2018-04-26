@@ -35,6 +35,7 @@ GamePark::~GamePark()
     delete m_player;
     delete m_ladder;
     if(m_credits){delete m_credits;}
+    if(m_gameOverCredits){delete m_gameOverCredits;}
 
     delete m_nuclearBoom;
 }
@@ -727,16 +728,16 @@ int GamePark::initAI()
 
 int GamePark::initRespawnPoints()
 {
-    RespawnPoint* p = new RespawnPoint(this,core::vector3df(200,7,920));
+    RespawnPoint* p = new RespawnPoint(this,core::vector3df(200,10,920));
     m_respPoints.push_back(p);
 
-    p = new RespawnPoint(this,core::vector3df(200,7,850));
+    p = new RespawnPoint(this,core::vector3df(200,10,850));
     m_respPoints.push_back(p);
 
-    p = new RespawnPoint(this,core::vector3df(400,7,900));
+    p = new RespawnPoint(this,core::vector3df(400,10,900));
     m_respPoints.push_back(p);
 
-    p = new RespawnPoint(this,core::vector3df(400,7,1000));
+    p = new RespawnPoint(this,core::vector3df(400,10,1000));
     m_respPoints.push_back(p);
 
     return 0;
@@ -1025,7 +1026,7 @@ void GamePark::gameOver()
     m_fader->setVisible(true);
     m_fader->finished.connect([this](){
         m_fader->setVisible(false);
-        setSceneMode(SceneMode::EndGame);
+        setSceneMode(SceneMode::GameOver);
     });
 }
 
@@ -1045,6 +1046,10 @@ void GamePark::setSceneMode(const SceneMode &mode)
         {
             delete m_credits;
         }
+        if(m_gameOverCredits)
+        {
+            delete m_gameOverCredits;
+        }
 
         auto i = std::begin(m_aiNode);
         while(i != std::end(m_aiNode))
@@ -1058,6 +1063,16 @@ void GamePark::setSceneMode(const SceneMode &mode)
     }
     if(m_sceneMode == SceneMode::Game)
     {
+        auto i = std::begin(m_aiNode);
+        while(i != std::end(m_aiNode))
+        {
+            MonsterNode* monster = *i;
+            monster->node()->setVisible(true);
+            i++;
+        }
+        m_player->setHealth(1.0);
+        m_finish = false;
+
         smgr()->setActiveCamera(m_player->camera());
         m_device->getCursorControl()->setVisible(false);
         m_mainMenuNode->setVisible(false);
@@ -1078,15 +1093,12 @@ void GamePark::setSceneMode(const SceneMode &mode)
     }
     if(m_sceneMode == SceneMode::History)
     {
-        m_player->setPosition(174,85,994);
 
-        auto i = std::begin(m_aiNode);
-        while(i != std::end(m_aiNode))
-        {
-            MonsterNode* monster = *i;
-            monster->node()->setVisible(true);
-            i++;
-        }
+        player()->camera()->setUpVector(core::vector3df(0,1,0));
+        player()->camera()->setInputReceiverEnabled(true);
+        player()->node()->setVisible(true);
+        player()->camera()->removeAnimator(player()->m_dieAnimator);
+        m_player->setPosition(174,85,994);
 
         m_device->getCursorControl()->setVisible(false);
         m_mainMenuNode->setVisible(false);
@@ -1099,13 +1111,18 @@ void GamePark::setSceneMode(const SceneMode &mode)
         m_fader->setVisible(true);
         m_fader->finished.connect([this](){
             m_fader->setVisible(false);
-            MessageBox::showStartMessage(device());
+            MyMessageBox::showStartMessage(device());
         });
         return;
     }
     if(m_sceneMode == SceneMode::EndGame)
     {
         m_credits = new MotionPictureCredits(this);
+        return;
+    }
+    if(m_sceneMode == SceneMode::GameOver)
+    {
+        m_gameOverCredits = new GameOverCredits(this);
         return;
     }
     if(m_sceneMode == SceneMode::Loading)
@@ -1247,6 +1264,9 @@ int GamePark::run()
             break;
         case SceneMode::EndGame:
             m_credits->draw();
+            break;
+        case SceneMode::GameOver:
+            m_gameOverCredits->draw();
             break;
         default:
             driver()->beginScene(true, true, 0 );
