@@ -26,7 +26,24 @@ MonsterNode::~MonsterNode()
 
 void MonsterNode::draw()
 {
-    Enemy::draw();
+    if(m_health > 0.0)
+    {
+        core::vector3df pos;
+        core::vector3df rot;
+        AI::calcPositionAndRotation(&pos, &rot);
+        m_node->setPosition(pos);
+        m_node->setRotation(rot);
+    }
+}
+
+scene::ISceneNode *MonsterNode::node() const
+{
+    return m_node;
+}
+
+void MonsterNode::setPosition(const core::vector3df pos)
+{
+    Enemy::setPosition(pos);
 }
 
 int MonsterNode::init()

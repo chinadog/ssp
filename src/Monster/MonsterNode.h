@@ -19,6 +19,9 @@ public:
 
     void draw();
 
+    scene::ISceneNode* node() const;// new
+    void setPosition(const core::vector3df pos);
+
     int init();
     core::vector3df ellipsoid() const;
     core::vector3df ellipsoidTranslation() const;

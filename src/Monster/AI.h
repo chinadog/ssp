@@ -19,6 +19,7 @@ public:
     virtual ~AI();
 
     virtual void draw();
+    void calcPositionAndRotation(core::vector3df& pos, core::vector3df rot);
 
 
     f32 m_deltaTime = 0;
@@ -36,7 +37,7 @@ scene::ISceneNodeAnimatorCollisionResponse* m_gravityAnim = nullptr;
     virtual irr::core::vector3df ellipsoid() const = 0;
     virtual irr::core::vector3df ellipsoidTranslation() const = 0;
     void gotoPlayer(f32 timeInSeconds);
-    void showEllipsoid();
+//    void showEllipsoid();
     inline scene::IAnimatedMeshSceneNode* node() {return m_node;} 
     Signal<> layOut;
 private:
@@ -61,8 +62,8 @@ protected:
     AnimationFrameLoop m_afl;
     GamePark* m_gamePark;
 
-    core::vector3df m_position;
-    core::vector3df m_rotation;
+    core::vector3df m_aiPosition;
+    core::vector3df m_aiRotation;
 };
 
 #endif // AI_H

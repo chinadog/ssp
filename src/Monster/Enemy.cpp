@@ -15,8 +15,10 @@ void Enemy::draw()
 {
     if(m_health > 0.0)
     {
+        m_aiPosition = node()->getPosition();
+        m_aiRotation = node()->getRotation();
         AI::draw();
-        m_node->setPosition(m_position);
-        m_node->setRotation(m_rotation);
+        node()->setPosition(m_aiPosition);
+        node()->setRotation(m_aiRotation);
     }
 }
