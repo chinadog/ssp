@@ -63,7 +63,8 @@ SOURCES += \
     src/Monster/MonsterFMS.cpp \
     src/Monster/RespawnPoint.cpp \
     src/Player/SlowMo.cpp \
-    src/SceneNode/GameOverCredits.cpp
+    src/SceneNode/GameOverCredits.cpp \
+    src/Monster/Enemy.cpp
 
 HEADERS += \
     src/EventReceiver/EventReceiver.h \
@@ -115,7 +116,8 @@ HEADERS += \
     src/Monster/MonsterFMS.h \
     src/Monster/RespawnPoint.h \
     src/Player/SlowMo.h \
-    src/SceneNode/GameOverCredits.h
+    src/SceneNode/GameOverCredits.h \
+    src/Monster/Enemy.h
 
 LIBS += -L../../irrlicht-1.8.4/lib/Linux/ -lIrrlicht -lGL -lGLU -lXxf86vm -lXext -lX11
 LIBS += -L../../irrKlang-64bit-1.5.0/bin/linux-gcc-64/ -lIrrKlang

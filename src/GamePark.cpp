@@ -56,6 +56,7 @@ int GamePark::initWorld()
     initAI();
     initTestObj();
     initRespawnPoints();
+//    initForest();
     loadProgressbarChanged.Emit(70);
 
     initMenu();

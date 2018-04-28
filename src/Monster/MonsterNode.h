@@ -3,6 +3,7 @@
 
 #include <irrlicht.h>
 #include "AI.h"
+#include "Monster/Enemy.h"
 #include <list>
 #include "Monster/MonsterFMS.h"
 
@@ -10,11 +11,13 @@ using namespace irr;
 
 class DieEndCallBack;
 
-class MonsterNode : public AI
+class MonsterNode : public Enemy
 {
 public:
     MonsterNode(GamePark* gamePark);
     ~MonsterNode();
+
+    void draw();
 
     int init();
     core::vector3df ellipsoid() const;

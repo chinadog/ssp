@@ -17,6 +17,7 @@ class Common
 public:
     Common(){}
     inline static irr::core::stringc modelsPath() {return irr::core::stringc("../../media/models/");}
+    inline static irr::core::stringc texture(const irr::io::path &filename) {return irr::core::stringc("../../media/textures/")+filename;}
 };
 
 

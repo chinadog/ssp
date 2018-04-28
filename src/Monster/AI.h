@@ -14,21 +14,6 @@ class GamePark;
 class AI
 {
 public:
-    enum
-    {
-        // I use this ISceneNode ID to indicate a scene node that is
-        // not pickable by getSceneNodeAndCollisionPointFromRay()
-        ID_IsNotPickable = 0,
-
-        // I use this flag in ISceneNode IDs to indicate that the
-        // scene node can be picked by ray selection.
-        IDFlag_IsPickable = 1 << 0,
-
-        // I use this flag in ISceneNode IDs to indicate that the
-        // scene node can be highlighted.  In this example, the
-        // homonids can be highlighted, but the level mesh can't.
-        IDFlag_IsHighlightable = 1 << 1
-    };
 
     AI(GamePark* gamePark);
     virtual ~AI();
@@ -52,11 +37,7 @@ scene::ISceneNodeAnimatorCollisionResponse* m_gravityAnim = nullptr;
     virtual irr::core::vector3df ellipsoidTranslation() const = 0;
     void gotoPlayer(f32 timeInSeconds);
     void showEllipsoid();
-    inline irr::video::ITexture* texture(const irr::io::path &filename)
-           {return m_driver->getTexture(irr::core::stringc("../../media/textures/")+filename);}
-    inline scene::IAnimatedMeshSceneNode* node() {return m_node;}
-    inline f32 health() const {return m_health;}
-    inline void setHealth(f32 value) {m_health = value;}
+    inline scene::IAnimatedMeshSceneNode* node() {return m_node;} 
     Signal<> layOut;
 private:
     void createGravitation();
@@ -69,7 +50,6 @@ protected:
     scene::IAnimatedMeshSceneNode* m_node = nullptr;
     scene::ITerrainSceneNode* m_terrain = nullptr;
     bool m_movable = true;
-    f32 m_health = 1.0;
     f32 m_speed = 7.5;
     bool m_isRotated = true;
     bool m_intersects = false;
@@ -80,6 +60,9 @@ protected:
     f32 m_speedOfTime = 1.0;
     AnimationFrameLoop m_afl;
     GamePark* m_gamePark;
+
+    core::vector3df m_position;
+    core::vector3df m_rotation;
 };
 
 #endif // AI_H

@@ -51,7 +51,7 @@ void AI::setTerrain(scene::ITerrainSceneNode *terrain)
 
 void AI::gotoPlayer(f32 timeInSeconds)
 {
-    if(m_node == nullptr || m_movable == false || m_player->health() <= 0.0 || m_health <= 0.0)
+    if(m_node == nullptr || m_movable == false || m_player->health() <= 0.0 /*|| m_health <= 0.0*/)
     {
         return;
     }
@@ -122,6 +122,7 @@ void AI::moveNode(const core::vector3df &pos, f32 timeInSeconds)
         x += timeInSeconds*m_speed*m_speedOfTime*(pos.X - x) / m_distanceToPlayer;//идем по иксу с помощью вектора нормали
         z += timeInSeconds*m_speed*m_speedOfTime*(pos.Z - z) / m_distanceToPlayer;//идем по игреку так же
         m_node->setPosition(core::vector3df(x,y,z));
+        m_position = core::vector3df(x,y,z); // new
         if(m_intersects == true)
         {
             m_intersects = false;
@@ -146,5 +147,9 @@ void AI::moveNode(const core::vector3df &pos, f32 timeInSeconds)
     if(m_isRotated)
     {
         m_node->setRotation( r );
+        m_rotation = r; // new
     }
+
+
+
 }

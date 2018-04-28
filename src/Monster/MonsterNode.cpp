@@ -3,7 +3,7 @@
 #include "GamePark.h"
 
 MonsterNode::MonsterNode(GamePark* gamePark) :
-    AI(gamePark)
+    Enemy(gamePark)
 {
     init();
     m_speedOfTime = m_gamePark->speedOfTime();
@@ -24,6 +24,11 @@ MonsterNode::~MonsterNode()
     remove();
 }
 
+void MonsterNode::draw()
+{
+    Enemy::draw();
+}
+
 int MonsterNode::init()
 {
     scene::IAnimatedMesh* mesh;
@@ -36,7 +41,7 @@ int MonsterNode::init()
     m_node = m_smgr->addAnimatedMeshSceneNode( mesh );
     if (m_node)
     {
-        m_node->setMaterialTexture(0, texture("monster/green.tga"));
+        m_node->setMaterialTexture(0, m_driver->getTexture(Common::texture("monster/green.tga")));
 //        m_node->setMaterialTexture(0, texture("plitka.tga"));
         m_node->setScale(core::vector3df(7.0f/60.0,7.0f/60.0,7.0f/60.0));
         m_node->setMaterialFlag(video::EMF_LIGHTING, true);
@@ -153,7 +158,7 @@ void MonsterNode::dustEffect(const core::vector3df& pos)
     ps->setScale(core::vector3df(2,2,2));
     ps->setMaterialFlag(video::EMF_LIGHTING, false);
     ps->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
-    ps->setMaterialTexture(0, texture("dust2.png"));
+    ps->setMaterialTexture(0, m_driver->getTexture(Common::texture("dust2.png")));
     ps->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL);
 
     scene::ISceneNodeAnimator* sna = m_smgr->createDeleteAnimator(1800);
@@ -202,7 +207,7 @@ void MonsterNode::bloodEffect(const core::vector3df &pos)
 
         ps->setPosition(core::vector3df(200,15,900));
         ps->setMaterialFlag(video::EMF_LIGHTING, false);
-        ps->setMaterialTexture(0, texture("blood_bw.tga"));
+        ps->setMaterialTexture(0, m_driver->getTexture(Common::texture("blood_bw.tga")));
         ps->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL);
         ps->setPosition(pos);
 
@@ -241,7 +246,7 @@ void MonsterNode::bloodEffect(const core::vector3df &pos)
 
         ps->setPosition(core::vector3df(200,15,900));
         ps->setMaterialFlag(video::EMF_LIGHTING, false);
-        ps->setMaterialTexture(0, texture("blood_bw.tga"));
+        ps->setMaterialTexture(0, m_driver->getTexture(Common::texture("blood_bw.tga")));
         ps->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL);
         ps->setPosition(pos);
 
