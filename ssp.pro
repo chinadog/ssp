@@ -119,12 +119,12 @@ HEADERS += \
     src/SceneNode/GameOverCredits.h \
     src/Monster/Enemy.h
 
-LIBS += -L../../irrlicht-1.8.4/lib/Linux/ -lIrrlicht -lGL -lGLU -lXxf86vm -lXext -lX11
+LIBS += -L../../irrlicht-1.8.4_release/lib/Linux/ -lIrrlicht -lGL -lGLU -lXxf86vm -lXext -lX11
 LIBS += -L../../irrKlang-64bit-1.5.0/bin/linux-gcc-64/ -lIrrKlang
 #LIBS += -L../../irrlicht-1.7.3/lib/Linux/ -lIrrlicht -lGL -lGLU -lXxf86vm -lXext -lX11
 
 
-INCLUDEPATH += ../../irrlicht-1.8.4/include
+INCLUDEPATH += ../../irrlicht-1.8.4_release/include
 INCLUDEPATH += ../../irrKlang-64bit-1.5.0/include
 #INCLUDEPATH += ../../irrlicht-1.7.3/include
 INCLUDEPATH += src

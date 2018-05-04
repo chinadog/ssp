@@ -45,8 +45,8 @@ void AI::calcPositionAndRotation(core::vector3df &pos, core::vector3df rot)
 
 void AI::setPosition(const core::vector3df &pos)
 {
-//    m_node->setPosition(pos);
-    m_aiPosition = pos;
+    m_node->setPosition(pos);
+//    m_aiPosition = pos;
 }
 
 void AI::setTerrain(scene::ITerrainSceneNode *terrain)
@@ -95,72 +95,9 @@ void AI::createGravitation()
 
 void AI::moveNode(const core::vector3df &pos, f32 timeInSeconds)
 {
-//    f32 x = m_node->getPosition().X;
-//    f32 y = m_node->getPosition().Y;
-//    f32 z = m_node->getPosition().Z;
-//    //считаем дистанцию (длину от точки А до точки Б). формула длины вектора
-//    m_distanceToPlayer = std::sqrt((pos.X - x)*(pos.X - x) + (pos.Z - z)*(pos.Z - z));
-
-//    if(m_isDraw == true)
-//    {
-//        if(m_terrain->getHeight(x,z) > y-2.0)
-//        {
-//            m_gravityAnim->setGravity(core::vector3df(0,0,0));
-//            y+=25*timeInSeconds*m_speedOfTime;
-//            if(std::fabs(m_terrain->getHeight(x,z)- y) < 3.5 && m_layOut == false)
-//            {
-//                m_layOut = true;
-//                layOut.Emit();
-//                layOut.disconnect_all();
-//            }
-//        }
-//        else
-//        {
-//            std::cout << "Draw finish" << std::endl;
-//            m_gravityAnim->setGravity(core::vector3df(0,-8,0));
-//            m_isDraw = false;
-//            stopDraw();
-//        }
-//    }
-
-//    if(m_distanceToPlayer > 10)
-//    {
-//        x += timeInSeconds*m_speed*m_speedOfTime*(pos.X - x) / m_distanceToPlayer;//идем по иксу с помощью вектора нормали
-//        z += timeInSeconds*m_speed*m_speedOfTime*(pos.Z - z) / m_distanceToPlayer;//идем по игреку так же
-//        m_node->setPosition(core::vector3df(x,y,z));
-//        m_aiPosition = core::vector3df(x,y,z); // new
-//        if(m_intersects == true)
-//        {
-//            m_intersects = false;
-//            walk();
-//        }
-//    }
-//    else
-//    {
-//        if(m_intersects == false )
-//        {
-//            m_intersects = true;
-//            atack();
-//        }
-//    }
-//    core::vector3df r = pos - m_node->getAbsolutePosition();
-//    f32 arc = atan2(r.X, r.Z);
-
-//    f32 newX = arc*180/M_PI;
-
-//    r.set( 0, newX, 0);
-
-//    if(m_isRotated)
-//    {
-//        m_node->setRotation( r );
-//        m_aiRotation = r; // new
-//    }
-
-
-
-    f32 x = m_aiPosition.X;
-    f32 y = m_aiPosition.Y;
-    f32 z = m_aiPosition.Z;
+    f32 x = m_node->getPosition().X;
+    f32 y = m_node->getPosition().Y;
+    f32 z = m_node->getPosition().Z;
     //считаем дистанцию (длину от точки А до точки Б). формула длины вектора
     m_distanceToPlayer = std::sqrt((pos.X - x)*(pos.X - x) + (pos.Z - z)*(pos.Z - z));
 
@@ -190,6 +127,7 @@ void AI::moveNode(const core::vector3df &pos, f32 timeInSeconds)
     {
         x += timeInSeconds*m_speed*m_speedOfTime*(pos.X - x) / m_distanceToPlayer;//идем по иксу с помощью вектора нормали
         z += timeInSeconds*m_speed*m_speedOfTime*(pos.Z - z) / m_distanceToPlayer;//идем по игреку так же
+        m_node->setPosition(core::vector3df(x,y,z));
         m_aiPosition = core::vector3df(x,y,z); // new
         if(m_intersects == true)
         {
@@ -205,7 +143,7 @@ void AI::moveNode(const core::vector3df &pos, f32 timeInSeconds)
             atack();
         }
     }
-    core::vector3df r = pos - m_aiPosition;
+    core::vector3df r = pos - m_node->getAbsolutePosition();
     f32 arc = atan2(r.X, r.Z);
 
     f32 newX = arc*180/M_PI;
@@ -214,8 +152,70 @@ void AI::moveNode(const core::vector3df &pos, f32 timeInSeconds)
 
     if(m_isRotated)
     {
+        m_node->setRotation( r );
         m_aiRotation = r; // new
     }
+
+
+
+//    f32 x = m_aiPosition.X;
+//    f32 y = m_aiPosition.Y;
+//    f32 z = m_aiPosition.Z;
+//    //считаем дистанцию (длину от точки А до точки Б). формула длины вектора
+//    m_distanceToPlayer = std::sqrt((pos.X - x)*(pos.X - x) + (pos.Z - z)*(pos.Z - z));
+
+//    if(m_isDraw == true)
+//    {
+//        if(m_terrain->getHeight(x,z) > y-2.0)
+//        {
+//            m_gravityAnim->setGravity(core::vector3df(0,0,0));
+//            y+=25*timeInSeconds*m_speedOfTime;
+//            if(std::fabs(m_terrain->getHeight(x,z)- y) < 3.5 && m_layOut == false)
+//            {
+//                m_layOut = true;
+//                layOut.Emit();
+//                layOut.disconnect_all();
+//            }
+//        }
+//        else
+//        {
+//            std::cout << "Draw finish" << std::endl;
+//            m_gravityAnim->setGravity(core::vector3df(0,-8,0));
+//            m_isDraw = false;
+//            stopDraw();
+//        }
+//    }
+
+//    if(m_distanceToPlayer > 10)
+//    {
+//        x += timeInSeconds*m_speed*m_speedOfTime*(pos.X - x) / m_distanceToPlayer;//идем по иксу с помощью вектора нормали
+//        z += timeInSeconds*m_speed*m_speedOfTime*(pos.Z - z) / m_distanceToPlayer;//идем по игреку так же
+//        m_aiPosition = core::vector3df(x,y,z); // new
+//        if(m_intersects == true)
+//        {
+//            m_intersects = false;
+//            walk();
+//        }
+//    }
+//    else
+//    {
+//        if(m_intersects == false )
+//        {
+//            m_intersects = true;
+//            atack();
+//        }
+//    }
+//    core::vector3df r = pos - m_aiPosition;
+//    f32 arc = atan2(r.X, r.Z);
+
+//    f32 newX = arc*180/M_PI;
+
+//    r.set( 0, newX, 0);
+
+//    if(m_isRotated)
+//    {
+//        m_aiRotation = r; // new
+//    }
 
 
 

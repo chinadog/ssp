@@ -56,7 +56,7 @@ int GamePark::initWorld()
     initAI();
     initTestObj();
     initRespawnPoints();
-//    initForest();
+    initForest();
     loadProgressbarChanged.Emit(70);
 
     initMenu();
@@ -399,11 +399,11 @@ int GamePark::initTestObj()
 int GamePark::initForest()
 {
     core::vector3df pos[m_forestSize];
-    pos[0] = core::vector3df(20000/60.0,260*2/60.0,59360/60.0);
-    pos[1] = core::vector3df(43630/60.0,260*2/60.0,49760/60.0);
-    pos[2] = core::vector3df(15060/60.0,260*2/60.0,33010/60.0);
-    pos[3] = core::vector3df(46400/60.0,260*2/60.0,26800/60.0);
-    pos[4] = core::vector3df(46400/60.0,260*2/60.0,26800/60.0);
+    pos[0] = core::vector3df(20000/60.0,12,59360/60.0);
+    pos[1] = core::vector3df(43630/60.0,12,49760/60.0);
+    pos[2] = core::vector3df(15060/60.0,12,33010/60.0);
+    pos[3] = core::vector3df(46400/60.0,12,26800/60.0);
+    pos[4] = core::vector3df(46400/60.0,12,26800/60.0);
     core::vector3df scale = core::vector3df(70.0f/60.0,70.0f/60.0,70.0f/60.0);
 
     for(int i=0;i<m_forestSize;i++)
@@ -434,6 +434,7 @@ int GamePark::initForest()
 //        setCollision(node, m_player);
         Collision::setMetaCollision(node, smgr(), m_metaTriangleSelector);
         m_forest[i] = node;
+        m_forestSelector[i] = smgr()->createOctreeTriangleSelector(m_forest[i]->getMesh(), m_forest[i], 32);
 
         mesh = smgr()->getMesh(Common::modelsPath()+"forest_"+postfixLow);
         if (!mesh)
@@ -762,6 +763,8 @@ void GamePark::updateMonsterCollision()
             monster->addTriangleSelector(*it2);
         }
         monster->addTriangleSelector( m_whiteBoxSelector );
+        for(int i=0;i<m_forestSize;i++)
+            monster->addTriangleSelector( m_forestSelector[i] );
         monster->updateCollisionAnimator();
     }
 }
@@ -1072,6 +1075,7 @@ void GamePark::setSceneMode(const SceneMode &mode)
             i++;
         }
         m_player->setHealth(1.0);
+        m_player->setPosition(174,185,994);
         m_finish = false;
 
         smgr()->setActiveCamera(m_player->camera());
@@ -1099,7 +1103,7 @@ void GamePark::setSceneMode(const SceneMode &mode)
         player()->camera()->setInputReceiverEnabled(true);
         player()->node()->setVisible(true);
         player()->camera()->removeAnimator(player()->m_dieAnimator);
-        m_player->setPosition(174,85,994);
+
 
         m_device->getCursorControl()->setVisible(false);
         m_mainMenuNode->setVisible(false);

@@ -121,6 +121,7 @@ private:
     gui::IGUIStaticText* m_fpsText = nullptr;
     const int m_forestSize = 5;
     scene::IMeshSceneNode* m_forest[5];
+    scene::ITriangleSelector* m_forestSelector[5];
     scene::IAnimatedMeshSceneNode* m_monsterNode = nullptr;
     scene::IMeshSceneNode *m_roadNode = nullptr;
     scene::ISceneNode* m_cubeNode;

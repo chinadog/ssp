@@ -21,7 +21,7 @@ public:
     void draw();
     virtual scene::ISceneNode* node() const = 0;
 
-private:
+//private:
     f32 m_health = 1.0;
 };
 
