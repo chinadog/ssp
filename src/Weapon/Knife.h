@@ -20,6 +20,7 @@ public:
     void addBullets(int value);
     void removeBullets(int value);
     int bulletMaxCountInClip() const;
+    f32 damage() const;
 };
 
 #endif // KNIFE_H

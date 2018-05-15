@@ -1323,7 +1323,8 @@ int GamePark::run()
                     }
                     else
                     {
-                        monster->damage(0.2, shootIntersection.m_intersection);
+                        monster->damage(m_player->currentWeapon()->damage(),
+                                        shootIntersection.m_intersection);
                     }
                 }
                 if(monster->life() == false)

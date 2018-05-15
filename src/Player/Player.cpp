@@ -630,7 +630,7 @@ void Player::draw()
     if(m_keyW == true && (currentPlayerState() == PlayerState::Walk || currentPlayerState() == PlayerState::Run))
     {
         core::vector3df pos = camera()->getPosition();
-        pos.Y += m_deltaTime*2*m_speedOfTime;
+        pos.Y += m_deltaTime*(1+m_walkSpeed/0.01)*m_speedOfTime; //0.01 = 2 | 0.002
         setPosition(pos.X, pos.Y, pos.Z);
     }
 

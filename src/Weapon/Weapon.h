@@ -41,6 +41,7 @@ public:
     virtual int bulletCount() const {return m_bulletCount;}
     virtual int bulletCountInClip() const {return m_bulletCountInClip;}
     virtual int bulletMaxCountInClip() const {return 0;}
+    virtual f32 damage() const{return 0.2;}
     f32 fireRate() const {return m_fireRate;}
 
     virtual void shootSound(bool /*play*/);

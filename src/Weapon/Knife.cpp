@@ -210,3 +210,8 @@ int Knife::bulletMaxCountInClip() const
 {
     return 30;
 }
+
+f32 Knife::damage() const
+{
+    return 1.0;
+}
