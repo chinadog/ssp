@@ -12,6 +12,7 @@ class SlowMo
 {
 public:
     SlowMo(GamePark* gamePark);
+    ~SlowMo();
     void start(const core::vector3df& pos1, const core::vector3df& pos2);
     void draw();
 

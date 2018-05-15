@@ -12,3 +12,8 @@ SoundEngine::SoundEngine()
         return; // error starting up the engine
     }
 }
+
+SoundEngine::~SoundEngine()
+{
+    m_soundEngine->drop();
+}

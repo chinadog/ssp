@@ -1,5 +1,7 @@
 #include "RespawnPoint.h"
 #include "GamePark.h"
+#include "RedMonsterNode.h"
+#include "GreenMonsterNode.h"
 
 RespawnPoint::RespawnPoint(GamePark* gamePark, const core::vector3df& pos) :
     m_gamePark(gamePark),
@@ -12,14 +14,29 @@ RespawnPoint::RespawnPoint(GamePark* gamePark, const core::vector3df& pos) :
 RespawnPoint::~RespawnPoint()
 {
     m_gamePark->speedOfTimeChanged.disconnect(m_speedOfTimeChangedSignalId);
+    m_node->drop();
 }
 
 void RespawnPoint::createMonster()
 {
-    MonsterNode* node = new MonsterNode(m_gamePark);
+    s32 rand = m_gamePark->device()->getRandomizer()->rand() % 2;
+
+    MonsterNode* node = 0;
+
+    if(rand == 0)
+    {
+        node = new RedMonsterNode(m_gamePark);
+    }
+    else
+    {
+        node = new RedMonsterNode(m_gamePark);
+    }
+
+//    MonsterNode* node = new MonsterNode(m_gamePark);
     core::vector3df monsterPos = m_pos;
     monsterPos.Y -= 100;
     node->setPosition( monsterPos );
+    node->setDrawFinishedLevel(m_node->getPosition().Y + 0.8);
     node->setTerrain(m_gamePark->m_terrain);
     m_gamePark->m_aiNode.push_back(node);
     m_gamePark->updateMonsterCollision();
@@ -67,6 +84,9 @@ void RespawnPoint::draw()
         800,2000,0,                         // min and max age, angle
         core::dimension2df(4,4),         // min size
         core::dimension2df(6,6));        // max size
+
+    em->setMinStartColor(video::SColor(0,125,125,125));
+    em->setMaxStartColor(video::SColor(0,255,255,255));
 
     ps->setEmitter(em); // this grabs the emitter
     em->drop(); // so we can drop it here without deleting it

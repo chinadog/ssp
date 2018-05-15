@@ -61,7 +61,7 @@ private:
     video::SColor FullColor;
     video::SColor TransColor;
 
-    IrrlichtDevice* m_device;
+    IrrlichtDevice* m_device = nullptr;
 };
 
 

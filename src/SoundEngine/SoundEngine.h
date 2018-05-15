@@ -11,6 +11,7 @@ private:
     SoundEngine();
     SoundEngine( const SoundEngine&);
     SoundEngine& operator=( SoundEngine& );
+    ~SoundEngine();
 
     ISoundEngine* m_soundEngine = nullptr;
 public:

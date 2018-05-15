@@ -17,12 +17,12 @@ public:
     MonsterNode(GamePark* gamePark);
     ~MonsterNode();
 
-    void draw();
+    virtual void draw();
 
     scene::ISceneNode* node() const;// new
     void setPosition(const core::vector3df pos);
 
-    int init();
+    virtual int init();
     core::vector3df ellipsoid() const;
     core::vector3df ellipsoidTranslation() const;
     void kill();
@@ -50,9 +50,9 @@ public:
 
     void setSpeedOfTime(f32 speed);
 
+    inline void setDrawFinishedLevel(f32 value){m_drawFinishedLevel = value;}
 
-
-    void setMonsterState(const MonsterState& state, bool force = false);
+    virtual void setMonsterState(const MonsterState& state, bool force = false);
     void woundFinished();
     void atack();
     void walk();
@@ -60,18 +60,25 @@ public:
     void atackPlayer();
 private:
     bool m_life = true;
-    MonsterFMS m_fms;
-    MonsterState m_currentState = MonsterState::Draw;
+
+
     AnimationEndCallback m_endCallback;
     std::list<scene::IAnimationEndCallBack*> m_callbackList;
+
+    f32 m_drawFinishedLevel = 0.0;
+
+
+
+protected:
+    MonsterState m_currentState = MonsterState::Draw;
     scene::IMetaTriangleSelector *m_metaTriangleSelector = nullptr;
     int m_speedOfTimeChangedSignalId = -1;
+    MonsterFMS m_fms;
 
     f32 m_walkSpeed = 7.5;
     f32 m_woundSpeed = 1.5;
     f32 m_atackSpeed = 1.5;
     f32 m_drawSpeed = 0.5;
-
 };
 
 //--------------------------------------------------------------------------

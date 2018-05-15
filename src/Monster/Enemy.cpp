@@ -17,7 +17,7 @@ void Enemy::draw()
     {
         m_aiPosition = node()->getPosition();
         m_aiRotation = node()->getRotation();
-        AI::draw();
+//        AI::draw();
         node()->setPosition(m_aiPosition);
         node()->setRotation(m_aiRotation);
     }

@@ -1,16 +1,12 @@
 #include "MonsterNode.h"
 #include "Common/Common.h"
 #include "GamePark.h"
+#include "cmath"
 
 MonsterNode::MonsterNode(GamePark* gamePark) :
     Enemy(gamePark)
 {
-    init();
-    m_speedOfTime = m_gamePark->speedOfTime();
-    m_metaTriangleSelector = m_smgr->createMetaTriangleSelector();
-    m_boxSelector = m_smgr->createTriangleSelectorFromBoundingBox(m_node);
-    m_octreeSelector = m_smgr->createOctreeTriangleSelector(m_node->getMesh(), m_node, 32);
-    m_speedOfTimeChangedSignalId = m_gamePark->speedOfTimeChanged.connect_member(this,&MonsterNode::setSpeedOfTime);
+
 }
 
 MonsterNode::~MonsterNode()
@@ -26,14 +22,58 @@ MonsterNode::~MonsterNode()
 
 void MonsterNode::draw()
 {
+    u32 now = m_device->getTimer()->getTime();
+    if(m_prevTime == 0)
+    {
+        m_prevTime = now;
+    }
+    m_deltaTime = (f32)(now - m_prevTime) / 1000.f;
+    m_prevTime = now;
+
+//    scene::IBoneSceneNode* headBone = m_node->getJointNode("Bip01 Head");
+//    core::line3d<f32> ray;
+//    ray.start = headBone->getAbsolutePosition();
+//    ray.end = m_player->node()->getAbsolutePosition();
+//    ray.end.X += 0.01;
+
+//    video::SMaterial m;
+//    m.Lighting=false;
+//    m_gamePark->driver()->setMaterial(m);
+//    m_gamePark->driver()->setTransform(video::ETS_WORLD, core::matrix4());
+//    m_gamePark->driver()->draw3DLine(ray.start, ray.end);
+
     if(m_health > 0.0)
     {
-//        core::vector3df pos;
-//        core::vector3df rot;
-//        AI::calcPositionAndRotation(&pos, &rot);
-//        m_node->setPosition(pos);
-//        m_node->setRotation(rot);
-        AI::draw();
+        if(m_isDraw == true)
+        {
+            f32 x = m_node->getPosition().X;
+            f32 y = m_node->getPosition().Y;
+            f32 z = m_node->getPosition().Z;
+
+            if(m_drawFinishedLevel > y-2.0)
+            {
+                m_gravityAnim->setGravity(core::vector3df(0,0,0));
+                y+=25*m_deltaTime*m_speedOfTime;
+                m_node->setPosition(core::vector3df(x,y,z));
+                if(std::fabs(m_drawFinishedLevel - y) < 3.5 && m_layOut == false)
+                {
+                    m_layOut = true;
+                    layOut.Emit();
+                    layOut.disconnect_all();
+                }
+            }
+            else
+            {
+                std::cout << "Draw finish" << std::endl;
+                m_gravityAnim->setGravity(core::vector3df(0,-8,0));
+                m_isDraw = false;
+                stopDraw();
+            }
+        }
+        else
+        {
+            gotoPlayer(m_deltaTime);
+        }
     }
 }
 
@@ -101,6 +141,27 @@ void MonsterNode::kill()
 //    m_node->setAnimationEndCallback(new DieEndCallBack(this));
 //    m_movable = false;
     dustEffect( m_node->getAbsolutePosition() );
+
+
+    ISound* music2;
+    int rand = m_device->getRandomizer()->rand() % 2;
+    if(rand == 0)
+    {
+        music2 = StaticSoundEngine->play3D("../../media/sounds/monster/die1.ogg",
+                                              m_node->getPosition(), false, false, true);
+    }
+    else
+    {
+        music2 = StaticSoundEngine->play3D("../../media/sounds/monster/die2.ogg",
+                                              m_node->getPosition(), false, false, true);
+    }
+
+    if (music2)
+    {
+       music2->setMinDistance(1);
+       music2->setMaxDistance(150);
+    }
+    music2->drop();
 }
 
 void MonsterNode::damage(f32 value, const core::vector3df& intersection)
@@ -163,6 +224,9 @@ void MonsterNode::dustEffect(const core::vector3df& pos)
         800,2000,0,                         // min and max age, angle
         core::dimension2df(100.f/60.0,100.f/60.0),         // min size
         core::dimension2df(200.f/60.0,200.f/60.0));        // max size
+
+    em->setMinStartColor(video::SColor(0,125,125,125));
+    em->setMaxStartColor(video::SColor(0,255,255,255));
 
     ps->setEmitter(em); // this grabs the emitter
     em->drop(); // so we can drop it here without deleting it
@@ -306,7 +370,7 @@ void MonsterNode::updateCollisionAnimator()
 
 bool MonsterNode::isHeadshot(core::vector3df point) const
 {
-    scene::IBoneSceneNode* headBone = m_node->getJointNode((u32)13);
+    scene::IBoneSceneNode* headBone = m_node->getJointNode("Bip01 Head");
     core::line3d<f32> ray;
     ray.start = headBone->getAbsolutePosition();
     ray.end = point;
@@ -410,10 +474,10 @@ void MonsterNode::atack()
 {
     m_fms.setState(MonsterSignal::Atack);
     setMonsterState(m_fms.currentState());
-    if(m_distanceToPlayer <= 10)
+    if(m_distanceToPlayer <= m_atackDistance)
     {
         std::cout << Log::curTimeC() << "Atack" << std::endl;
-        m_player->setHealth(m_player->health()-0.1);
+        m_player->setHealth(m_player->health()-0.0);
     }
 }
 

@@ -9,6 +9,11 @@ SlowMo::SlowMo(GamePark* gamePark) : m_gamePark(gamePark)
     m_camera->setNearValue(0.1);
 }
 
+SlowMo::~SlowMo()
+{
+    m_camera->drop();
+}
+
 void SlowMo::start(const core::vector3df &pos1, const core::vector3df &pos2)
 {
     m_isActive = true;

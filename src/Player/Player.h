@@ -102,9 +102,9 @@ public:
     f32 m_runSpeed = 0.15;
     irr::scene::IAnimatedMeshSceneNode* m_bulletNode;
     scene::ISceneNodeAnimator* m_dieAnimator = nullptr;
+    ISound* m_painSound = nullptr;
 private:
     irr::scene::ICameraSceneNode* m_camera;
-    irr::scene::ICameraSceneNode* m_cameraSlowMo;
     GamePark* m_gamePark;
     irr::IrrlichtDevice* m_device;
     irr::scene::ISceneNode *m_fire;

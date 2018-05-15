@@ -12,6 +12,7 @@ class LadderSceneNode
 {
 public:
     LadderSceneNode(GamePark* gamePark);
+    ~LadderSceneNode(){m_node->drop();}
     scene::ISceneNode* node();
     void draw();
     void setPosition(const core::vector3df& value);

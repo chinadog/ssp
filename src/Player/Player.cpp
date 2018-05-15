@@ -19,6 +19,10 @@ Player::Player(GamePark* gamePark) :
     m_gamePark(gamePark),
     m_device(gamePark->device())
 {
+    // Config
+    m_walkSpeed = m_gamePark->m_config.player().walkSpeed();
+    m_runSpeed = m_gamePark->m_config.player().runSpeed();
+
     SKeyMap keyMap[9];
     keyMap[0].Action = EKA_MOVE_FORWARD;
     keyMap[0].KeyCode = KEY_UP;
@@ -50,10 +54,6 @@ Player::Player(GamePark* gamePark) :
     m_camera->setTarget(core::vector3df(4897*2,343*2,17800*2));
     m_camera->setFarValue(42000.0f/30.0);
     m_camera->setNearValue(0.1);
-
-    m_cameraSlowMo = m_device->getSceneManager()->addCameraSceneNode();
-    m_cameraSlowMo->setFarValue(42000.0f/30.0);
-    m_cameraSlowMo->setNearValue(0.1);
 
     m_slowmo = new SlowMo(m_gamePark);
 
@@ -140,6 +140,11 @@ Player::Player(GamePark* gamePark) :
     initSoundEngine();
 
     m_gamePark->speedOfTimeChanged.connect_member(this,&Player::setSpeedOfTime);
+
+//    m_painSound = StaticSoundEngine->play2D("../../media/sounds/pain.ogg", true, false, true);
+//    m_painSound->setIsPaused(true);
+//    m_painSound->setPlayPosition(0);
+//    m_painSound->setVolume(1.0);
 }
 
 
@@ -168,6 +173,8 @@ Player::~Player()
       delete w;
   }
 
+  m_camera->drop();
+  delete m_slowmo;
 }
 
 irr::core::vector3df Player::ellipsoid() const
@@ -441,6 +448,11 @@ Weapon* Player::currentWeapon() const
 
 void Player::setHealth(f32 value)
 {
+    if(m_painSound==nullptr && value < m_health)
+    {
+        m_painSound = StaticSoundEngine->play2D("../../media/sounds/pain.ogg", false, false, true);
+    }
+
     m_health = value;
     updatePlayerInfo();
     if(m_health <= 0)
@@ -552,6 +564,16 @@ void Player::draw()
     m_prevTime = now;
     // end delta time
 
+
+    core::vector3df direction = (camera()->getTarget()-camera()->getPosition()).normalize();
+    StaticSoundEngine->setListenerPosition(camera()->getPosition(), direction);
+
+    if(m_painSound!=nullptr && m_painSound->isFinished())
+    {
+        m_painSound->drop();
+        m_painSound = nullptr;
+    }
+
     m_slowmo->draw();
     if(m_bulletNode->isVisible() == true)
     {
@@ -563,35 +585,7 @@ void Player::draw()
         }
     }
 
-//    if(m_gamePark->smgr()->getActiveCamera() == m_cameraSlowMo)
-//    {
-//        if(m_bulletNode->getAbsolutePosition().getDistanceFrom(m_slowMoTargetNode->node()->getAbsolutePosition()) < 5.0 )
-//        {
-//            if(m_bulletNode->isVisible() == true)
-//            {
-//                MonsterNode* m = (MonsterNode*)m_slowMoTargetNode;
-//                m->damage(0.1, m_bulletNode->getAbsolutePosition());
-//                m_bulletNode->setVisible(false);
 
-//                core::array<core::vector3df> camPoints;
-//                camPoints.push_back(m_cameraSlowMo->getPosition());
-//                camPoints.push_back(m_camera->getPosition());
-//                scene::ISceneNodeAnimator* saCam = 0;
-//                saCam = m_gamePark->smgr()->createFollowSplineAnimator(m_device->getTimer()->getTime(), camPoints, 1.0, 0.5, false);
-//                m_cameraSlowMo->removeAnimators();
-//                m_cameraSlowMo->addAnimator(saCam);
-//                saCam->drop();
-//            }
-
-//        }
-
-//        if(m_cameraSlowMo->getAbsolutePosition().getDistanceFrom(m_cameraSlowMo->getTarget()) < 1)
-//        {
-//            m_gamePark->smgr()->setActiveCamera(m_camera);
-//            m_gamePark->setSpeedOfTime(1.0);
-//            m_bulletNode->setVisible(false);
-//        }
-//    }
 
     setShootIntersection(ShootIntersection());
     if(fire()->isVisible() == true && m_startTimeFire + currentWeapon()->shootDelta()/m_speedOfTime < now && m_slowmo->isActive() == false)
@@ -767,27 +761,11 @@ void Player::showSlowMoShoot(AI* aiNode)
 {
     m_slowMoTargetNode = aiNode;
 
-//    m_cameraSlowMo->setTarget( m_shootIntersection.m_intersection );
-//    m_cameraSlowMo->setPosition( m_camera->getPosition() );
-////    m_gamePark->smgr()->setActiveCamera( m_cameraSlowMo );
-
     core::array<core::vector3df> bulletPoints;
     bulletPoints.push_back(m_bulletNode->getPosition());
     bulletPoints.push_back(bulletPoints[0]);
     bulletPoints[1].Z += m_camera->getPosition().getDistanceFrom(m_shootIntersection.m_intersection);
 
-
-
-
-//    core::array<core::vector3df> camPoints;
-//    camPoints.push_back(m_cameraSlowMo->getPosition());
-//    camPoints.push_back(m_shootIntersection.m_intersection);
-//    camPoints[1].X += 5;
-////    camPoints[1].Z += 15;
-
-
-
-//    m_gamePark->setSpeedOfTime(0.05);
 
     std::cout << "Distance bullet = " << bulletPoints[0].getDistanceFrom(bulletPoints[1]) << std::endl;
 
@@ -801,10 +779,6 @@ void Player::showSlowMoShoot(AI* aiNode)
     m_bulletNode->addAnimator(saBullet);
     saBullet->drop();
 
-//    scene::ISceneNodeAnimator* saCam = 0;
-//    saCam = m_gamePark->smgr()->createFollowSplineAnimator(m_device->getTimer()->getTime(), camPoints, camSpeed, 0.5, false);
-//    m_cameraSlowMo->addAnimator(saCam);
-//    saCam->drop();
 
     m_bulletNode->setVisible(true);
 

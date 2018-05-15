@@ -38,6 +38,20 @@ GamePark::~GamePark()
     if(m_gameOverCredits){delete m_gameOverCredits;}
 
     delete m_nuclearBoom;
+
+    while(m_respPoints.size()>0)
+    {
+        auto it = m_respPoints.begin();
+        RespawnPoint* w = *it;
+        m_respPoints.remove(w);
+        delete w;
+    }
+
+    statusText->drop();
+    m_mainMenuCamera->drop();
+    m_fpsText->drop();
+    m_terrain->drop();
+    m_whiteBoxNode->drop();
 }
 
 void GamePark::exit()
@@ -709,7 +723,6 @@ int GamePark::initSounds()
        music->setVolume(1.0f);
     }
 
-
     return 0;
 }
 
@@ -730,17 +743,24 @@ int GamePark::initAI()
 
 int GamePark::initRespawnPoints()
 {
-    RespawnPoint* p = new RespawnPoint(this,core::vector3df(200,10,920));
-    m_respPoints.push_back(p);
+//    RespawnPoint* p = new RespawnPoint(this,core::vector3df(200,10,920));
+//    m_respPoints.push_back(p);
 
-    p = new RespawnPoint(this,core::vector3df(200,10,850));
-    m_respPoints.push_back(p);
+//    p = new RespawnPoint(this,core::vector3df(200,10,850));
+//    m_respPoints.push_back(p);
 
-    p = new RespawnPoint(this,core::vector3df(400,10,900));
-    m_respPoints.push_back(p);
+//    p = new RespawnPoint(this,core::vector3df(400,10,900));
+//    m_respPoints.push_back(p);
 
-    p = new RespawnPoint(this,core::vector3df(400,10,1000));
-    m_respPoints.push_back(p);
+//    p = new RespawnPoint(this,core::vector3df(400,10,1000));
+//    m_respPoints.push_back(p);
+
+    for(int i=0;i<m_config.respawn().count();i++)
+    {
+        m_respPoints.push_back( new RespawnPoint(this,core::vector3df(m_config.respawn().points()[i].m_x,
+                                                                      m_config.respawn().points()[i].m_y,
+                                                                      m_config.respawn().points()[i].m_z)) );
+    }
 
     return 0;
 }
@@ -1076,6 +1096,7 @@ void GamePark::setSceneMode(const SceneMode &mode)
         }
         m_player->setHealth(1.0);
         m_player->setPosition(174,185,994);
+
         m_finish = false;
 
         smgr()->setActiveCamera(m_player->camera());
@@ -1318,6 +1339,7 @@ int GamePark::run()
                 }
                 i++;
             }
+//            driver()->endScene();
 
             if(m_aiNode.size() < m_config.count())
             {

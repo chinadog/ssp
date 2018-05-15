@@ -18,7 +18,6 @@ public:
     AI(GamePark* gamePark);
     virtual ~AI();
 
-    virtual void draw();
     void calcPositionAndRotation(core::vector3df& pos, core::vector3df rot);
 
 
@@ -64,6 +63,7 @@ protected:
 
     core::vector3df m_aiPosition;
     core::vector3df m_aiRotation;
+    f32 m_atackDistance = 5.0;
 };
 
 #endif // AI_H
