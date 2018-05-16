@@ -17,6 +17,7 @@
 #include "SceneNode/NuclearBoomSceneNode.h"
 #include "Monster/RespawnPoint.h"
 #include "SceneNode/GameOverCredits.h"
+#include "SceneNode/DropNode.h"
 
 using namespace irr;
 

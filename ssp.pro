@@ -66,7 +66,8 @@ SOURCES += \
     src/SceneNode/GameOverCredits.cpp \
     src/Monster/Enemy.cpp \
     src/Monster/RedMonsterNode.cpp \
-    src/Monster/GreenMonsterNode.cpp
+    src/Monster/GreenMonsterNode.cpp \
+    src/SceneNode/DropNode.cpp
 
 HEADERS += \
     src/EventReceiver/EventReceiver.h \
@@ -121,7 +122,8 @@ HEADERS += \
     src/SceneNode/GameOverCredits.h \
     src/Monster/Enemy.h \
     src/Monster/RedMonsterNode.h \
-    src/Monster/GreenMonsterNode.h
+    src/Monster/GreenMonsterNode.h \
+    src/SceneNode/DropNode.h
 
 LIBS += -L../../irrlicht-1.8.4/lib/Linux/ -lIrrlicht -lGL -lGLU -lXxf86vm -lXext -lX11
 LIBS += -L../../irrKlang-64bit-1.5.0/bin/linux-gcc-64/ -lIrrKlang
