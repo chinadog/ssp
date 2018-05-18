@@ -120,8 +120,8 @@ void RedMonsterNode::atack()
 
 void RedMonsterNode::fireEffect()
 {
-    m_fireEmitter->setMinParticlesPerSecond(150);
-    m_fireEmitter->setMaxParticlesPerSecond(180);
+    m_fireEmitter->setMinParticlesPerSecond(80);
+    m_fireEmitter->setMaxParticlesPerSecond(90);
 }
 
 void RedMonsterNode::setMonsterState(const MonsterState &state, bool force)

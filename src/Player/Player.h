@@ -14,6 +14,7 @@
 #include "FMS.h"
 #include "ShootIntersection.h"
 #include "SlowMo.h"
+#include "SceneNode/DropNode.h"
 
 class GamePark;
 class AI;
@@ -72,6 +73,8 @@ public:
 
     void draw();
     void updatePlayerInfo();
+
+    void grab(DropNode* node);
 
     ShootIntersection m_shootIntersection;
     inline ShootIntersection shootIntersection() const {return m_shootIntersection;}

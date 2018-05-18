@@ -767,10 +767,9 @@ int GamePark::initRespawnPoints()
 
 
     scene::IMesh* mesh = m_device->getSceneManager()->getMesh("../../media/models/bullet.b3d");
-    DropNode* node = new DropNode(mesh, smgr()->getRootSceneNode(), smgr(), -1);
+    DropNode* node = new DropNode(this, mesh, smgr()->getRootSceneNode(), smgr(), -1);
     node->setScale(core::vector3df(1,1,1));
     node->setMaterialFlag(irr::video::EMF_LIGHTING, true);
-//    node->setMaterialFlag(video::EMF_NORMALIZE_NORMALS, true);
     node->setPosition(core::vector3df(200,12,850));
     node->setMaterialTexture( 0, m_device->getVideoDriver()->getTexture("../../media/textures/bullet.tga") );
     node->drop();

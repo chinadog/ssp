@@ -11,6 +11,7 @@ GreenMonsterNode::GreenMonsterNode(GamePark *gamePark) :
     m_boxSelector = m_smgr->createTriangleSelectorFromBoundingBox(m_node);
     m_octreeSelector = m_smgr->createOctreeTriangleSelector(m_node->getMesh(), m_node, 32);
     m_speedOfTimeChangedSignalId = m_gamePark->speedOfTimeChanged.connect_member(this,&GreenMonsterNode::setSpeedOfTime);
+    m_atackDistance = 6.0;
 }
 
 int GreenMonsterNode::init()

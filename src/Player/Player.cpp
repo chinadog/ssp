@@ -693,6 +693,16 @@ void Player::updatePlayerInfo()
                 core::vector2df(1, 1));
 }
 
+void Player::grab(DropNode *node)
+{
+    if(node->type() == DropNode::Type::Weapon)
+    {
+        weapon(1)->addBullets(100);
+        updatePlayerInfo();
+    }
+    m_gamePark->smgr()->addToDeletionQueue(node);
+}
+
 ShootIntersection Player::calcShootIntersection()
 {
     scene::ISceneCollisionManager*  collMan;
