@@ -10,6 +10,8 @@ CONFIG(debug, debug|release) {
     TARGET = ssp
 }
 
+QMAKE_LFLAGS += -static-libgcc -static-libstdc++ -static
+
 DESTDIR = $$PWD/build/bin/
 MOC_DIR = $$PWD/build/moc/
 OBJECTS_DIR = $$PWD/build/obj/
@@ -137,15 +139,21 @@ HEADERS += \
     src/SceneNode/InterfaceSkinnedMesh.h \
     src/Common/Logger.h
 
+unix{
 LIBS += -L../../irrlicht-1.8.4/lib/Linux/ -lIrrlicht -lGL -lGLU -lXxf86vm -lXext -lX11
 LIBS += -L../../irrKlang-64bit-1.5.0/bin/linux-gcc-64/ -lIrrKlang
-#LIBS += -L../../irrlicht-1.7.3/lib/Linux/ -lIrrlicht -lGL -lGLU -lXxf86vm -lXext -lX11
-
 
 INCLUDEPATH += ../../irrlicht-1.8.4/include
 INCLUDEPATH += ../../irrKlang-64bit-1.5.0/include
-#INCLUDEPATH += ../../irrlicht-1.7.3/include
-INCLUDEPATH += src
+}
+win32{
+LIBS += "c:/irrlicht-1.8.4/bin/Win32-gcc/Irrlicht.dll"
+LIBS += "c:/irrKlang-1.6.0/bin/win32-gcc/irrKlang.dll"
 
+INCLUDEPATH += ../irrlicht-1.8.4/include
+INCLUDEPATH += ../irrKlang-1.6.0/include
+}
+
+INCLUDEPATH += src
 OTHER_FILES += $$PWD/config/config.ini
 

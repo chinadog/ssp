@@ -13,6 +13,7 @@
     #include <sys/time.h>
 #elif _WIN32
     #include <windows.h>
+    #include <ctime>
 #endif
 
 /**
@@ -74,7 +75,6 @@ public:
     // Конструкторы
     inline TDebug()
     {
-        m_color = "\033[36m";
         m_space = true;
         m_dateFormat="[dd.MM.yy HH:mm:ss.zzz] ";
     }
@@ -92,7 +92,15 @@ public:
             str.replace(start_pos+1, to.length(), to);
             start_pos += to.length();
         }
+//        std::cout << "\033[" << m_color << "m"<< curTimeString << str << "\033[0m" << std::endl;
+#ifdef __linux__
         std::cout << "\033[" << m_color << "m"<< curTimeString << str << "\033[0m" << std::endl;
+#elif _WIN32
+        HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+        SetConsoleTextAttribute(handle,m_color);
+        std::cout << curTimeString << str << std::endl;
+        SetConsoleTextAttribute(handle,7);
+#endif
     }
 
     // Методы
@@ -122,11 +130,20 @@ public:
         ss << '[' << timeString << '.' << zeroString << millisec << "] ";
         return ss.str();
     }
+
+#ifdef __linux__
     inline TDebug& debug()   {m_color = TLogger::get().m_colors.debug; return *this;}
     inline TDebug& trace()   {m_color = TLogger::get().m_colors.trace; return *this;}
     inline TDebug& info()    {m_color = TLogger::get().m_colors.info; return *this;}
     inline TDebug& warning() {m_color = TLogger::get().m_colors.warning; return *this;}
     inline TDebug& error()   {m_color = TLogger::get().m_colors.error; return *this;}
+#elif _WIN32
+    inline TDebug& debug()   {m_color = 11; return *this;}
+    inline TDebug& trace()   {m_color = 13; return *this;}
+    inline TDebug& info()    {m_color = 10; return *this;}
+    inline TDebug& warning() {m_color = 14; return *this;}
+    inline TDebug& error()   {m_color = 12; return *this;}
+#endif
 
     inline TDebug &space() { m_space = true; m_stream << ' '; return *this; }
     inline TDebug &nospace() { m_space = false; return *this; }
@@ -142,7 +159,11 @@ public:
 
 private:
     std::ostringstream m_stream;
+#ifdef __linux__
     std::string m_color;
+#elif _WIN32
+    DWORD m_color;
+#endif
     bool m_space;
     QString m_dateFormat;
 };
