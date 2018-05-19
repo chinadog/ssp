@@ -10,7 +10,9 @@ CONFIG(debug, debug|release) {
     TARGET = ssp
 }
 
+win32{
 QMAKE_LFLAGS += -static-libgcc -static-libstdc++ -static
+}
 
 DESTDIR = $$PWD/build/bin/
 MOC_DIR = $$PWD/build/moc/
