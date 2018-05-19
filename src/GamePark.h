@@ -18,6 +18,7 @@
 #include "Monster/RespawnPoint.h"
 #include "SceneNode/GameOverCredits.h"
 #include "SceneNode/DropNode.h"
+#include "SceneNode/AnimatedMeshSceneNode.h"
 
 using namespace irr;
 

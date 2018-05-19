@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include "SoundEngine/SoundEngine.h"
 #include "Weapon/Knife.h"
+#include "Common/Logger.h"
 
 #ifdef _MSC_VER
 #pragma comment(lib, "Irrlicht.lib")
@@ -70,7 +71,10 @@ int GamePark::initWorld()
     initAI();
     initTestObj();
     initRespawnPoints();
-    initForest();
+//    initForest();
+    TLogger::get().init();
+    TDEBUG() << "test" << 2;
+    TWARNING() << "test2";
     loadProgressbarChanged.Emit(70);
 
     initMenu();
@@ -774,6 +778,15 @@ int GamePark::initRespawnPoints()
     node->setMaterialTexture( 0, m_device->getVideoDriver()->getTexture("../../media/textures/bullet.tga") );
     node->drop();
 
+    scene::IAnimatedMesh* animMesh = m_device->getSceneManager()->getMesh("../../media/models/monster.b3d");
+    AnimatedMeshSceneNode* animNode = new AnimatedMeshSceneNode(m_device->getLogger(),
+                                                                animMesh, smgr()->getRootSceneNode(),
+                                                                smgr(),-1);
+    animNode->setPosition(core::vector3df(200,12,850));
+    animNode->setMaterialTexture( 0, m_device->getVideoDriver()->getTexture("../../media/textures/monster/green.tga") );
+    animMesh->drop();
+    animNode->drop();
+
     return 0;
 }
 
@@ -795,8 +808,8 @@ void GamePark::updateMonsterCollision()
             monster->addTriangleSelector(*it2);
         }
         monster->addTriangleSelector( m_whiteBoxSelector );
-        for(int i=0;i<m_forestSize;i++)
-            monster->addTriangleSelector( m_forestSelector[i] );
+//        for(int i=0;i<m_forestSize;i++)
+//            monster->addTriangleSelector( m_forestSelector[i] );
         monster->updateCollisionAnimator();
     }
 }
