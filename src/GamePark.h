@@ -19,6 +19,11 @@
 #include "SceneNode/GameOverCredits.h"
 #include "SceneNode/DropNode.h"
 #include "SceneNode/AnimatedMeshSceneNode.h"
+#include "Screen/Screen.h"
+#include "Screen/ScreenEndGame.h"
+#include "Screen/ScreenGameOver.h"
+#include "Screen/ScreenLoading.h"
+#include "Screen/ScreenSurvival.h"
 
 using namespace irr;
 
@@ -100,6 +105,9 @@ public:
 
 std::list<MonsterNode*> m_aiNode;
 void updateMonsterCollision();
+
+    Screen* m_screen = nullptr;
+    Screen* m_prevScreen = nullptr;
 
 
     void setSpeedOfTime(f32 speed);
@@ -215,6 +223,10 @@ private:
     video::ITexture* texture(const io::path &textureName);
     void moveObj(const core::vector3df& pos);
 
+    friend class ScreenSurvival;
+    friend class ScreenLoading;
+    friend class ScreenEndGame;
+    friend class ScreenGameOver;
 };
 
 #endif // GAMEPARK_H

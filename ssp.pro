@@ -77,7 +77,12 @@ SOURCES += \
     src/SceneNode/SkinnedMesh.cpp \
     src/SceneNode/BoneSceneNode.cpp \
     src/SceneNode/InterfaceSkinnedMesh.cpp \
-    src/Common/Logger.cpp
+    src/Common/Logger.cpp \
+    src/Screen/Screen.cpp \
+    src/Screen/ScreenSurvival.cpp \
+    src/Screen/ScreenLoading.cpp \
+    src/Screen/ScreenEndGame.cpp \
+    src/Screen/ScreenGameOver.cpp
 
 HEADERS += \
     src/EventReceiver/EventReceiver.h \
@@ -139,7 +144,12 @@ HEADERS += \
     src/SceneNode/SkinnedMesh.h \
     src/SceneNode/BoneSceneNode.h \
     src/SceneNode/InterfaceSkinnedMesh.h \
-    src/Common/Logger.h
+    src/Common/Logger.h \
+    src/Screen/Screen.h \
+    src/Screen/ScreenSurvival.h \
+    src/Screen/ScreenLoading.h \
+    src/Screen/ScreenEndGame.h \
+    src/Screen/ScreenGameOver.h
 
 unix{
 LIBS += -L../../irrlicht-1.8.4/lib/Linux/ -lIrrlicht -lGL -lGLU -lXxf86vm -lXext -lX11
