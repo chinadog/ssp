@@ -6,7 +6,13 @@ GameOverCredits::GameOverCredits(GamePark *gamePark) :
 {
     initNode();
     finished.connect([this](){m_text->setVisible(false);
-        m_gamePark->setSceneMode(SceneMode::MainMenu);});
+        m_gamePark->setSceneMode(SceneMode::MainMenu);
+    });
+}
+
+GameOverCredits::~GameOverCredits()
+{
+    finished.disconnect_all();
 }
 
 void GameOverCredits::draw()
@@ -21,10 +27,6 @@ void GameOverCredits::draw()
     m_prevTime = now;
     // end delta time
 
-//    m_curHeight -= 80.0*m_deltaTime;
-//    core::position2di pos(10,m_curHeight);
-//    m_text->setRelativePosition(pos);
-
     m_gamePark->driver()->beginScene(true, true, 0 );
     m_gamePark->env()->drawAll();
     m_gamePark->driver()->endScene();
@@ -38,7 +40,6 @@ void GameOverCredits::draw()
 void GameOverCredits::initNode()
 {
     core::dimension2d<u32> size = m_gamePark->device()->getVideoDriver()->getScreenSize();
-    const int lwidth = size.Width - 20;
     const int lheight = 16;
     core::rect<int> pos(0,0, size.Width, size.Height);
     m_text = m_gamePark->env()->addStaticText(text(),pos,true);

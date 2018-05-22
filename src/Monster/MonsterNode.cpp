@@ -44,18 +44,19 @@ void MonsterNode::draw()
 
     if(m_health > 0.0)
     {
-        if(m_isDraw == true)
+        if(m_isDraw == false)
         {
-            f32 x = m_node->getPosition().X;
-            f32 y = m_node->getPosition().Y;
-            f32 z = m_node->getPosition().Z;
-
-            if(m_drawFinishedLevel > y-2.0)
+            gotoPlayer(m_deltaTime);
+        }
+        else
+        {
+            core::vector3df pos = m_node->getPosition();
+            if(m_drawFinishedLevel > pos.Y-2.0)
             {
                 m_gravityAnim->setGravity(core::vector3df(0,0,0));
-                y+=25*m_deltaTime*m_speedOfTime;
-                m_node->setPosition(core::vector3df(x,y,z));
-                if(std::fabs(m_drawFinishedLevel - y) < 3.5 && m_layOut == false)
+                pos.Y += 25*m_deltaTime*m_speedOfTime;
+                m_node->setPosition(pos);
+                if(std::fabs(m_drawFinishedLevel - pos.Y) < 3.5 && m_layOut == false)
                 {
                     m_layOut = true;
                     layOut.Emit();
@@ -64,15 +65,10 @@ void MonsterNode::draw()
             }
             else
             {
-                std::cout << "Draw finish" << std::endl;
                 m_gravityAnim->setGravity(core::vector3df(0,-8,0));
                 m_isDraw = false;
                 stopDraw();
             }
-        }
-        else
-        {
-            gotoPlayer(m_deltaTime);
         }
     }
 }
@@ -111,8 +107,6 @@ int MonsterNode::init()
         m_node->setTriangleSelector(selector);
         selector->drop();
     }
-
-
     setMonsterState(m_currentState,true);
 
 //    m_node->setFrameLoop(0,240);
@@ -211,7 +205,6 @@ void MonsterNode::remove()
 
 void MonsterNode::dustEffect(const core::vector3df& pos)
 {
-
     scene::IParticleSystemSceneNode* ps =
         m_smgr->addParticleSystemSceneNode(false);
 
@@ -250,92 +243,45 @@ void MonsterNode::dustEffect(const core::vector3df& pos)
 
 void MonsterNode::bloodEffect(const core::vector3df &pos)
 {
-    bool small = false;
-
     scene::IParticleSystemSceneNode* ps =
         m_smgr->addParticleSystemSceneNode(false);
 
-    if(small)
-    {
-        scene::IParticleEmitter* em = ps->createSphereEmitter(core::vector3df(0,0,0),0.2);
-        em->setMaxLifeTime(300);
-        em->setMinLifeTime(200);
-        em->setMinParticlesPerSecond(25);
-        em->setMaxParticlesPerSecond(25);
-        em->setMinStartSize(core::dimension2df(0.5,1));
-        em->setMaxStartSize(core::dimension2df(1,1.5));
-        em->setDirection(core::vector3df(0,0.0010,0));
-        em->setMinStartColor(video::SColor(0,109,30,30));
-        em->setMaxStartColor(video::SColor(0,109,90,30));
-        em->setMaxStartColor(video::SColor(0,109,30,30));
+    scene::IParticleEmitter* em = ps->createSphereEmitter(core::vector3df(0,0,0),0.2);
+    em->setMaxLifeTime(300 / m_speedOfTime);
+    em->setMinLifeTime(200 / m_speedOfTime);
+    em->setMinParticlesPerSecond(55 * m_speedOfTime);
+    em->setMaxParticlesPerSecond(55 * m_speedOfTime);
+    em->setMinStartSize(core::dimension2df(0.5,1));
+    em->setMaxStartSize(core::dimension2df(1,1.5));
+    em->setDirection(core::vector3df(0,0.0000,0));
+    em->setMinStartColor(video::SColor(0,109,30,30));
+    em->setMaxStartColor(video::SColor(0,109,90,30));
+    em->setMaxStartColor(video::SColor(0,109,30,30));
 
-        ps->setEmitter(em);
-        em->drop();
+    ps->setEmitter(em);
+    em->drop();
 
-        scene::IParticleAffector* paf = ps->createScaleParticleAffector(core::dimension2df(14,-5));
-        scene::IParticleAffector* paf2 = ps->createFadeOutParticleAffector(video::SColor(0,100,70,30),300);
-        scene::IParticleAffector* paf3 = ps->createGravityAffector(core::vector3df(0,-0.019,0));
-        scene::IParticleAffector* paf4 = ps->createRotationAffector(core::vector3df(0.2,0.2,0.2));
+    scene::IParticleAffector* paf = ps->createScaleParticleAffector(core::dimension2df(3,3));
+    scene::IParticleAffector* paf2 = ps->createFadeOutParticleAffector(video::SColor(0,100,70,30),300 / m_speedOfTime);
+    scene::IParticleAffector* paf3 = ps->createGravityAffector(core::vector3df(0,-0.019,0));
 
-        ps->addAffector(paf);
-        ps->addAffector(paf2);
-        ps->addAffector(paf3);
-    //    ps->addAffector(paf4);
-
-        paf->drop();
-        paf2->drop();
-        paf3->drop();
-        paf4->drop();
-
-        ps->setPosition(core::vector3df(200,15,900));
-        ps->setMaterialFlag(video::EMF_LIGHTING, false);
-        ps->setMaterialTexture(0, m_driver->getTexture(Common::texture("blood_bw.tga")));
-        ps->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL);
-        ps->setPosition(pos);
-
-        scene::ISceneNodeAnimator* sna = m_smgr->createDeleteAnimator(300);
-        ps->addAnimator(sna);
-        sna->drop();
-    }
-    else
-    {
-        scene::IParticleEmitter* em = ps->createSphereEmitter(core::vector3df(0,0,0),0.2);
-        em->setMaxLifeTime(300 / m_speedOfTime);
-        em->setMinLifeTime(200 / m_speedOfTime);
-        em->setMinParticlesPerSecond(55 * m_speedOfTime);
-        em->setMaxParticlesPerSecond(55 * m_speedOfTime);
-        em->setMinStartSize(core::dimension2df(0.5,1));
-        em->setMaxStartSize(core::dimension2df(1,1.5));
-        em->setDirection(core::vector3df(0,0.0000,0));
-        em->setMinStartColor(video::SColor(0,109,30,30));
-        em->setMaxStartColor(video::SColor(0,109,90,30));
-        em->setMaxStartColor(video::SColor(0,109,30,30));
-
-        ps->setEmitter(em);
-        em->drop();
-
-        scene::IParticleAffector* paf = ps->createScaleParticleAffector(core::dimension2df(3,3));
-        scene::IParticleAffector* paf2 = ps->createFadeOutParticleAffector(video::SColor(0,100,70,30),300 / m_speedOfTime);
-        scene::IParticleAffector* paf3 = ps->createGravityAffector(core::vector3df(0,-0.019,0));
-
-        ps->addAffector(paf);
+    ps->addAffector(paf);
 //        ps->addAffector(paf2);
-        ps->addAffector(paf3);
+    ps->addAffector(paf3);
 
-        paf->drop();
-        paf2->drop();
-        paf3->drop();
+    paf->drop();
+    paf2->drop();
+    paf3->drop();
 
-        ps->setPosition(core::vector3df(200,15,900));
-        ps->setMaterialFlag(video::EMF_LIGHTING, false);
-        ps->setMaterialTexture(0, m_driver->getTexture(Common::texture("blood_bw.tga")));
-        ps->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL);
-        ps->setPosition(pos);
+    ps->setPosition(core::vector3df(200,15,900));
+    ps->setMaterialFlag(video::EMF_LIGHTING, false);
+    ps->setMaterialTexture(0, m_driver->getTexture(Common::texture("blood_bw.tga")));
+    ps->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL);
+    ps->setPosition(pos);
 
-        scene::ISceneNodeAnimator* sna = m_smgr->createDeleteAnimator(300 / m_speedOfTime);
-        ps->addAnimator(sna);
-        sna->drop();
-    }
+    scene::ISceneNodeAnimator* sna = m_smgr->createDeleteAnimator(300 / m_speedOfTime);
+    ps->addAnimator(sna);
+    sna->drop();
 }
 
 void MonsterNode::addTriangleSelector(MonsterNode *node)

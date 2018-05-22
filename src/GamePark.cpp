@@ -416,6 +416,7 @@ int GamePark::initTestObj()
 //        node->setMaterialTexture(0,m_device->getVideoDriver()->getTexture("../../media/textures/plitka.tga"));
 //    }
 //    m_node = node;
+    return 1;
 }
 
 int GamePark::initForest()
@@ -1098,10 +1099,12 @@ void GamePark::setSceneMode(const SceneMode &mode)
         if(m_credits)
         {
             delete m_credits;
+            m_credits = nullptr;
         }
         if(m_gameOverCredits)
         {
             delete m_gameOverCredits;
+            m_gameOverCredits = nullptr;
         }
 
         auto i = std::begin(m_aiNode);
@@ -1111,6 +1114,7 @@ void GamePark::setSceneMode(const SceneMode &mode)
             monster->node()->setVisible(false);
             i++;
         }
+        m_screen = m_screenMainMenu;
 
         return;
     }
@@ -1124,7 +1128,7 @@ void GamePark::setSceneMode(const SceneMode &mode)
             i++;
         }
         m_player->setHealth(1.0);
-        m_player->setPosition(174,185,994);
+        m_player->setPosition(174,15,994);
 
         m_finish = false;
 
@@ -1213,39 +1217,6 @@ int GamePark::run()
     scene::IParticleSystemSceneNode* ps =
         smgr()->addParticleSystemSceneNode(false);
 
-//    scene::IParticleEmitter* em = ps->createSphereEmitter(
-//                core::vector3df(0,0,0),0.3);        // max size
-//    em->setMaxLifeTime(1500);
-//    em->setMinLifeTime(1200);
-//    em->setMinParticlesPerSecond(10);
-//    em->setMaxParticlesPerSecond(10);
-//    em->setMinStartSize(core::dimension2df(4,5));
-//    em->setMaxStartSize(core::dimension2df(5,6));
-//    em->setDirection(core::vector3df(0,0.0000,0));
-//    em->setMinStartColor(video::SColor(0,109,30,30));
-//    em->setMaxStartColor(video::SColor(0,109,90,30));
-//    em->setMaxStartColor(video::SColor(0,109,30,30));
-
-
-//    ps->setEmitter(em); // this grabs the emitter
-//    em->drop(); // so we can drop it here without deleting it
-
-//    scene::IParticleAffector* paf = ps->createScaleParticleAffector(core::dimension2df(14,-7));
-//    scene::IParticleAffector* paf2 = ps->createFadeOutParticleAffector(video::SColor(0,100,70,30),1500);
-//    scene::IParticleAffector* paf3 = ps->createGravityAffector(core::vector3df(0,-0.019,0));
-//    scene::IParticleAffector* paf4 = ps->createRotationAffector(core::vector3df(0.2,0.2,0.2));
-
-
-//    ps->addAffector(paf); // same goes for the affector
-//    ps->addAffector(paf2);
-////    ps->addAffector(paf3);
-////    ps->addAffector(paf4);
-
-//    paf->drop();
-//    paf2->drop();
-//    paf3->drop();
-//    paf4->drop();
-
     scene::IParticleEmitter* em = ps->createBoxEmitter(
         core::aabbox3d<f32>(-70/60.0,0,-70/60.0,70/60.0,10/60.0,70/60.0), // emitter size
         core::vector3df(0.0f,0.0005f,0.0f),   // initial direction
@@ -1300,44 +1271,16 @@ int GamePark::initScreens()
     m_screenEndGame = new ScreenEndGame(this);
     m_screenGameOver = new ScreenGameOver(this);
     m_screenLoading = new ScreenLoading(this);
+    m_screenMainMenu = new ScreenMainMenu(this);
     m_screenSurvival = new ScreenSurvival(this);
+    return 0;
 }
 
 void GamePark::updateScreensValues()
 {
     m_screenEndGame->updateValues();
     m_screenGameOver->updateValues();
+    m_screenMainMenu->updateValues();
     m_screenSurvival->updateValues();
 }
-
-int GamePark::load()
-{
-    /*
-     * Для начала добавим базовые элементы на сцену: окружение пользователя с текстом подсказок,
-     * мир, игрока (камеру от первого лица)
-    */
-    loadProgressbarChanged.Emit(0);
-    initCamera();
-    initEnvironment();
-    loadProgressbarChanged.Emit(20);
-    initPlayer();
-    initWorld();
-    loadProgressbarChanged.Emit(90);
-    initReceiver();
-    initSounds();
-    loadProgressbarChanged.Emit(100);
-
-    m_player->shipPointPassed.connect_member(this, &GamePark::finishGame);
-
-    Collision::addAnimator(m_player, m_metaTriangleSelector, smgr());
-
-    env()->getRootGUIElement()->removeChild(image);
-    m_fpsText->setVisible(true);
-    statusText->setVisible(false);
-
-    setSceneMode(SceneMode::History);
-
-    return 0;
-}
-
 

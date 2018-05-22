@@ -1,12 +1,19 @@
 #include "MotionPictureCredits.h"
 #include "GamePark.h"
+#include "Common/Logger.h"
 
 MotionPictureCredits::MotionPictureCredits(GamePark *gamePark) :
     m_gamePark(gamePark)
 {
     initNode();
     finished.connect([this](){m_text->setVisible(false);
-        m_gamePark->setSceneMode(SceneMode::MainMenu);});
+        m_gamePark->setSceneMode(SceneMode::MainMenu);
+    });
+}
+
+MotionPictureCredits::~MotionPictureCredits()
+{
+    finished.disconnect_all();
 }
 
 void MotionPictureCredits::draw()
@@ -29,7 +36,7 @@ void MotionPictureCredits::draw()
     m_gamePark->env()->drawAll();
     m_gamePark->driver()->endScene();
 
-    if(m_curHeight < -700)
+    if(m_curHeight < -m_creditsHeight)
     {
         finished.Emit();
     }
@@ -37,14 +44,15 @@ void MotionPictureCredits::draw()
 
 void MotionPictureCredits::initNode()
 {
+    m_creditsHeight = m_gamePark->env()->getSkin()->getFont()->getDimension(L"W").Height * 50.0;
+
     core::dimension2d<u32> size = m_gamePark->device()->getVideoDriver()->getScreenSize();
     const int lwidth = size.Width - 20;
     const int lheight = 16;
-    core::rect<int> pos(10, size.Height-lheight-10, 10+lwidth, size.Height*2);
-    m_text = m_gamePark->env()->addStaticText(text(),pos,false);
+    core::rect<int> rect(10, size.Height-lheight-10, 10+lwidth, (size.Height-lheight-10)+m_creditsHeight);
+    m_text = m_gamePark->env()->addStaticText(text(),rect,true);
     m_text->setTextAlignment(gui::EGUIA_CENTER, gui::EGUIA_CENTER);
     m_curHeight = size.Height-lheight-10;
-
 }
 
 const wchar_t *MotionPictureCredits::text() const

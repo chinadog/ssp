@@ -113,7 +113,7 @@ void RedMonsterNode::atack()
     if(m_distanceToPlayer <= m_atackDistance)
     {
         std::cout << Log::curTimeC() << "Atack" << std::endl;
-        m_player->setHealth(m_player->health()-0.0);
+        m_player->setHealth(m_player->health()-0.1);
         fireEffect();
     }
 }

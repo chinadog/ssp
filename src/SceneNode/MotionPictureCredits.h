@@ -12,6 +12,7 @@ class MotionPictureCredits
 {
 public:
     MotionPictureCredits(GamePark* gamePark);
+    ~MotionPictureCredits();
 
     void draw();
     Signal<> finished;
@@ -21,6 +22,7 @@ private:
     f32 m_deltaTime = 0.0;
     u32 m_prevTime = 0;
     f32 m_curHeight = 0.0;
+    f32 m_creditsHeight = 0.0;
 
     void initNode();
     const wchar_t* text() const;

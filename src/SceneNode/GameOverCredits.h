@@ -12,6 +12,7 @@ class GameOverCredits
 {
 public:
     GameOverCredits(GamePark* gamePark);
+    ~GameOverCredits();
 
     void draw();
     Signal<> finished;

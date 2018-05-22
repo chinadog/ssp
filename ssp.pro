@@ -82,7 +82,8 @@ SOURCES += \
     src/Screen/ScreenSurvival.cpp \
     src/Screen/ScreenLoading.cpp \
     src/Screen/ScreenEndGame.cpp \
-    src/Screen/ScreenGameOver.cpp
+    src/Screen/ScreenGameOver.cpp \
+    src/Screen/ScreenMainMenu.cpp
 
 HEADERS += \
     src/EventReceiver/EventReceiver.h \
@@ -149,7 +150,8 @@ HEADERS += \
     src/Screen/ScreenSurvival.h \
     src/Screen/ScreenLoading.h \
     src/Screen/ScreenEndGame.h \
-    src/Screen/ScreenGameOver.h
+    src/Screen/ScreenGameOver.h \
+    src/Screen/ScreenMainMenu.h
 
 unix{
 LIBS += -L../../irrlicht-1.8.4/lib/Linux/ -lIrrlicht -lGL -lGLU -lXxf86vm -lXext -lX11

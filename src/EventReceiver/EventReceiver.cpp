@@ -9,7 +9,6 @@ MyEventReceiver::MyEventReceiver(GamePark *gamePark) :
 
 bool MyEventReceiver::OnEvent(const SEvent &event)
 {
-    scene::IAnimatedMeshSceneNode* animnode = m_gamePark->player()->node();
     io::IReadFile *heightmap = m_gamePark->heightmap;
     IrrlichtDevice* device = m_gamePark->device();
     scene::ITerrainSceneNode* terrain = m_gamePark->m_terrain;
@@ -82,8 +81,6 @@ bool MyEventReceiver::OnEvent(const SEvent &event)
             m_gamePark->player()->setKeyPressed(event.KeyInput.Key, event.KeyInput.PressedDown);
         }
 
-
-core::stringc str;
 
         switch (event.KeyInput.Key)
         {

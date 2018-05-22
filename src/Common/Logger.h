@@ -153,9 +153,10 @@ public:
     TDebug& operator<<(const std::string& str) {m_stream << str; return maybeSpace();}
     TDebug& operator<<(const char* str) {m_stream << str; return maybeSpace();}
     TDebug& operator<<(char str) {m_stream << str; return maybeSpace();}
-    TDebug& operator<<(const QString& str) {m_stream << str.toStdString();return maybeSpace();}
     TDebug& operator<<(int str) {m_stream << str;return maybeSpace();}
-    TDebug& operator<<(QSqlError str) {m_stream << str.text().toStdString();return maybeSpace();}
+    TDebug& operator<<(float str) {m_stream << str;return maybeSpace();}
+    template<typename T>
+    TDebug& operator<<(T str) {m_stream << str;return maybeSpace();}
 
 private:
     std::ostringstream m_stream;

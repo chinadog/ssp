@@ -24,6 +24,7 @@
 #include "Screen/ScreenGameOver.h"
 #include "Screen/ScreenLoading.h"
 #include "Screen/ScreenSurvival.h"
+#include "Screen/ScreenMainMenu.h"
 
 using namespace irr;
 
@@ -55,7 +56,6 @@ public:
 
     void exit();
     int run();
-    int load();
 
     void switchTerrainMaterial(video::E_MATERIAL_FLAG material);
     void switchTerrainDetailMap();
@@ -111,6 +111,7 @@ void updateMonsterCollision();
     ScreenGameOver* m_screenGameOver = nullptr;
     ScreenEndGame*  m_screenEndGame  = nullptr;
     ScreenSurvival* m_screenSurvival = nullptr;
+    ScreenMainMenu* m_screenMainMenu = nullptr;
 
 
     void setSpeedOfTime(f32 speed);
@@ -232,6 +233,7 @@ private:
     friend class ScreenLoading;
     friend class ScreenEndGame;
     friend class ScreenGameOver;
+    friend class ScreenMainMenu;
 };
 
 #endif // GAMEPARK_H

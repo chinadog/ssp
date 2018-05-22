@@ -18,14 +18,12 @@ public:
     AI(GamePark* gamePark);
     virtual ~AI();
 
-    void calcPositionAndRotation(core::vector3df& pos, core::vector3df rot);
-
 
     f32 m_deltaTime = 0;
     u32 m_prevTime = 0;
 
 
-scene::ISceneNodeAnimatorCollisionResponse* m_gravityAnim = nullptr;
+    scene::ISceneNodeAnimatorCollisionResponse* m_gravityAnim = nullptr;
 
 
     virtual void atack(){}

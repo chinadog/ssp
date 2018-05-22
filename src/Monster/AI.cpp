@@ -26,11 +26,6 @@ AI::~AI()
 }
 
 
-void AI::calcPositionAndRotation(core::vector3df &pos, core::vector3df rot)
-{
-    moveNode( m_player->camera()->getAbsolutePosition(), m_deltaTime );
-}
-
 void AI::setPosition(const core::vector3df &pos)
 {
     m_node->setPosition(pos);

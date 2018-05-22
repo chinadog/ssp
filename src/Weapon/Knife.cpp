@@ -201,9 +201,9 @@ void Knife::addBullets(int value)
     m_bulletCountInClip += value;
 }
 
-void Knife::removeBullets(int value)
+void Knife::removeBullets(int /*value*/)
 {
-//    m_bulletCount-=value;
+
 }
 
 int Knife::bulletMaxCountInClip() const
