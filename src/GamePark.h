@@ -107,7 +107,10 @@ std::list<MonsterNode*> m_aiNode;
 void updateMonsterCollision();
 
     Screen* m_screen = nullptr;
-    Screen* m_prevScreen = nullptr;
+    ScreenLoading*  m_screenLoading  = nullptr;
+    ScreenGameOver* m_screenGameOver = nullptr;
+    ScreenEndGame*  m_screenEndGame  = nullptr;
+    ScreenSurvival* m_screenSurvival = nullptr;
 
 
     void setSpeedOfTime(f32 speed);
@@ -216,6 +219,8 @@ private:
     int initLadder();
     int initMenu();
     int initFader();
+    int initScreens();
+    void updateScreensValues();
     void setCollision(scene::IAnimatedMeshSceneNode* node,
                       Player* player);
     void setCollision(scene::IMeshSceneNode* node,

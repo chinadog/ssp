@@ -11,8 +11,9 @@ class ScreenSurvival : public Screen
 public:
     ScreenSurvival(GamePark* gamePark = 0);
     ~ScreenSurvival();
+
     void draw();
-    void type();
+    void updateValues();
 private:
     LadderSceneNode* m_ladder = nullptr;
     irr::core::stringw str;

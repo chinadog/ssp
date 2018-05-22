@@ -13,7 +13,3 @@ void ScreenEndGame::draw()
     m_gamePark->m_credits->draw();
 }
 
-void ScreenEndGame::type()
-{
-    TDEBUG() << "type = end game";
-}

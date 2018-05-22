@@ -27,9 +27,7 @@ public:
     virtual ~Screen();
 
     virtual void draw() = 0;
-    virtual void type(){}
-    void remove() {m_isRemove = true;}
-    bool isRemove() {return m_isRemove;}
+    virtual void updateValues();
 protected:
     GamePark* m_gamePark = nullptr;
     irr::video::IVideoDriver* m_driver = nullptr;

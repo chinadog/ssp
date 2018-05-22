@@ -6,30 +6,28 @@
 ScreenSurvival::ScreenSurvival(GamePark* gamePark) :
     Screen(gamePark)
 {
-    m_ladder = m_gamePark->m_ladder;
+    updateValues();
 }
 
 ScreenSurvival::~ScreenSurvival()
 {
-TERROR() << "DESTR SURV";
+
 }
 
 void ScreenSurvival::draw()
 {
-    int ii=0;
-    TWARNING() << "i=" << ii++;
-    m_driver->beginScene(true, true, 0 );TWARNING() << "i=" << ii++;
-    m_player->draw();TWARNING() << "i=" << ii++;
-    m_smgr->drawAll();TWARNING() << "i=" << ii++;
-    m_env->drawAll();TWARNING() << "i=" << ii++;
-    m_ladder->draw();TWARNING() << "i=" << ii++;
-    m_driver->endScene();TWARNING() << "i=" << ii++;
+    m_driver->beginScene(true, true, 0 );
+    m_player->draw();
+    m_smgr->drawAll();
+    m_env->drawAll();
+    m_ladder->draw();
+    m_driver->endScene();
     ShootIntersection shootIntersection = m_player->shootIntersection();
-TWARNING() << "i=" << ii++;
+
     if(shootIntersection.isValid())
     {
 //                bill->setPosition(shootIntersection.m_intersection);
-    }TWARNING() << "i=" << ii++;
+    }
     // Monster loop
     auto i = std::begin(m_gamePark->m_aiNode);
     while(i != std::end(m_gamePark->m_aiNode))
@@ -62,7 +60,7 @@ TWARNING() << "i=" << ii++;
             i--;
         }
         i++;
-    }TWARNING() << "i=" << ii++;
+    }
 //            driver()->endScene();
 
     if(m_gamePark->m_aiNode.size() < m_gamePark->m_config.count())
@@ -73,7 +71,7 @@ TWARNING() << "i=" << ii++;
         std::advance(it, rand);
         RespawnPoint* p = *it;
         p->createMonster();
-    }TWARNING() << "i=" << ii++;
+    }
 
     if(m_gamePark->m_checkFpsCounter > 25)
     {
@@ -88,11 +86,13 @@ TWARNING() << "i=" << ii++;
         str += m_smgr->getParameters()->getAttributeAsInt("calls");
 
         m_gamePark->updateEnvironment(str);
-    }TWARNING() << "i=" << ii++;
+    }
     m_gamePark->m_checkFpsCounter++;
 }
 
-void ScreenSurvival::type()
+void ScreenSurvival::updateValues()
 {
-    TWARNING() << "type = survival";
+    Screen::updateValues();
+    m_ladder = m_gamePark->m_ladder;
 }
+

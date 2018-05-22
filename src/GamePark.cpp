@@ -53,6 +53,10 @@ GamePark::~GamePark()
     m_fpsText->drop();
     m_terrain->drop();
     m_whiteBoxNode->drop();
+
+    delete m_screenEndGame;
+    delete m_screenGameOver;
+    delete m_screenSurvival;
 }
 
 void GamePark::exit()
@@ -1164,56 +1168,24 @@ void GamePark::setSceneMode(const SceneMode &mode)
             m_fader->setVisible(false);
             MyMessageBox::showStartMessage(device());
         });
-        m_screen = new ScreenSurvival(this);
+        m_screen = m_screenSurvival;
         return;
     }
     if(m_sceneMode == SceneMode::EndGame)
     {
         m_credits = new MotionPictureCredits(this);
-        m_screen->remove();
-        m_screen = new ScreenEndGame(this);
-        TDEBUG() << "SET END GAME";
+        m_screen = m_screenEndGame;
         return;
     }
     if(m_sceneMode == SceneMode::GameOver)
     {
         m_gameOverCredits = new GameOverCredits(this);
-        m_screen = new ScreenGameOver(this);
+        m_screen = m_screenGameOver;
         return;
     }
     if(m_sceneMode == SceneMode::Loading)
     {
-//        core::dimension2d<u32> size = m_device->getVideoDriver()->getScreenSize();
 
-//        m_device->getCursorControl()->setVisible(false);
-
-//        // irrlicht logo
-//        int imageWidth  = 800;
-//        int imageHeight = 600;
-//        image = m_device->getGUIEnvironment()->addImage(m_device->getVideoDriver()->getTexture("../../media/textures/load/1.tga"),
-//                                core::position2d<s32>((size.Width - imageWidth)/2,(size.Height - imageHeight)/2));
-
-
-//        const int lwidth = size.Width - 20;
-//        const int lheight = 16;
-
-//        core::rect<int> pos(10, size.Height-lheight-10, 10+lwidth, size.Height-10);
-
-////        m_device->getGUIEnvironment()->addImage(pos);
-//        statusText = m_device->getGUIEnvironment()->addStaticText(L"Loading...",	pos,false);
-//        statusText->setOverrideColor(video::SColor(255,205,200,200));
-//        statusText->setTextAlignment(gui::EGUIA_CENTER, gui::EGUIA_CENTER);
-
-//        loadProgressbarChanged.connect([this](int value){ wchar_t tmp[255]; swprintf(tmp,255, L"Loading... %3d", value); statusText->setText(tmp); driver()->beginScene(true, true, 0 );
-//            env()->drawAll();
-//            driver()->endScene();});
-
-//        driver()->beginScene(true, true, 0 );
-//        env()->drawAll();
-//        driver()->endScene();
-
-//        load();
-        m_screen = new ScreenLoading(this);
     }
 }
 
@@ -1305,127 +1277,37 @@ int GamePark::run()
 //    sna->drop();
     //---
 
-//    setSceneMode(SceneMode::Undefined);
+    initScreens();
+    m_screenLoading->draw();
+    updateScreensValues();
 
-    // vars
-//    core::stringw str;
-    //
-
-    setSceneMode(SceneMode::Loading);
 
     while(m_device->run())
     {
         if(usl_exit)break;
 
-
-        if(m_screen != nullptr)
-        {
-            m_screen->draw();
-            switch (m_screen->isRemove()) {
-            case true:
-                delete m_screen;
-                break;
-            default:
-                break;
-            }
-        }
-        else
-        {
-            TERROR() << "scren = 0";
-//            switch (sceneMode()) {
-//            case SceneMode::Undefined:
-//                setSceneMode(SceneMode::Loading);
-//                break;
-//            case SceneMode::EndGame:
-//                m_credits->draw();
-//                break;
-//            case SceneMode::GameOver:
-//                m_gameOverCredits->draw();
-//                break;
-//            default:
-//                driver()->beginScene(true, true, 0 );
-//                m_player->draw();
-//                smgr()->drawAll();
-//                env()->drawAll();
-//                m_ladder->draw();
-//                driver()->endScene();
-//                ShootIntersection shootIntersection = m_player->shootIntersection();
-
-//                if(shootIntersection.isValid())
-//                {
-//    //                bill->setPosition(shootIntersection.m_intersection);
-//                }
-//                // Monster loop
-//                auto i = std::begin(m_aiNode);
-//                while(i != std::end(m_aiNode))
-//                {
-//                    MonsterNode* monster = *i;
-//                    monster->draw();
-//                    if(monster->node() == shootIntersection.m_node)
-//                    {
-//                        if(monster->isHeadshot(shootIntersection.m_intersection) &&
-//                           shootIntersection.m_intersection.getDistanceFrom(m_player->camera()->getAbsolutePosition()) > 15.0)
-//                        {
-//    //                        monster->damage(1.0, shootIntersection.m_intersection);
-//                            m_player->showSlowMoShoot(monster);
-//                        }
-//                        else
-//                        {
-//                            monster->damage(m_player->currentWeapon()->damage(),
-//                                            shootIntersection.m_intersection);
-//                        }
-//                    }
-//                    if(monster->life() == false)
-//                    {
-//                        i = m_aiNode.erase(i);
-//                        for(auto&& tmpMonster : m_aiNode)
-//                        {
-//                            tmpMonster->removeTriangleSelector(monster);
-//                            tmpMonster->updateCollisionAnimator();
-//                        }
-//                        delete monster;
-//                        i--;
-//                    }
-//                    i++;
-//                }
-//    //            driver()->endScene();
-
-//                if(m_aiNode.size() < m_config.count())
-//                {
-//                    int rand = m_device->getRandomizer()->rand() % m_respPoints.size();
-//                    auto it = m_respPoints.begin();
-//                    // Advance the iterator by 2 positions,
-//                    std::advance(it, rand);
-//                    RespawnPoint* p = *it;
-//                    p->createMonster();
-//                }
-
-//                if(m_checkFpsCounter > 25)
-//                {
-//                    m_checkFpsCounter = 0;
-//                    str = L"Driver [";
-//                    str += driver()->getName();
-//                    str += "] FPS:";
-//                    str += driver()->getFPS();
-//                    str += " \nTriangle: ";
-//                    str += driver()->getPrimitiveCountDrawn();
-//                    str += " | Calls:";
-//                    str += smgr()->getParameters()->getAttributeAsInt("calls");
-
-//                    updateEnvironment(str);
-//                }
-//                m_checkFpsCounter++;
-//                break;
-//            }
-        }
-
-
+        m_screen->draw();
     }
     bill->drop();
 
     m_device->closeDevice();
     //    m_device->drop();
     return 0;
+}
+
+int GamePark::initScreens()
+{
+    m_screenEndGame = new ScreenEndGame(this);
+    m_screenGameOver = new ScreenGameOver(this);
+    m_screenLoading = new ScreenLoading(this);
+    m_screenSurvival = new ScreenSurvival(this);
+}
+
+void GamePark::updateScreensValues()
+{
+    m_screenEndGame->updateValues();
+    m_screenGameOver->updateValues();
+    m_screenSurvival->updateValues();
 }
 
 int GamePark::load()
