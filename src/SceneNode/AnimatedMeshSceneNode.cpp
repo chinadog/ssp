@@ -16,11 +16,11 @@
 #include "IMeshCache.h"
 #include "IAnimatedMesh.h"
 #include "quaternion.h"
-
+#include "Common/Logger.h"
 
 
 //! constructor
-AnimatedMeshSceneNode::AnimatedMeshSceneNode(ILogger* logger, scene::IAnimatedMesh* mesh,
+AnimatedMeshSceneNode::AnimatedMeshSceneNode(scene::IAnimatedMesh* mesh,
         ISceneNode* parent, scene::ISceneManager* mgr, s32 id,
         const core::vector3df& position,
         const core::vector3df& rotation,
@@ -31,7 +31,7 @@ AnimatedMeshSceneNode::AnimatedMeshSceneNode(ILogger* logger, scene::IAnimatedMe
     TransitionTime(0), Transiting(0.f), TransitingBlend(0.f),
     JointMode(scene::EJUOR_NONE), JointsUsed(false),
     Looping(true), ReadOnlyMaterials(false), RenderFromIdentity(false),
-    LoopCallBack(0), PassCount(0), Shadow(0), MD3Special(0), m_logger(logger)
+    LoopCallBack(0), PassCount(0), Shadow(0), MD3Special(0)
 {
     #ifdef _DEBUG
     setDebugName("AnimatedMeshSceneNode");
@@ -279,7 +279,7 @@ void AnimatedMeshSceneNode::render()
     else
     {
         #ifdef _DEBUG
-            m_logger->log("Animated Mesh returned no mesh to render.", Mesh->getDebugName(), ELL_WARNING);
+            TWARNING() << "Animated Mesh returned no mesh to render" << Mesh->getDebugName();
         #endif
     }
 
@@ -553,13 +553,13 @@ scene::IShadowVolumeSceneNode* AnimatedMeshSceneNode::addShadowVolumeSceneNode(
 scene::IBoneSceneNode* AnimatedMeshSceneNode::getJointNode(const c8* jointName)
 {
 #ifndef _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
-    m_logger->log("Compiled without _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_", ELL_WARNING);
+    TWARNING() << "Compiled without _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_";
     return 0;
 #else
 
     if (!Mesh || Mesh->getMeshType() != scene::EAMT_SKINNED)
     {
-        m_logger->log("No mesh, or mesh not of skinned mesh type", ELL_WARNING);
+        TWARNING() << "No mesh, or mesh not of skinned mesh type";
         return 0;
     }
 
@@ -571,13 +571,13 @@ scene::IBoneSceneNode* AnimatedMeshSceneNode::getJointNode(const c8* jointName)
 
     if (number == -1)
     {
-        m_logger->log("Joint with specified name not found in skinned mesh", jointName, ELL_DEBUG);
+        TDEBUG() << "Joint with specified name not found in skinned mesh" << jointName;
         return 0;
     }
 
     if ((s32)JointChildSceneNodes.size() <= number)
     {
-        m_logger->log("Joint was found in mesh, but is not loaded into node", jointName, ELL_WARNING);
+        TWARNING() << "Joint was found in mesh, but is not loaded into node"<< jointName;
         return 0;
     }
 
@@ -592,13 +592,13 @@ scene::IBoneSceneNode* AnimatedMeshSceneNode::getJointNode(const c8* jointName)
 scene::IBoneSceneNode* AnimatedMeshSceneNode::getJointNode(u32 jointID)
 {
 #ifndef _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_
-    m_logger->log("Compiled without _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_", ELL_WARNING);
+    TWARNING() << "Compiled without _IRR_COMPILE_WITH_SKINNED_MESH_SUPPORT_";
     return 0;
 #else
 
     if (!Mesh || Mesh->getMeshType() != scene::EAMT_SKINNED)
     {
-        m_logger->log("No mesh, or mesh not of skinned mesh type", ELL_WARNING);
+        TWARNING() << "No mesh, or mesh not of skinned mesh type";
         return 0;
     }
 
@@ -606,7 +606,7 @@ scene::IBoneSceneNode* AnimatedMeshSceneNode::getJointNode(u32 jointID)
 
     if (JointChildSceneNodes.size() <= jointID)
     {
-        m_logger->log("Joint not loaded into node", ELL_WARNING);
+        TWARNING() << "Joint not loaded into node";
         return 0;
     }
 
@@ -1072,7 +1072,7 @@ scene::ISceneNode* AnimatedMeshSceneNode::clone(ISceneNode* newParent, scene::IS
         newManager = SceneManager;
 
     AnimatedMeshSceneNode* newNode =
-        new AnimatedMeshSceneNode(m_logger, Mesh, NULL, newManager, ID, RelativeTranslation,
+        new AnimatedMeshSceneNode(Mesh, NULL, newManager, ID, RelativeTranslation,
                          RelativeRotation, RelativeScale);
 
     if (newParent)

@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <cmath>
 #include <fstream>
+#include <irrlicht.h>
 #ifdef __linux__
     #include <sys/time.h>
 #elif _WIN32
@@ -157,6 +158,10 @@ public:
     TDebug& operator<<(float str) {m_stream << str;return maybeSpace();}
     template<typename T>
     TDebug& operator<<(T str) {m_stream << str;return maybeSpace();}
+    TDebug& operator<<(const irr::core::vector3df& str) {m_stream << '(' <<
+                                                                     str.X << ',' <<
+                                                                     str.Y << ',' <<
+                                                                     str.Z << ')';return maybeSpace();}
 
 private:
     std::ostringstream m_stream;

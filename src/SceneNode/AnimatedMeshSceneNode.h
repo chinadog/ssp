@@ -16,7 +16,7 @@ class AnimatedMeshSceneNode : public scene::IAnimatedMeshSceneNode
 public:
 
     //! constructor
-    AnimatedMeshSceneNode(ILogger* logger,
+    AnimatedMeshSceneNode(
             scene::IAnimatedMesh* mesh, ISceneNode* parent,
                           scene::ISceneManager* mgr,	s32 id,
         const core::vector3df& position = core::vector3df(0,0,0),
@@ -214,7 +214,6 @@ private:
         }
     };
     SMD3Special *MD3Special;
-    ILogger* m_logger;
 };
 
 

@@ -2,6 +2,8 @@
 #include "GamePark.h"
 #include "RedMonsterNode.h"
 #include "GreenMonsterNode.h"
+#include "RedMonsterNodeNew.h"
+#include "Common/Logger.h"
 
 RespawnPoint::RespawnPoint(GamePark* gamePark, const core::vector3df& pos) :
     m_gamePark(gamePark),
@@ -40,6 +42,31 @@ void RespawnPoint::createMonster()
     node->setTerrain(m_gamePark->m_terrain);
     m_gamePark->m_aiNode.push_back(node);
     m_gamePark->updateMonsterCollision();
+    node->layOut.connect_member(this,&RespawnPoint::draw);
+}
+
+void RespawnPoint::createMonsterNew()
+{
+    s32 rand = m_gamePark->device()->getRandomizer()->rand() % 2;
+
+    RedMonsterNodeNew* node = 0;
+
+    if(rand == 0)
+    {
+        node = new RedMonsterNodeNew(m_gamePark);
+    }
+    else
+    {
+        node = new RedMonsterNodeNew(m_gamePark);
+    }
+
+    core::vector3df monsterPos = m_pos;
+    monsterPos.Y -= 100;
+    node->setPosition( monsterPos );TWARNING() << "SET POS=" << monsterPos;
+    node->setDrawFinishedLevel(m_node->getPosition().Y + 0.8);
+    node->setTerrain(m_gamePark->m_terrain);
+    m_gamePark->m_aiNodeNew.push_back(node);
+    m_gamePark->updateMonsterCollisionNew();
     node->layOut.connect_member(this,&RespawnPoint::draw);
 }
 

@@ -784,8 +784,7 @@ int GamePark::initRespawnPoints()
     node->drop();
 
     scene::IAnimatedMesh* animMesh = m_device->getSceneManager()->getMesh("../../media/models/monster.b3d");
-    AnimatedMeshSceneNode* animNode = new AnimatedMeshSceneNode(m_device->getLogger(),
-                                                                animMesh, smgr()->getRootSceneNode(),
+    AnimatedMeshSceneNode* animNode = new AnimatedMeshSceneNode(animMesh, smgr()->getRootSceneNode(),
                                                                 smgr(),-1);
     animNode->setPosition(core::vector3df(200,12,850));
     animNode->setMaterialTexture( 0, m_device->getVideoDriver()->getTexture("../../media/textures/monster/green.tga") );
@@ -810,6 +809,30 @@ void GamePark::updateMonsterCollision()
         for(u32 j=0;j<i;j++)
         {
             std::list<MonsterNode*>::iterator it2 = std::next(m_aiNode.begin(), j);
+            monster->addTriangleSelector(*it2);
+        }
+        monster->addTriangleSelector( m_whiteBoxSelector );
+//        for(int i=0;i<m_forestSize;i++)
+//            monster->addTriangleSelector( m_forestSelector[i] );
+        monster->updateCollisionAnimator();
+    }
+}
+
+void GamePark::updateMonsterCollisionNew()
+{
+    for(u32 i=0;i<m_aiNodeNew.size();i++)
+    {
+        std::list<RedMonsterNodeNew*>::iterator it = std::next(m_aiNodeNew.begin(), i);
+        RedMonsterNodeNew* monster = *it;
+        monster->removeAllTriangleSelector();
+    }
+    for(u32 i=0;i<m_aiNodeNew.size();i++)
+    {
+        std::list<RedMonsterNodeNew*>::iterator it = std::next(m_aiNodeNew.begin(), i);
+        RedMonsterNodeNew* monster = *it;
+        for(u32 j=0;j<i;j++)
+        {
+            std::list<RedMonsterNodeNew*>::iterator it2 = std::next(m_aiNodeNew.begin(), j);
             monster->addTriangleSelector(*it2);
         }
         monster->addTriangleSelector( m_whiteBoxSelector );
@@ -1157,6 +1180,7 @@ void GamePark::setSceneMode(const SceneMode &mode)
         player()->camera()->setInputReceiverEnabled(true);
         player()->node()->setVisible(true);
         player()->camera()->removeAnimator(player()->m_dieAnimator);
+        player()->camera()->setTarget(core::vector3df(200,10,920));
 
 
         m_device->getCursorControl()->setVisible(false);
@@ -1252,13 +1276,26 @@ int GamePark::run()
     m_screenLoading->draw();
     updateScreensValues();
 
+    u32 timeBefore = 0;
+    u32 timeAfter = 0;
+    f32 middle = 0.0;
+    u32 sum = 0;
+    u32 count = 0;
 
     while(m_device->run())
     {
         if(usl_exit)break;
 
+        count++;
+        timeBefore = m_device->getTimer()->getRealTime();
         m_screen->draw();
+        timeAfter = m_device->getTimer()->getRealTime();
+        sum += timeAfter - timeBefore;
     }
+    middle = (sum*1.0)/(count*1.0);
+    TDEBUG() << "MIDDLE = " << middle << sum << count;
+
+
     bill->drop();
 
     m_device->closeDevice();

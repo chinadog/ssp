@@ -26,6 +26,8 @@
 #include "Screen/ScreenSurvival.h"
 #include "Screen/ScreenMainMenu.h"
 
+#include "Monster/RedMonsterNodeNew.h"
+
 using namespace irr;
 
 enum
@@ -105,6 +107,9 @@ public:
 
 std::list<MonsterNode*> m_aiNode;
 void updateMonsterCollision();
+
+std::list<RedMonsterNodeNew*> m_aiNodeNew;
+void updateMonsterCollisionNew();
 
     Screen* m_screen = nullptr;
     ScreenLoading*  m_screenLoading  = nullptr;

@@ -63,14 +63,22 @@ void ScreenSurvival::draw()
     }
 //            driver()->endScene();
 
-    if(m_gamePark->m_aiNode.size() < m_gamePark->m_config.count())
+//    if(m_gamePark->m_aiNode.size() < m_gamePark->m_config.count())
+//    {
+//        int rand = m_device->getRandomizer()->rand() % m_gamePark->m_respPoints.size();
+//        auto it = m_gamePark->m_respPoints.begin();
+//        std::advance(it, rand);
+//        RespawnPoint* p = *it;
+//        p->createMonster();
+//    }
+
+    if(m_gamePark->m_aiNodeNew.size() < m_gamePark->m_config.count())
     {
         int rand = m_device->getRandomizer()->rand() % m_gamePark->m_respPoints.size();
         auto it = m_gamePark->m_respPoints.begin();
-        // Advance the iterator by 2 positions,
         std::advance(it, rand);
         RespawnPoint* p = *it;
-        p->createMonster();
+        p->createMonsterNew();
     }
 
     if(m_gamePark->m_checkFpsCounter > 25)

@@ -14,6 +14,7 @@ public:
     ~RespawnPoint();
 
     void createMonster();
+    void createMonsterNew();
 private:
     void init();
     void draw();
