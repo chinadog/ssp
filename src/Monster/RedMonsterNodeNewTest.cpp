@@ -1,19 +1,17 @@
-#include "RedMonsterNodeNew.h"
+#include "RedMonsterNodeNewTest.h"
 #include "GamePark.h"
 #include "Common/Common.h"
 #include <cmath>
 #include "Common/Logger.h"
 
-RedMonsterNodeNew::RedMonsterNodeNew(GamePark* gamePark) :
+RedMonsterNodeNewTest::RedMonsterNodeNewTest(GamePark *gamePark) :
     AnimatedMeshSceneNode(0,0,0,0),
     m_gamePark(gamePark)
 {
-    // Ai
     m_smgr = m_gamePark->smgr();
     m_driver = m_gamePark->driver();
     m_device = m_gamePark->device();
     m_player = m_gamePark->player();
-    // end ai
 
     scene::IAnimatedMesh* mesh = m_smgr->getMesh("../../media/models/monster_red.b3d");
     setMesh(mesh);
@@ -27,80 +25,27 @@ RedMonsterNodeNew::RedMonsterNodeNew(GamePark* gamePark) :
     getMaterial(0).TextureLayer[0].AnisotropicFilter = 16;
     setName("MonsterNode");
 
-    // monster
-    irr::scene::ITriangleSelector* selector = m_smgr->createOctreeTriangleSelector(this->getMesh(),this,128);
-    this->setTriangleSelector(selector);
-    selector->drop();
-    setMonsterState(m_currentState,true);
-    // end monster
-
-    //red
-    scene::IBoneSceneNode* headBone = this->getJointNode("Bip01 Head");
-    m_ps = m_smgr->addParticleSystemSceneNode(false, headBone);
-    m_fireEmitter = m_ps->createBoxEmitter(
-        core::aabbox3d<f32>(-70/60.0,0,-70/60.0,70/60.0,10/60.0,70/60.0), // emitter size
-        core::vector3df(0.0,-0.0015f,0.0),   // initial direction
-        38,50,                             // emit rate
-        video::SColor(255,255,0,0),       // darkest color
-        video::SColor(255,255,255,0),       // brightest color
-        800,2000,0,                         // min and max age, angle
-        core::dimension2df(0.2,0.2),         // min size
-        core::dimension2df(0.4,0.4));        // max size
-    m_fireEmitter->setMinParticlesPerSecond(0);
-    m_fireEmitter->setMaxParticlesPerSecond(0);
-    m_fireEmitter->setMinStartColor(video::SColor(255,255,0,0));
-    m_fireEmitter->setMaxStartColor(video::SColor(255,225,194,20));
-    m_ps->setEmitter(m_fireEmitter); // this grabs the emitter
-
-    scene::IParticleAffector* paf = m_ps->createFadeOutParticleAffector(video::SColor(0,0,0,0), 700);
-    scene::IParticleAffector* paf2 = m_ps->createScaleParticleAffector(core::dimension2df(5.5,4.5));
-
-    m_ps->addAffector(paf); // same goes for the affector
-    m_ps->addAffector(paf2); // same goes for the affector
-    paf->drop();
-    paf2->drop();
-
-    m_ps->setPosition(core::vector3df(-10,3,0));
-    m_ps->setScale(core::vector3df(1,1,1));
-    m_ps->setMaterialFlag(video::EMF_LIGHTING, false);
-    m_ps->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
-    m_ps->setMaterialTexture(0, m_driver->getTexture(Common::texture("fire.png")));
-    m_ps->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
-
-    m_speedOfTime = m_gamePark->speedOfTime();
     m_metaTriangleSelector = m_smgr->createMetaTriangleSelector();
     m_boxSelector = m_smgr->createTriangleSelectorFromBoundingBox(this);
     m_octreeSelector = m_smgr->createOctreeTriangleSelector(this->getMesh(), this, 32);
-    m_speedOfTimeChangedSignalId = m_gamePark->speedOfTimeChanged.connect_member(this,&RedMonsterNodeNew::setSpeedOfTime);
-    m_atackDistance = 10.0;
-//    m_walkSpeed = m_gamePark->m_config.monster().walkSpeed();
-    m_walkSpeed = 9;
-    m_atackSpeed = m_gamePark->m_config.monster().atackSpeed();
-    //end red
-
-
 }
 
-RedMonsterNodeNew::~RedMonsterNodeNew()
+RedMonsterNodeNewTest::~RedMonsterNodeNewTest()
 {
     m_collisionAnimator->drop();
     m_boxSelector->drop();
     m_octreeSelector->drop();
     m_metaTriangleSelector->drop();
     m_gamePark->speedOfTimeChanged.disconnect(m_speedOfTimeChangedSignalId);
-    remove();
 }
 
-// AI --------------------------------------------------------------------------------------
-
-void RedMonsterNodeNew::setTerrain(scene::ITerrainSceneNode *terrain)
+void RedMonsterNodeNewTest::setTerrain(scene::ITerrainSceneNode *terrain)
 {
     m_terrain = terrain;
     createGravitation();
 }
 
-
-void RedMonsterNodeNew::gotoPlayer(f32 timeInSeconds)
+void RedMonsterNodeNewTest::gotoPlayer(f32 timeInSeconds)
 {
     if(/*this == nullptr ||*/ m_movable == false || m_player->health() <= 0.0 /*|| m_health <= 0.0*/)
     {
@@ -110,7 +55,7 @@ void RedMonsterNodeNew::gotoPlayer(f32 timeInSeconds)
     moveNode( m_player->camera()->getAbsolutePosition(), timeInSeconds );
 }
 
-void RedMonsterNodeNew::createGravitation()
+void RedMonsterNodeNewTest::createGravitation()
 {
     // создаем аниматор столкновений с селектором и прикрепляем его к игроку
     m_gravityAnim = m_smgr->createCollisionResponseAnimator(
@@ -120,44 +65,47 @@ void RedMonsterNodeNew::createGravitation()
     this->addAnimator(m_gravityAnim);
 //    m_gravityAnim->drop();
 
-//    Collision::setCollision( this,m_player,m_smgr);
+    //    Collision::setCollision( this,m_player,m_smgr);
 }
 
-void RedMonsterNodeNew::moveNode(const core::vector3df &pos, f32 timeInSeconds)
+void RedMonsterNodeNewTest::moveNode(const core::vector3df &pos, f32 timeInSeconds)
 {
-    core::vector3df targetPos = pos - getPosition();
-    targetPos.Y = getPosition().Y;
+    core::vector3df nodePos = this->getPosition();
+    //считаем дистанцию (длину от точки А до точки Б)
+    m_distanceToPlayer = nodePos.getDistanceFrom(pos);
 
-    if(targetPos.getLength() > m_atackDistance)  // if distanecToPlayer > atackDistan
+    if(m_distanceToPlayer > m_atackDistance)
     {
-        targetPos.normalize() *= timeInSeconds*m_speed;
-
-        setPosition(getPosition() + targetPos);
-        if(m_intersects == true) {m_intersects = false; walk();}
+        nodePos.X += timeInSeconds*m_speed*m_speedOfTime*(pos.X - nodePos.X) / m_distanceToPlayer;//идем по иксу с помощью вектора нормали
+        nodePos.Z += timeInSeconds*m_speed*m_speedOfTime*(pos.Z - nodePos.Z) / m_distanceToPlayer;//идем по игреку так же
+        nodePos.Y += 0.02*m_speed*m_speedOfTime;
+        this->setPosition(nodePos);
+        if(m_intersects == true)
+        {
+            m_intersects = false;
+            walk();
+        }
     }
     else
     {
-        if(m_intersects == false ) {m_intersects = true; atack();}
+        if(m_intersects == false )
+        {
+            m_intersects = true;
+            atack();
+        }
     }
+    core::vector3df r = pos - nodePos;
+    f32 arc = atan2(r.X, r.Z);
+    f32 newX = arc*180/M_PI;
+    r.set( 0, newX, 0);
 
-    f32 rot = atan2(targetPos.X, targetPos.Z)*180/M_PI;
     if(m_isRotated)
     {
-        setRotation(core::vector3df(0,rot,0));
+        this->setRotation( r );
     }
 }
 
-void RedMonsterNodeNew::calcPosAndRot()
-{
-//    m_targetPos =
-}
-
-// end ai-------------------------------------------------------------------------------------
-
-
-// monster-------------------------------------------------------------------------------------
-
-void RedMonsterNodeNew::draw()
+void RedMonsterNodeNewTest::draw()
 {
     u32 now = m_device->getTimer()->getTime();
     if(m_prevTime == 0)
@@ -211,18 +159,17 @@ void RedMonsterNodeNew::draw()
     // end red
 }
 
-
-core::vector3df RedMonsterNodeNew::ellipsoid() const
+core::vector3df RedMonsterNodeNewTest::ellipsoid() const
 {
     return core::vector3df(2,2,2);
 }
 
-core::vector3df RedMonsterNodeNew::ellipsoidTranslation() const
+core::vector3df RedMonsterNodeNewTest::ellipsoidTranslation() const
 {
     return core::vector3df(0,-2,0);
 }
 
-void RedMonsterNodeNew::kill()
+void RedMonsterNodeNewTest::kill()
 {
     m_fms.setState(MonsterSignal::Die);
     setMonsterState(m_fms.currentState());
@@ -256,7 +203,7 @@ void RedMonsterNodeNew::kill()
     music2->drop();
 }
 
-void RedMonsterNodeNew::damage(f32 value, const core::vector3df& intersection)
+void RedMonsterNodeNewTest::damage(f32 value, const core::vector3df& intersection)
 {
     if(health() > value)
     {
@@ -278,20 +225,19 @@ void RedMonsterNodeNew::damage(f32 value, const core::vector3df& intersection)
     }
 }
 
-void RedMonsterNodeNew::die(DieEndCallBackNew* callback)
+void RedMonsterNodeNewTest::die(DieEndCallBackNewTest* callback)
 {
     m_life = false;
     this->setAnimationEndCallback(0);
     delete callback;
 }
 
-void RedMonsterNodeNew::addCallback(scene::IAnimationEndCallBack *callback)
+void RedMonsterNodeNewTest::addCallback(scene::IAnimationEndCallBack *callback)
 {
     m_callbackList.push_back( callback );
 }
 
-
-void RedMonsterNodeNew::dustEffect(const core::vector3df& pos)
+void RedMonsterNodeNewTest::dustEffect(const core::vector3df& pos)
 {
     scene::IParticleSystemSceneNode* ps =
         m_smgr->addParticleSystemSceneNode(false);
@@ -329,7 +275,7 @@ void RedMonsterNodeNew::dustEffect(const core::vector3df& pos)
     sna->drop();
 }
 
-void RedMonsterNodeNew::bloodEffect(const core::vector3df &pos)
+void RedMonsterNodeNewTest::bloodEffect(const core::vector3df &pos)
 {
     scene::IParticleSystemSceneNode* ps =
         m_smgr->addParticleSystemSceneNode(false);
@@ -372,27 +318,27 @@ void RedMonsterNodeNew::bloodEffect(const core::vector3df &pos)
     sna->drop();
 }
 
-void RedMonsterNodeNew::addTriangleSelector(RedMonsterNodeNew *node)
+void RedMonsterNodeNewTest::addTriangleSelector(RedMonsterNodeNewTest *node)
 {
     m_metaTriangleSelector->addTriangleSelector( node->m_boxSelector );
 }
 
-void RedMonsterNodeNew::addTriangleSelector(scene::ITriangleSelector* selector)
+void RedMonsterNodeNewTest::addTriangleSelector(scene::ITriangleSelector* selector)
 {
     m_metaTriangleSelector->addTriangleSelector( selector );
 }
 
-void RedMonsterNodeNew::removeAllTriangleSelector()
+void RedMonsterNodeNewTest::removeAllTriangleSelector()
 {
     m_metaTriangleSelector->removeAllTriangleSelectors();
 }
 
-void RedMonsterNodeNew::removeTriangleSelector(RedMonsterNodeNew *node)
+void RedMonsterNodeNewTest::removeTriangleSelector(RedMonsterNodeNewTest *node)
 {
     m_metaTriangleSelector->removeTriangleSelector( node->m_boxSelector );
 }
 
-void RedMonsterNodeNew::updateCollisionAnimator()
+void RedMonsterNodeNewTest::updateCollisionAnimator()
 {
     this->removeAnimator(m_collisionAnimator);
     m_collisionAnimator = m_smgr->createCollisionResponseAnimator(
@@ -402,7 +348,7 @@ void RedMonsterNodeNew::updateCollisionAnimator()
     this->addAnimator(m_collisionAnimator);
 }
 
-bool RedMonsterNodeNew::isHeadshot(core::vector3df point)
+bool RedMonsterNodeNewTest::isHeadshot(core::vector3df point)
 {
     scene::IBoneSceneNode* headBone = getJointNode("Bip01 Head");
     core::line3d<f32> ray;
@@ -416,18 +362,20 @@ bool RedMonsterNodeNew::isHeadshot(core::vector3df point)
     return false;
 }
 
-void RedMonsterNodeNew::setSpeedOfTime(f32 speed)
+void RedMonsterNodeNewTest::setSpeedOfTime(f32 speed)
 {
     m_speedOfTime = speed;
     this->setAnimationSpeed(m_afl.speed()*m_speedOfTime);
 }
 
-void RedMonsterNodeNew::setMonsterStateMonster(const MonsterState &state, bool force)
+void RedMonsterNodeNewTest::setMonsterStateMonster(const MonsterState &state, bool force)
 {
     if(state == m_currentState && force == false)
     {
         return;
     }
+
+    TINFO() << "SETSTATE=" << (int)state;
 
     m_currentState = state;
 
@@ -448,7 +396,7 @@ void RedMonsterNodeNew::setMonsterStateMonster(const MonsterState &state, bool f
         m_afl.setSpeed(25);
         m_afl.setLoop(false);
         m_afl.setEndCallback(&m_endCallback);
-        m_endCallback.setFunc(this, &RedMonsterNodeNew::atackPlayer);
+        m_endCallback.setFunc(this, &RedMonsterNodeNewTest::atackPlayer);
         m_speed = m_atackSpeed*m_speedOfTime;
         break;
     case MonsterState::Wound :
@@ -463,7 +411,7 @@ void RedMonsterNodeNew::setMonsterStateMonster(const MonsterState &state, bool f
         m_afl.setSpeed(25);
         m_afl.setLoop(false);
         m_afl.setEndCallback(&m_endCallback);
-        m_endCallback.setFunc(this, &RedMonsterNodeNew::woundFinished);
+        m_endCallback.setFunc(this, &RedMonsterNodeNewTest::woundFinished);
         m_speed = m_woundSpeed*m_speedOfTime;
         break;
     case MonsterState::Die :
@@ -477,7 +425,7 @@ void RedMonsterNodeNew::setMonsterStateMonster(const MonsterState &state, bool f
         }
         m_afl.setSpeed(25);
         m_afl.setLoop(false);
-        m_afl.setEndCallback(new DieEndCallBackNew(this));
+        m_afl.setEndCallback(new DieEndCallBackNewTest(this));
         m_speed = 0;
         m_isRotated = false;
         break;
@@ -493,13 +441,13 @@ void RedMonsterNodeNew::setMonsterStateMonster(const MonsterState &state, bool f
         break;
     }
 
-    this->setFrameLoop(m_afl.start(), m_afl.end());
-    this->setAnimationSpeed(m_afl.speed()*m_speedOfTime);
-    this->setLoopMode(m_afl.loop());
-    this->setAnimationEndCallback(m_afl.endCallback());
+//    this->setFrameLoop(m_afl.start(), m_afl.end());
+//    this->setAnimationSpeed(m_afl.speed()*m_speedOfTime);
+//    this->setLoopMode(m_afl.loop());
+//    this->setAnimationEndCallback(m_afl.endCallback());
 }
 
-void RedMonsterNodeNew::setMonsterState(const MonsterState &state, bool force)
+void RedMonsterNodeNewTest::setMonsterState(const MonsterState &state, bool force)
 {
     setMonsterStateMonster(state, force);
     switch (state) {
@@ -514,13 +462,13 @@ void RedMonsterNodeNew::setMonsterState(const MonsterState &state, bool force)
     }
 }
 
-void RedMonsterNodeNew::woundFinished()
+void RedMonsterNodeNewTest::woundFinished()
 {
     m_fms.setState(MonsterSignal::Stop);
     setMonsterState(m_fms.currentState());
 }
 
-void RedMonsterNodeNew::atack()
+void RedMonsterNodeNewTest::atack()
 {
     m_fms.setState(MonsterSignal::Atack);
     setMonsterState(m_fms.currentState());
@@ -531,55 +479,45 @@ void RedMonsterNodeNew::atack()
     }
 }
 
-void RedMonsterNodeNew::walk()
+void RedMonsterNodeNewTest::walk()
 {
     m_fms.setState(MonsterSignal::Go);
     setMonsterState(m_fms.currentState());
 }
 
-void RedMonsterNodeNew::stopDraw()
+void RedMonsterNodeNewTest::stopDraw()
 {
     m_fms.setState(MonsterSignal::Stop);
     setMonsterState(m_fms.currentState());
 }
 
-void RedMonsterNodeNew::atackPlayer()
+void RedMonsterNodeNewTest::atackPlayer()
 {
     m_intersects = false;
     m_fms.setState(MonsterSignal::Stop);
     setMonsterState(m_fms.currentState());
 }
 
-DieEndCallBackNew::DieEndCallBackNew(RedMonsterNodeNew *parent) :
+DieEndCallBackNewTest::DieEndCallBackNewTest(RedMonsterNodeNewTest *parent) :
     m_parent(parent)
 {
 }
 
-void DieEndCallBackNew::OnAnimationEnd(scene::IAnimatedMeshSceneNode */*node*/)
+void DieEndCallBackNewTest::OnAnimationEnd(scene::IAnimatedMeshSceneNode */*node*/)
 {
     m_parent->die(this);
 }
 
-// end monster---------------------------------------------------------------------------------
-
-
-// red-------------------------------------------------------------------------------------
-void RedMonsterNodeNew::fireEffect()
+void RedMonsterNodeNewTest::fireEffect()
 {
     m_fireEmitter->setMinParticlesPerSecond(80);
     m_fireEmitter->setMaxParticlesPerSecond(90);
 }
 
-// end red--------------------------------------------------------------------------------------
-
-void RedMonsterNodeNew::OnAnimate(u32 timeMs)
+void RedMonsterNodeNewTest::OnAnimate(u32 timeMs)
 {
     AnimatedMeshSceneNode::OnAnimate(timeMs);
-//    fpsCount++;
-//    if(fpsCount == 2)
-//    {
-//        calcPosAndRot();
-//        fpsCount = 0;
-//    }
+//    TDEBUG() << getPosition() << getAnimationSpeed();
     draw();
 }
+

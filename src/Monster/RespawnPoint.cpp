@@ -3,6 +3,7 @@
 #include "RedMonsterNode.h"
 #include "GreenMonsterNode.h"
 #include "RedMonsterNodeNew.h"
+#include "RedMonsterNodeNewTest.h"
 #include "Common/Logger.h"
 
 RespawnPoint::RespawnPoint(GamePark* gamePark, const core::vector3df& pos) :
@@ -61,8 +62,8 @@ void RespawnPoint::createMonsterNew()
     }
 
     core::vector3df monsterPos = m_pos;
-    monsterPos.Y -= 100;
-    node->setPosition( monsterPos );TWARNING() << "SET POS=" << monsterPos;
+    monsterPos.Y -= 20;
+    node->setPosition( monsterPos );
     node->setDrawFinishedLevel(m_node->getPosition().Y + 0.8);
     node->setTerrain(m_gamePark->m_terrain);
     m_gamePark->m_aiNodeNew.push_back(node);

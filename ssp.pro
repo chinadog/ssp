@@ -84,7 +84,8 @@ SOURCES += \
     src/Screen/ScreenEndGame.cpp \
     src/Screen/ScreenGameOver.cpp \
     src/Screen/ScreenMainMenu.cpp \
-    src/Monster/RedMonsterNodeNew.cpp
+    src/Monster/RedMonsterNodeNew.cpp \
+    src/Monster/RedMonsterNodeNewTest.cpp
 
 HEADERS += \
     src/EventReceiver/EventReceiver.h \
@@ -153,7 +154,8 @@ HEADERS += \
     src/Screen/ScreenEndGame.h \
     src/Screen/ScreenGameOver.h \
     src/Screen/ScreenMainMenu.h \
-    src/Monster/RedMonsterNodeNew.h
+    src/Monster/RedMonsterNodeNew.h \
+    src/Monster/RedMonsterNodeNewTest.h
 
 unix{
 LIBS += -L../../irrlicht-1.8.4/lib/Linux/ -lIrrlicht -lGL -lGLU -lXxf86vm -lXext -lX11

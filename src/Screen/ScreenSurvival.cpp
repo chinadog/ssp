@@ -63,26 +63,50 @@ void ScreenSurvival::draw()
     }
 //            driver()->endScene();
 
-//    if(m_gamePark->m_aiNode.size() < m_gamePark->m_config.count())
-//    {
-//        int rand = m_device->getRandomizer()->rand() % m_gamePark->m_respPoints.size();
-//        auto it = m_gamePark->m_respPoints.begin();
-//        std::advance(it, rand);
-//        RespawnPoint* p = *it;
-//        p->createMonster();
-//    }
-
-    if(m_gamePark->m_aiNodeNew.size() < m_gamePark->m_config.count())
+    if(m_gamePark->m_aiNode.size() < m_gamePark->m_config.count())
     {
         int rand = m_device->getRandomizer()->rand() % m_gamePark->m_respPoints.size();
         auto it = m_gamePark->m_respPoints.begin();
         std::advance(it, rand);
         RespawnPoint* p = *it;
-        p->createMonsterNew();
+        p->createMonster();
     }
+
+//    if(m_gamePark->m_aiNodeNew.size() < m_gamePark->m_config.count())
+//    {
+//        int rand = m_device->getRandomizer()->rand() % m_gamePark->m_respPoints.size();
+//        auto it = m_gamePark->m_respPoints.begin();
+//        std::advance(it, rand);
+//        RespawnPoint* p = *it;
+//        p->createMonsterNew();
+//    }
+
+
+
+
+
+//    // Monster loop
+//    auto i2 = std::begin(m_gamePark->m_aiNodeNew);
+//    while(i2 != std::end(m_gamePark->m_aiNodeNew))
+//    {
+//        RedMonsterNodeNew* monster = *i2;
+//        monster->draw();
+//        i2++;
+//    }
+
 
     if(m_gamePark->m_checkFpsCounter > 25)
     {
+//        if(m_gamePark->m_aiNodeNew.size() < m_gamePark->m_config.count())
+//        {
+//            int rand = m_device->getRandomizer()->rand() % m_gamePark->m_respPoints.size();
+//            auto it = m_gamePark->m_respPoints.begin();
+//            std::advance(it, rand);
+//            RespawnPoint* p = *it;
+//            p->createMonsterNew();
+//        }
+
+
         m_gamePark->m_checkFpsCounter = 0;
         str = L"Driver [";
         str += m_driver->getName();

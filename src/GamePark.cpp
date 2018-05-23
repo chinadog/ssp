@@ -1281,16 +1281,21 @@ int GamePark::run()
     f32 middle = 0.0;
     u32 sum = 0;
     u32 count = 0;
+    u32 frame = 0;
 
     while(m_device->run())
     {
         if(usl_exit)break;
 
-        count++;
+        frame++;
         timeBefore = m_device->getTimer()->getRealTime();
         m_screen->draw();
         timeAfter = m_device->getTimer()->getRealTime();
-        sum += timeAfter - timeBefore;
+        if(frame>300)
+        {
+            count++;
+            sum += timeAfter - timeBefore;
+        }
     }
     middle = (sum*1.0)/(count*1.0);
     TDEBUG() << "MIDDLE = " << middle << sum << count;
