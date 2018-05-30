@@ -48,27 +48,27 @@ void RespawnPoint::createMonster()
 
 void RespawnPoint::createMonsterNew()
 {
-    s32 rand = m_gamePark->device()->getRandomizer()->rand() % 2;
+//    s32 rand = m_gamePark->device()->getRandomizer()->rand() % 2;
 
-    RedMonsterNodeNew* node = 0;
+//    RedMonsterNodeNew* node = 0;
 
-    if(rand == 0)
-    {
-        node = new RedMonsterNodeNew(m_gamePark);
-    }
-    else
-    {
-        node = new RedMonsterNodeNew(m_gamePark);
-    }
+//    if(rand == 0)
+//    {
+//        node = new RedMonsterNodeNew(m_gamePark);
+//    }
+//    else
+//    {
+//        node = new RedMonsterNodeNew(m_gamePark);
+//    }
 
-    core::vector3df monsterPos = m_pos;
-    monsterPos.Y -= 20;
-    node->setPosition( monsterPos );
-    node->setDrawFinishedLevel(m_node->getPosition().Y + 0.8);
-    node->setTerrain(m_gamePark->m_terrain);
-    m_gamePark->m_aiNodeNew.push_back(node);
-    m_gamePark->updateMonsterCollisionNew();
-    node->layOut.connect_member(this,&RespawnPoint::draw);
+//    core::vector3df monsterPos = m_pos;
+//    monsterPos.Y -= 20;
+//    node->setPosition( monsterPos );
+//    node->setDrawFinishedLevel(m_node->getPosition().Y + 0.8);
+//    node->setTerrain(m_gamePark->m_terrain);
+//    m_gamePark->m_aiNodeNew.push_back(node);
+//    m_gamePark->updateMonsterCollisionNew();
+//    node->layOut.connect_member(this,&RespawnPoint::draw);
 }
 
 void RespawnPoint::init()

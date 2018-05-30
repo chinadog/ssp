@@ -583,3 +583,4 @@ void RedMonsterNodeNew::OnAnimate(u32 timeMs)
 //    }
     draw();
 }
+

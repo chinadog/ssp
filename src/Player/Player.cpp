@@ -606,6 +606,10 @@ void Player::draw()
             updatePlayerInfo();
             gunKick();
             setShootIntersection(calcShootIntersection()); // Shoot
+//            if(m_shootIntersection.isValid())
+//            {
+//                targetHit.Emit(m_shootIntersection.m_node);
+//            }
         }
         if(currentWeapon()->bulletCount()==0)
         {

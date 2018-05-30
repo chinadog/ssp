@@ -783,7 +783,7 @@ int GamePark::initRespawnPoints()
     node->setMaterialTexture( 0, m_device->getVideoDriver()->getTexture("../../media/textures/bullet.tga") );
     node->drop();
 
-    scene::IAnimatedMesh* animMesh = m_device->getSceneManager()->getMesh("../../media/models/monster.b3d");
+    scene::IAnimatedMesh* animMesh = m_device->getSceneManager()->getMesh("../../media/models/test_body.b3d");
     AnimatedMeshSceneNode* animNode = new AnimatedMeshSceneNode(animMesh, smgr()->getRootSceneNode(),
                                                                 smgr(),-1);
     animNode->setPosition(core::vector3df(200,12,850));
@@ -820,26 +820,26 @@ void GamePark::updateMonsterCollision()
 
 void GamePark::updateMonsterCollisionNew()
 {
-    for(u32 i=0;i<m_aiNodeNew.size();i++)
-    {
-        std::list<RedMonsterNodeNew*>::iterator it = std::next(m_aiNodeNew.begin(), i);
-        RedMonsterNodeNew* monster = *it;
-        monster->removeAllTriangleSelector();
-    }
-    for(u32 i=0;i<m_aiNodeNew.size();i++)
-    {
-        std::list<RedMonsterNodeNew*>::iterator it = std::next(m_aiNodeNew.begin(), i);
-        RedMonsterNodeNew* monster = *it;
-        for(u32 j=0;j<i;j++)
-        {
-            std::list<RedMonsterNodeNew*>::iterator it2 = std::next(m_aiNodeNew.begin(), j);
-            monster->addTriangleSelector(*it2);
-        }
-        monster->addTriangleSelector( m_whiteBoxSelector );
-//        for(int i=0;i<m_forestSize;i++)
-//            monster->addTriangleSelector( m_forestSelector[i] );
-        monster->updateCollisionAnimator();
-    }
+//    for(u32 i=0;i<m_aiNodeNew.size();i++)
+//    {
+//        std::list<RedMonsterNodeNew*>::iterator it = std::next(m_aiNodeNew.begin(), i);
+//        RedMonsterNodeNew* monster = *it;
+//        monster->removeAllTriangleSelector();
+//    }
+//    for(u32 i=0;i<m_aiNodeNew.size();i++)
+//    {
+//        std::list<RedMonsterNodeNew*>::iterator it = std::next(m_aiNodeNew.begin(), i);
+//        RedMonsterNodeNew* monster = *it;
+//        for(u32 j=0;j<i;j++)
+//        {
+//            std::list<RedMonsterNodeNew*>::iterator it2 = std::next(m_aiNodeNew.begin(), j);
+//            monster->addTriangleSelector(*it2);
+//        }
+//        monster->addTriangleSelector( m_whiteBoxSelector );
+////        for(int i=0;i<m_forestSize;i++)
+////            monster->addTriangleSelector( m_forestSelector[i] );
+//        monster->updateCollisionAnimator();
+//    }
 }
 
 void GamePark::setSpeedOfTime(f32 speed)

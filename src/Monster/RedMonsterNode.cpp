@@ -140,3 +140,24 @@ void RedMonsterNode::setMonsterState(const MonsterState &state, bool force)
     }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

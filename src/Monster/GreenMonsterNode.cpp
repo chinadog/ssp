@@ -35,7 +35,7 @@ int GreenMonsterNode::init()
         m_node->getMesh()->setHardwareMappingHint(irr::scene::EHM_STATIC);
         m_node->setName("MonsterNode");
         irr::scene::ITriangleSelector* selector = m_smgr->createOctreeTriangleSelector(m_node->getMesh(),m_node,128);
-        m_node->setTriangleSelector(selector);
+//        m_node->setTriangleSelector(selector);
         selector->drop();
     }
 

@@ -84,6 +84,7 @@ public:
     Signal<int> say;
     Signal<> shipPointPassed;
     Signal<> die;
+    Signal<irr::scene::ISceneNode*> targetHit;
 
     void setPlayerSpeed(f32 speed);
     void setSpeedOfTime(f32 speed);

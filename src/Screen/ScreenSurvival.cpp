@@ -27,6 +27,7 @@ void ScreenSurvival::draw()
     if(shootIntersection.isValid())
     {
 //                bill->setPosition(shootIntersection.m_intersection);
+        TDEBUG() << "VALID";
     }
     // Monster loop
     auto i = std::begin(m_gamePark->m_aiNode);
@@ -39,7 +40,7 @@ void ScreenSurvival::draw()
             if(monster->isHeadshot(shootIntersection.m_intersection) &&
                shootIntersection.m_intersection.getDistanceFrom(m_player->camera()->getAbsolutePosition()) > 15.0)
             {
-//                        monster->damage(1.0, shootIntersection.m_intersection);
+                        monster->damage(1.0, shootIntersection.m_intersection);
                 m_player->showSlowMoShoot(monster);
             }
             else
@@ -85,14 +86,17 @@ void ScreenSurvival::draw()
 
 
 
-//    // Monster loop
-//    auto i2 = std::begin(m_gamePark->m_aiNodeNew);
-//    while(i2 != std::end(m_gamePark->m_aiNodeNew))
-//    {
-//        RedMonsterNodeNew* monster = *i2;
-//        monster->draw();
-//        i2++;
-//    }
+    // Monster loop
+    auto i2 = std::begin(m_gamePark->m_aiNodeNew);
+    while(i2 != std::end(m_gamePark->m_aiNodeNew))
+    {
+        RedMonsterNodeNew* monster = *i2;
+        if(monster == shootIntersection.m_node)
+        {
+            TDEBUG() << "EEEEEEEE";
+        }
+        i2++;
+    }
 
 
     if(m_gamePark->m_checkFpsCounter > 25)
