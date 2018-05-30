@@ -73,19 +73,13 @@ SOURCES += \
     src/Monster/GreenMonsterNode.cpp \
     src/SceneNode/DropNode.cpp \
     src/SceneNode/MeshSceneNode.cpp \
-    src/SceneNode/AnimatedMeshSceneNode.cpp \
-    src/SceneNode/SkinnedMesh.cpp \
-    src/SceneNode/BoneSceneNode.cpp \
-    src/SceneNode/InterfaceSkinnedMesh.cpp \
     src/Common/Logger.cpp \
     src/Screen/Screen.cpp \
     src/Screen/ScreenSurvival.cpp \
     src/Screen/ScreenLoading.cpp \
     src/Screen/ScreenEndGame.cpp \
     src/Screen/ScreenGameOver.cpp \
-    src/Screen/ScreenMainMenu.cpp \
-    src/Monster/RedMonsterNodeNew.cpp \
-    src/Monster/RedMonsterNodeNewTest.cpp
+    src/Screen/ScreenMainMenu.cpp
 
 HEADERS += \
     src/EventReceiver/EventReceiver.h \
@@ -143,19 +137,13 @@ HEADERS += \
     src/Monster/GreenMonsterNode.h \
     src/SceneNode/DropNode.h \
     src/SceneNode/MeshSceneNode.h \
-    src/SceneNode/AnimatedMeshSceneNode.h \
-    src/SceneNode/SkinnedMesh.h \
-    src/SceneNode/BoneSceneNode.h \
-    src/SceneNode/InterfaceSkinnedMesh.h \
     src/Common/Logger.h \
     src/Screen/Screen.h \
     src/Screen/ScreenSurvival.h \
     src/Screen/ScreenLoading.h \
     src/Screen/ScreenEndGame.h \
     src/Screen/ScreenGameOver.h \
-    src/Screen/ScreenMainMenu.h \
-    src/Monster/RedMonsterNodeNew.h \
-    src/Monster/RedMonsterNodeNewTest.h
+    src/Screen/ScreenMainMenu.h
 
 unix{
 LIBS += -L../../irrlicht-1.8.4/lib/Linux/ -lIrrlicht -lGL -lGLU -lXxf86vm -lXext -lX11

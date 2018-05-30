@@ -18,7 +18,6 @@
 #include "Monster/RespawnPoint.h"
 #include "SceneNode/GameOverCredits.h"
 #include "SceneNode/DropNode.h"
-#include "SceneNode/AnimatedMeshSceneNode.h"
 #include "Screen/Screen.h"
 #include "Screen/ScreenEndGame.h"
 #include "Screen/ScreenGameOver.h"
@@ -26,7 +25,6 @@
 #include "Screen/ScreenSurvival.h"
 #include "Screen/ScreenMainMenu.h"
 
-#include "Monster/RedMonsterNodeNew.h"
 
 using namespace irr;
 
@@ -108,8 +106,6 @@ public:
 std::list<MonsterNode*> m_aiNode;
 void updateMonsterCollision();
 
-std::list<RedMonsterNodeNew*> m_aiNodeNew;
-void updateMonsterCollisionNew();
 
     Screen* m_screen = nullptr;
     ScreenLoading*  m_screenLoading  = nullptr;

@@ -27,7 +27,6 @@ void ScreenSurvival::draw()
     if(shootIntersection.isValid())
     {
 //                bill->setPosition(shootIntersection.m_intersection);
-        TDEBUG() << "VALID";
     }
     // Monster loop
     auto i = std::begin(m_gamePark->m_aiNode);
@@ -71,31 +70,6 @@ void ScreenSurvival::draw()
         std::advance(it, rand);
         RespawnPoint* p = *it;
         p->createMonster();
-    }
-
-//    if(m_gamePark->m_aiNodeNew.size() < m_gamePark->m_config.count())
-//    {
-//        int rand = m_device->getRandomizer()->rand() % m_gamePark->m_respPoints.size();
-//        auto it = m_gamePark->m_respPoints.begin();
-//        std::advance(it, rand);
-//        RespawnPoint* p = *it;
-//        p->createMonsterNew();
-//    }
-
-
-
-
-
-    // Monster loop
-    auto i2 = std::begin(m_gamePark->m_aiNodeNew);
-    while(i2 != std::end(m_gamePark->m_aiNodeNew))
-    {
-        RedMonsterNodeNew* monster = *i2;
-        if(monster == shootIntersection.m_node)
-        {
-            TDEBUG() << "EEEEEEEE";
-        }
-        i2++;
     }
 
 

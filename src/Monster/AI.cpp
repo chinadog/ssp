@@ -77,37 +77,24 @@ void AI::createGravitation()
 
 void AI::moveNode(const core::vector3df &pos, f32 timeInSeconds)
 {
-    core::vector3df nodePos = m_node->getPosition();
-    //считаем дистанцию (длину от точки А до точки Б)
-    m_distanceToPlayer = nodePos.getDistanceFrom(pos);
+    core::vector3df targetPos = pos - m_node->getPosition();
+    targetPos.Y = m_node->getPosition().Y;
 
-    if(m_distanceToPlayer > m_atackDistance)
+    if(targetPos.getLength() > m_atackDistance)  // if distanecToPlayer > atackDistan
     {
-        nodePos.X += timeInSeconds*m_speed*m_speedOfTime*(pos.X - nodePos.X) / m_distanceToPlayer;//идем по иксу с помощью вектора нормали
-        nodePos.Z += timeInSeconds*m_speed*m_speedOfTime*(pos.Z - nodePos.Z) / m_distanceToPlayer;//идем по игреку так же
-        nodePos.Y += 0.02*m_speed*m_speedOfTime;
-        m_node->setPosition(nodePos);
-        if(m_intersects == true)
-        {
-            m_intersects = false;
-            walk();
-        }
+        targetPos.normalize() *= timeInSeconds*m_speed*m_speedOfTime;
+
+        m_node->setPosition(m_node->getPosition() + targetPos);
+        if(m_intersects == true) {m_intersects = false; walk();}
     }
     else
     {
-        if(m_intersects == false )
-        {
-            m_intersects = true;
-            atack();
-        }
+        if(m_intersects == false ) {m_intersects = true; atack();}
     }
-    core::vector3df r = pos - nodePos;
-    f32 arc = atan2(r.X, r.Z);
-    f32 newX = arc*180/M_PI;
-    r.set( 0, newX, 0);
 
+    f32 rot = atan2(targetPos.X, targetPos.Z)*180/M_PI;
     if(m_isRotated)
     {
-        m_node->setRotation( r );
+        m_node->setRotation(core::vector3df(0,rot,0));
     }
 }

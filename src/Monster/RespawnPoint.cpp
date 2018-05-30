@@ -2,8 +2,6 @@
 #include "GamePark.h"
 #include "RedMonsterNode.h"
 #include "GreenMonsterNode.h"
-#include "RedMonsterNodeNew.h"
-#include "RedMonsterNodeNewTest.h"
 #include "Common/Logger.h"
 
 RespawnPoint::RespawnPoint(GamePark* gamePark, const core::vector3df& pos) :
