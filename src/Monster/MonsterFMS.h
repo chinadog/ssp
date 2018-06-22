@@ -1,6 +1,8 @@
 #ifndef MONSTERFMS_H
 #define MONSTERFMS_H
 
+#include "Common/Logger.h"
+
 enum class MonsterState
 {
     Walk,
@@ -30,7 +32,12 @@ public:
     MonsterFMS();
 
     MonsterState currentState() const {return static_cast<MonsterState>(m_currentState);}
-    void setState(const MonsterSignal& signal) {m_currentState = state[m_currentState][static_cast<int>(signal)];}
+    void setState(const MonsterSignal& signal)
+    {
+        TWARNING() << "Send signal" << (int)signal;
+        m_currentState = state[m_currentState][static_cast<int>(signal)];
+        TWARNING() << "State now is = " << (int)m_currentState;
+    }
 private:
     int state[static_cast<int>(MonsterState::Count)][static_cast<int>(MonsterSignal::Count)] =
     {

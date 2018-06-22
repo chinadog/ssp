@@ -3,6 +3,7 @@
 #include "RedMonsterNode.h"
 #include "GreenMonsterNode.h"
 #include "Common/Logger.h"
+#include "Monster/Turt.h"
 
 RespawnPoint::RespawnPoint(GamePark* gamePark, const core::vector3df& pos) :
     m_gamePark(gamePark),
@@ -44,30 +45,20 @@ void RespawnPoint::createMonster()
     node->layOut.connect_member(this,&RespawnPoint::draw);
 }
 
-void RespawnPoint::createMonsterNew()
+void RespawnPoint::createTurt()
 {
-//    s32 rand = m_gamePark->device()->getRandomizer()->rand() % 2;
+    Turt* node = new Turt(m_gamePark);
 
-//    RedMonsterNodeNew* node = 0;
-
-//    if(rand == 0)
-//    {
-//        node = new RedMonsterNodeNew(m_gamePark);
-//    }
-//    else
-//    {
-//        node = new RedMonsterNodeNew(m_gamePark);
-//    }
-
-//    core::vector3df monsterPos = m_pos;
-//    monsterPos.Y -= 20;
-//    node->setPosition( monsterPos );
-//    node->setDrawFinishedLevel(m_node->getPosition().Y + 0.8);
-//    node->setTerrain(m_gamePark->m_terrain);
-//    m_gamePark->m_aiNodeNew.push_back(node);
-//    m_gamePark->updateMonsterCollisionNew();
-//    node->layOut.connect_member(this,&RespawnPoint::draw);
+    core::vector3df monsterPos = m_pos;
+    monsterPos.Y -= 100;
+    node->setPosition( monsterPos );
+    node->setDrawFinishedLevel(m_node->getPosition().Y + 0.8);
+    node->setTerrain(m_gamePark->m_terrain);
+    m_gamePark->m_aiNode.push_back(node);
+    m_gamePark->updateMonsterCollision();
+    node->layOut.connect_member(this,&RespawnPoint::draw);
 }
+
 
 void RespawnPoint::init()
 {

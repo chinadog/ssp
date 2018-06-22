@@ -62,6 +62,7 @@ protected:
     core::vector3df m_aiPosition;
     core::vector3df m_aiRotation;
     f32 m_atackDistance = 5.0;
+    f32 m_startRot = 0.0;
 };
 
 #endif // AI_H

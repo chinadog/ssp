@@ -792,17 +792,17 @@ void GamePark::updateMonsterCollision()
 {
     for(u32 i=0;i<m_aiNode.size();i++)
     {
-        std::list<MonsterNode*>::iterator it = std::next(m_aiNode.begin(), i);
-        MonsterNode* monster = *it;
+        std::list<Enemy*>::iterator it = std::next(m_aiNode.begin(), i);
+        Enemy* monster = *it;
         monster->removeAllTriangleSelector();
     }
     for(u32 i=0;i<m_aiNode.size();i++)
     {
-        std::list<MonsterNode*>::iterator it = std::next(m_aiNode.begin(), i);
-        MonsterNode* monster = *it;
+        std::list<Enemy*>::iterator it = std::next(m_aiNode.begin(), i);
+        Enemy* monster = *it;
         for(u32 j=0;j<i;j++)
         {
-            std::list<MonsterNode*>::iterator it2 = std::next(m_aiNode.begin(), j);
+            std::list<Enemy*>::iterator it2 = std::next(m_aiNode.begin(), j);
             monster->addTriangleSelector(*it2);
         }
         monster->addTriangleSelector( m_whiteBoxSelector );
@@ -1104,7 +1104,7 @@ void GamePark::setSceneMode(const SceneMode &mode)
         auto i = std::begin(m_aiNode);
         while(i != std::end(m_aiNode))
         {
-            MonsterNode* monster = *i;
+            Enemy* monster = *i;
             monster->node()->setVisible(false);
             i++;
         }
@@ -1117,7 +1117,7 @@ void GamePark::setSceneMode(const SceneMode &mode)
         auto i = std::begin(m_aiNode);
         while(i != std::end(m_aiNode))
         {
-            MonsterNode* monster = *i;
+            Enemy* monster = *i;
             monster->node()->setVisible(true);
             i++;
         }

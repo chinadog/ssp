@@ -2,6 +2,7 @@
 #include "GamePark.h"
 #include <irrString.h>
 #include "Common/Logger.h"
+#include "Monster/Eagle.h"
 
 ScreenSurvival::ScreenSurvival(GamePark* gamePark) :
     Screen(gamePark)
@@ -32,7 +33,7 @@ void ScreenSurvival::draw()
     auto i = std::begin(m_gamePark->m_aiNode);
     while(i != std::end(m_gamePark->m_aiNode))
     {
-        MonsterNode* monster = *i;
+        Enemy* monster = *i;
         monster->draw();
         if(monster->node() == shootIntersection.m_node)
         {
@@ -69,7 +70,16 @@ void ScreenSurvival::draw()
         auto it = m_gamePark->m_respPoints.begin();
         std::advance(it, rand);
         RespawnPoint* p = *it;
-        p->createMonster();
+//        p->createMonster();
+        p->createTurt();
+
+        Eagle* eagle = new Eagle(m_gamePark);
+        core::vector3df pos = p->pos();
+        pos.Y = 60;
+        eagle->setPosition(pos);
+
+        m_gamePark->m_aiNode.push_back(eagle);
+        m_gamePark->updateMonsterCollision();
     }
 
 

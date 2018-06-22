@@ -14,7 +14,8 @@ public:
     ~RespawnPoint();
 
     void createMonster();
-    void createMonsterNew();
+    void createTurt();
+    inline core::vector3df pos() const {return m_pos;}
 private:
     void init();
     void draw();

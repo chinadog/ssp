@@ -103,7 +103,7 @@ public:
     bool key_s = false;
     bool key_d = false;
 
-std::list<MonsterNode*> m_aiNode;
+std::list<Enemy*> m_aiNode;
 void updateMonsterCollision();
 
 
