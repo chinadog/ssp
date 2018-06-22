@@ -260,8 +260,11 @@ void Eagle::flyGotoPlayer(f32 deltaTime)
 
 
     u32 now = m_device->getTimer()->getTime();
-    TDEBUG() << m_node->getRotation().Y;
-    if(std::abs(targetAngle - (m_node->getRotation().Y+90)) < 2.0 &&
+
+    f32 firstAngle = s32(targetAngle + 180) % 360 - 180;
+    f32 secondAngle = s32(m_node->getRotation().Y+90 + 180) % 360 - 180;
+    TDEBUG() << m_node->getRotation().Y << m_trjChangedAngle << firstAngle << secondAngle;
+    if(std::abs(firstAngle - secondAngle) < 2.0 &&
             m_trjChangedAngleOk == false)
     {
         TWARNING() << "Start change trj!!!!--------------------------";
@@ -272,7 +275,7 @@ void Eagle::flyGotoPlayer(f32 deltaTime)
     }
 //    if(now - m_startTime > m_trjChangedTime)
     if(m_trjChangedAngleOk == true &&
-            std::abs(cos(m_node->getRotation().Y*M_PI/180.0) - cos(m_trjChangedAngle*M_PI/180.0)) < 0.1)
+            std::abs(cos(m_node->getRotation().Y*M_PI/180.0) - cos(m_trjChangedAngle*M_PI/180.0)) < 0.1 )
     {
         m_trjChangedAngleOk = false;
 
@@ -281,10 +284,10 @@ void Eagle::flyGotoPlayer(f32 deltaTime)
         TDEBUG() << "Target angle = " << m_node->getRotation().Y+90*m_sign;
 
         m_sign *= -1;
-        f32 rand = (m_device->getRandomizer()->rand() % 20 + 5)/ 10.0;
-        f32 rand2 = (m_device->getRandomizer()->rand() % 20 + 5)/ 10.0;
-        m_trjChangedTime = 8000*rand2;
-        m_center = (m_node->getPosition() - m_center)*1.5 + m_node->getPosition();
+        f32 rand = (m_device->getRandomizer()->rand() % 10 + 5)/ 10.0;
+//        f32 rand2 = (m_device->getRandomizer()->rand() % 20 + 5)/ 10.0;
+//        m_trjChangedTime = 8000*rand2;
+        m_center = (m_node->getPosition() - m_center)*rand + m_node->getPosition();
         m_radius = m_node->getPosition().getDistanceFrom(m_center);
         m_rotationSpeed = m_velocity/m_radius*m_sign;
         if(m_rotationSpeed > 0)
@@ -297,7 +300,7 @@ void Eagle::flyGotoPlayer(f32 deltaTime)
         }
 
 //        TWARNING() << "CHange pos";
-        m_startTime = now;
+//        m_startTime = now;
     }
 
 

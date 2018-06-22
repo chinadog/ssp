@@ -49,7 +49,7 @@ public:
     u32 m_startTime = 0.0;
     u32 m_trjChangedTime = 8000;
 
-    f32 m_velocity = 50;
+    f32 m_velocity = 20;
     f32 m_trjChangedAngle = 0.0;
     bool m_trjChangedAngleOk = false;
 
